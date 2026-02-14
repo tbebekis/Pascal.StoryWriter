@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="12"/>
+    <BuildModes Active="Default"/>
+    <Units>
+      <Unit>
+        <Filename Value="StoryWriter.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="66" Y="26"/>
+        <UsageCount Value="126"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_mainform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="136"/>
+        <CursorPos X="59" Y="153"/>
+        <UsageCount Value="126"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="6582"/>
+        <CursorPos X="74" Y="6590"/>
+        <UsageCount Value="126"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_entities.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="466"/>
+        <CursorPos X="30" Y="484"/>
+        <UsageCount Value="126"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_app.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="497"/>
+        <CursorPos X="48" Y="630"/>
+        <UsageCount Value="126"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.IconList"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="183"/>
+        <CursorPos X="54" Y="202"/>
+        <UsageCount Value="118"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.forms.framepage.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FramePage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Tripous.Forms.FramePage"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="15"/>
+        <CursorPos X="57" Y="32"/>
+        <UsageCount Value="114"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.forms.pagerhandler.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.Forms.PagerHandler"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="220"/>
+        <CursorPos X="28" Y="224"/>
+        <UsageCount Value="112"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_appsettings.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_AppSettings"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="10"/>
+        <CursorPos X="54" Y="25"/>
+        <UsageCount Value="111"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_storylist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frStoryList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_StoryList"/>
+        <TopLine Value="122"/>
+        <CursorPos X="42" Y="131"/>
+        <UsageCount Value="95"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_scene.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frScene"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_Scene"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="61"/>
+        <CursorPos X="34" Y="86"/>
+        <UsageCount Value="89"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_texteditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frTextEditor"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_TextEditor"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="188"/>
+        <CursorPos X="67" Y="341"/>
+        <UsageCount Value="86"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_findandreplacedialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FindAndReplaceDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_FindAndReplaceDialog"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="20" Y="90"/>
+        <UsageCount Value="85"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_searchandreplace.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_SearchAndReplace"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="42" Y="84"/>
+        <UsageCount Value="57"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-json/src/fpjsonrtti.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="231"/>
+        <CursorPos X="49" Y="250"/>
+        <UsageCount Value="12"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/unix/sysunixh.inc"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="2" Y="29"/>
+        <UsageCount Value="6"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-base/src/syncobjs.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="144"/>
+        <CursorPos X="38" Y="150"/>
+        <UsageCount Value="6"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.logs.pas"/>
+        <UnitName Value="Tripous.Logs"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2146"/>
+        <CursorPos X="83" Y="2153"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="882"/>
+        <CursorPos X="10" Y="898"/>
+        <UsageCount Value="5"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="162"/>
+        <CursorPos X="18" Y="193"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/rtl-objpas/src/inc/system.uitypes.pp"/>
+        <UnitName Value="System.UITypes"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="193"/>
+        <CursorPos X="3" Y="203"/>
+        <UsageCount Value="5"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-base/src/contnrs.pp"/>
+        <UnitName Value="Contnrs"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="64"/>
+        <CursorPos X="59" Y="80"/>
+        <UsageCount Value="4"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="513"/>
+        <CursorPos X="15" Y="524"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../Icons/Resources/Images.lrs"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="1"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Images.lrs"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="38"/>
+        <UsageCount Value="6"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/lresources.pp"/>
+        <UnitName Value="LResources"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="38"/>
+        <CursorPos Y="54"/>
+        <UsageCount Value="2"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/DevApp/f_mainform.pas"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_MainForm"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="40"/>
+        <CursorPos Y="59"/>
+        <UsageCount Value="1"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/controls.pp"/>
+        <UnitName Value="Controls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2304"/>
+        <CursorPos X="38" Y="2313"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/inc/objpash.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="190"/>
+        <CursorPos X="23" Y="206"/>
+        <UsageCount Value="2"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-json/src/jsonparser.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="11"/>
+        <CursorPos X="53" Y="19"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-json/src/fpjson.pp"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="107"/>
+        <CursorPos X="19" Y="161"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../Stories/The_Corpers/Project.json"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="23" Y="11"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.data.pas"/>
+        <UnitName Value="Tripous.Data"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2803"/>
+        <CursorPos X="3" Y="2807"/>
+        <UsageCount Value="3"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synedit.pp"/>
+        <UnitName Value="SynEdit"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="6768"/>
+        <CursorPos X="58" Y="6786"/>
+        <UsageCount Value="26"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditsearch.pp"/>
+        <UnitName Value="SynEditSearch"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="410"/>
+        <CursorPos X="74" Y="420"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="510"/>
+        <CursorPos X="67" Y="529"/>
+        <UsageCount Value="15"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditmiscclasses.pp"/>
+        <UnitName Value="SynEditMiscClasses"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="88"/>
+        <CursorPos X="54" Y="96"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synedittypes.pp"/>
+        <UnitName Value="SynEditTypes"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="40"/>
+        <CursorPos X="33" Y="49"/>
+        <UsageCount Value="18"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditwrappedview.pp"/>
+        <UnitName Value="SynEditWrappedView"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1776"/>
+        <CursorPos X="22" Y="1785"/>
+        <UsageCount Value="5"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/extctrls.pp"/>
+        <UnitName Value="ExtCtrls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="177"/>
+        <CursorPos X="3" Y="195"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/sysutilh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="314"/>
+        <CursorPos X="13" Y="330"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/sysutils.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="154"/>
+        <CursorPos X="9" Y="158"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/include/tabsheet.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="35"/>
+        <CursorPos X="3" Y="44"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditmarkuphighall.pp"/>
+        <UnitName Value="SynEditMarkupHighAll"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1728"/>
+        <CursorPos Y="1746"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../SynEditExamples/SearchAndReplace/uFrameSearch.pas"/>
+        <ComponentName Value="Frame1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="105"/>
+        <CursorPos X="85" Y="119"/>
+        <UsageCount Value="23"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../SynEditExamples/SearchAndReplace/UfrmMain.pas"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="92"/>
+        <CursorPos X="38" Y="105"/>
+        <UsageCount Value="18"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/classes/classesh.inc"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="733"/>
+        <CursorPos X="3" Y="615"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synedithighlighter.pp"/>
+        <UnitName Value="SynEditHighlighter"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="24" Y="28"/>
+        <UsageCount Value="14"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditmarkup.pp"/>
+        <UnitName Value="SynEditMarkup"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="158"/>
+        <CursorPos X="3" Y="151"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/lazsynedittext.pas"/>
+        <UnitName Value="LazSynEditText"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1578"/>
+        <CursorPos Y="1597"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synhighlighterany.pas"/>
+        <UnitName Value="SynHighlighterAny"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="200"/>
+        <CursorPos X="32" Y="217"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_searchandreplace (copy).pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="266"/>
+        <CursorPos Y="300"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../../.lazarus/onlinepackagemanager/packages/ATSynEdit/atsynedit/atsynedit_adapter_ime_gtk2.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="122"/>
+        <CursorPos X="37" Y="129"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_markdownpreview.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MarkdownPreview"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_MarkdownPreview"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="28"/>
+        <CursorPos X="30" Y="39"/>
+        <UsageCount Value="40"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_categorylist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frCategoryList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_CategoryList"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="180"/>
+        <CursorPos X="40" Y="210"/>
+        <UsageCount Value="39"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/types.pp"/>
+        <UnitName Value="Types"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="109"/>
+        <CursorPos X="27" Y="114"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/classes/stringl.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1110"/>
+        <CursorPos X="51" Y="1114"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/customtimer.pas"/>
+        <UnitName Value="CustomTimer"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="43"/>
+        <CursorPos X="21" Y="53"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.memtable.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.MemTable"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3765"/>
+        <CursorPos X="15" Y="3770"/>
+        <UsageCount Value="25"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-db/src/base/db.pas"/>
+        <UnitName Value="DB"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1370"/>
+        <CursorPos X="3" Y="1389"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-db/src/base/fields.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="208"/>
+        <CursorPos X="20" Y="214"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/dbgrids.pas"/>
+        <UnitName Value="DBGrids"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="4288"/>
+        <CursorPos X="3" Y="4290"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/grids.pas"/>
+        <UnitName Value="Grids"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="13380"/>
+        <CursorPos X="40" Y="13386"/>
+        <UsageCount Value="11"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="25">
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="235" Column="69" TopLine="220"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="241" TopLine="220"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="242" TopLine="221"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="243" TopLine="222"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="244" TopLine="223"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="245" TopLine="224"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="246" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="247" TopLine="226"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="261" Column="37" TopLine="241"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="278" Column="51" TopLine="270"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="60" Column="62" TopLine="36"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="482" Column="26" TopLine="467"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="2225" Column="3" TopLine="2218"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="482" Column="25" TopLine="464"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="2226" Column="3" TopLine="2219"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="483" Column="40" TopLine="464"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="2224" Column="13" TopLine="2204"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="2255" Column="3" TopLine="2225"/>
+      </Position>
+      <Position>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/classes/classesh.inc"/>
+        <Caret Line="825" Column="35" TopLine="814"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="2258" Column="16" TopLine="2225"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="483" Column="28" TopLine="465"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="12" Column="11" TopLine="25"/>
+      </Position>
+      <Position>
+        <Filename Value="o_entities.pas"/>
+        <Caret Line="2260" Column="3" TopLine="2237"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="219" Column="12" TopLine="193"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="17" Column="12" TopLine="160"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="210" Column="39" TopLine="186"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

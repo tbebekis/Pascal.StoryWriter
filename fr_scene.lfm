@@ -1,0 +1,95 @@
+inherited frScene: TfrScene
+  Height = 581
+  Width = 838
+  ClientHeight = 581
+  ClientWidth = 838
+  object Pager: TPageControl[0]
+    Left = 0
+    Height = 581
+    Top = 0
+    Width = 838
+    ActivePage = tabText
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tabText: TTabSheet
+      Caption = 'Text'
+      ClientHeight = 551
+      ClientWidth = 828
+      inline frText: TfrTextEditor
+        Width = 384
+        Align = alLeft
+        ClientWidth = 384
+        inherited ToolBar: TToolBar
+          Width = 384
+        end
+        inherited StatusBar: TStatusBar
+          Width = 384
+        end
+        inherited Editor: TSynEdit
+          Width = 384
+        end
+      end
+      object Splitter: TSplitter
+        Left = 384
+        Height = 551
+        Top = 0
+        Width = 5
+      end
+      inline frTextEn: TfrTextEditor
+        Left = 389
+        Width = 439
+        Align = alClient
+        ClientWidth = 439
+        TabOrder = 2
+        inherited ToolBar: TToolBar
+          Width = 439
+        end
+        inherited StatusBar: TStatusBar
+          Width = 439
+        end
+        inherited Editor: TSynEdit
+          Width = 439
+        end
+      end
+    end
+    object tabSynopsis: TTabSheet
+      Caption = 'Synopsis'
+      ClientHeight = 551
+      ClientWidth = 828
+      inline frSynopsis: TfrTextEditor
+        Width = 828
+        Align = alClient
+        ClientWidth = 828
+        inherited ToolBar: TToolBar
+          Width = 828
+        end
+        inherited StatusBar: TStatusBar
+          Width = 828
+        end
+        inherited Editor: TSynEdit
+          Width = 828
+        end
+      end
+    end
+    object tabTimeline: TTabSheet
+      Caption = 'Timeline'
+      ClientHeight = 551
+      ClientWidth = 828
+      inline frTimeline: TfrTextEditor
+        Width = 828
+        Align = alClient
+        ClientWidth = 828
+        inherited ToolBar: TToolBar
+          Width = 828
+        end
+        inherited StatusBar: TStatusBar
+          Width = 828
+        end
+        inherited Editor: TSynEdit
+          Width = 828
+        end
+      end
+    end
+  end
+end

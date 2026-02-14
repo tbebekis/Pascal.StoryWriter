@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <AutoCreateForms Value="False"/>
+      <Title Value="StoryWriter"/>
+      <Scaled Value="True"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
+      <Icon Value="0"/>
+    </General>
+    <BuildModes>
+      <Item Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <RunParams>
+      <FormatVersion Value="2"/>
+    </RunParams>
+    <RequiredPackages>
+      <Item>
+        <PackageName Value="fpc_markdown"/>
+      </Item>
+      <Item>
+        <PackageName Value="TurboPowerIPro"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEditDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="StoryWriter.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_mainform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_entities.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_app.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.IconList"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.forms.framepage.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FramePage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Tripous.Forms.FramePage"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.forms.pagerhandler.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.Forms.PagerHandler"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_appsettings.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_AppSettings"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_storylist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frStoryList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_StoryList"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_scene.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frScene"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_Scene"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_texteditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frTextEditor"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_TextEditor"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_findandreplacedialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FindAndReplaceDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_FindAndReplaceDialog"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_searchandreplace.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_SearchAndReplace"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_markdownpreview.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MarkdownPreview"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_MarkdownPreview"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_categorylist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frCategoryList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_CategoryList"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.memtable.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.MemTable"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <Target>
+      <Filename Value="StoryWriter"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="../Pascal.Tripous;Dialogs"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions>
+      <Item>
+        <Name Value="EAbort"/>
+      </Item>
+      <Item>
+        <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="EFOpenError"/>
+      </Item>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
