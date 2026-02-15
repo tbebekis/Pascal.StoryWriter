@@ -14,7 +14,7 @@ uses
   , ExtCtrls
   , ComCtrls, Menus
   , Tripous.Forms.FramePage
-  , o_Entities
+  , o_Entities, fr_TextEditor
   ;
 
 type
@@ -22,10 +22,12 @@ type
   { TfrStoryList }
 
   TfrStoryList = class(TFramePage)
+    frText: TfrTextEditor;
     mnuAddStory: TMenuItem;
     mnuAddChapter: TMenuItem;
     mnuAddScene: TMenuItem;
     mnuAddItem: TPopupMenu;
+    pnlTitle: TPanel;
     tvImages: TImageList;
     pnlTop: TPanel;
     pnlBottom: TPanel;
@@ -52,8 +54,9 @@ type
     procedure AppOnProjectClosed(Sender: TObject);
     procedure AppOnProjectMetricsChanged(Sender: TObject);
 
-    procedure TreeViewDblClick(Sender: TObject);
-    procedure TreeViewMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure tv_OnDblClick(Sender: TObject);
+    procedure tv_OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure tv_OnSelectedNodeChanged(Sender: TObject; Node: TTreeNode);
 
     function NodeAsObject(Node: TTreeNode): TObject;
     function NodeAsStory(Node: TTreeNode): TStory;
@@ -91,7 +94,6 @@ type
     procedure CollapseAll();
     procedure ExpandAll();
   public
-    constructor Create(AOwner: TComponent); override;
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
   end;
@@ -111,24 +113,23 @@ uses
 
 { TfrStoryList }
 
-constructor TfrStoryList.Create(AOwner: TComponent);
+procedure TfrStoryList.ControlInitialize;
 begin
-  inherited Create(AOwner);
+  inherited ControlInitialize;
+
+  ParentTabPage.Caption := 'Stories';
+
+  frText.ToolBarVisible := False;
+  frText.Editor.ReadOnly := True;
 
   App.OnProjectOpened := AppOnProjectOpened;
   App.OnProjectClosed := AppOnProjectClosed;
   App.OnProjectMetricsChanged := AppOnProjectMetricsChanged;
 
   tv.ReadOnly := True ;
-  tv.OnDblClick := TreeViewDblClick;
-  tv.OnMouseDown := TreeViewMouseDown;
-end;
-
-procedure TfrStoryList.ControlInitialize;
-begin
-  inherited ControlInitialize;
-
-  ParentTabPage.Caption := 'Stories';
+  tv.OnDblClick := tv_OnDblClick;
+  tv.OnMouseDown := tv_OnMouseDown;
+  tv.OnChange := tv_OnSelectedNodeChanged;
 
   PrepareToolBar();
   ReLoad();
@@ -139,8 +140,6 @@ begin
   inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
 end;
-
-
 
 procedure TfrStoryList.AnyClick(Sender: TObject);
 begin
@@ -217,12 +216,12 @@ begin
 
 end;
 
-procedure TfrStoryList.TreeViewDblClick(Sender: TObject);
+procedure TfrStoryList.tv_OnDblClick(Sender: TObject);
 begin
   // TODO: Edit item title
 end;
 
-procedure TfrStoryList.TreeViewMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TfrStoryList.tv_OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Node: TTreeNode;
 begin
@@ -233,6 +232,11 @@ begin
 
   tv.Selected := Node;
   EditItemText();
+end;
+
+procedure TfrStoryList.tv_OnSelectedNodeChanged(Sender: TObject; Node: TTreeNode);
+begin
+  SelectedNodeChanged();
 end;
 
 procedure TfrStoryList.PrepareToolBar();
@@ -314,8 +318,75 @@ begin
 end;
 
 procedure TfrStoryList.SelectedNodeChanged();
+var
+  Node: TTreeNode;
+  Item: TObject;
+  Story: TStory;
+  Chapter: TChapter;
+  Scene: TScene;
 begin
+  pnlTitle.Caption := 'No selection';
+  frText.Editor.Clear();
 
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Item := TObject(Node.Data);
+
+  if Item is TStory then
+  begin
+    Story := Item as TStory;
+    pnlTitle.Caption := Format('Story: %s', [Story.Title]);
+    frText.EditorText := Story.Synopsis;
+  end else if Item is TChapter then
+  begin
+    Chapter := Item as TChapter;
+    pnlTitle.Caption := Format('Chapter: %s', [Chapter.Title]);
+    frText.EditorText := Chapter.Synopsis;
+  end else if Item is TScene then
+  begin
+    Scene := Item as TScene;
+    pnlTitle.Caption := Format('Scene: %s', [Scene.Title]);
+    frText.EditorText := Scene.Text;
+  end;
+
+(*
+lblTitle.Text = "No selection";
+ucText.Clear();
+
+if (App.CurrentProject == null)
+    return;
+
+TreeNode Node = tv.SelectedNode;
+if (Node == null)
+    return;
+
+if (Node.Tag is Story)
+{
+    Story Story = Node.Tag as Story;
+    lblTitle.Text = $"Story: {Story.Title}";
+
+    ucText.PlainText = Story.Synopsis;
+}
+else if (Node.Tag is Scene)
+{
+    Scene Scene = Node.Tag as Scene;
+    lblTitle.Text = $"Scene: {Scene.Title}";
+
+    ucText.PlainText = Scene.Text;
+}
+else if (Node.Tag is Chapter)
+{
+    Chapter Chapter = Node.Tag as Chapter;
+    lblTitle.Text = $"Chapter: {Chapter.Title}";
+
+    ucText.PlainText = Chapter.Synopsis;
+}
+*)
 end;
 
 procedure TfrStoryList.AddStory();

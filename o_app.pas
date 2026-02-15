@@ -10,12 +10,15 @@ uses
   , Forms
   , Controls
   ,ComCtrls
+  ,ExtCtrls
   ,Dialogs
   , DB
   , DBCtrls
   , DBGrids
   //,Regex
   ,RegExpr
+
+  ,SynEdit
 
   ,Tripous
   ,Tripous.Forms.PagerHandler
@@ -36,6 +39,8 @@ type
 
   App = class
   private
+    class var fLastGlobalSearchTerm: string;
+    class var fLastGlobalSearchTermWholeWord: Boolean;
     class var fOnCategoryListChanged: TNotifyEvent;
     class var fOnComponentListChanged: TNotifyEvent;
     class var fOnProjectMetricsChanged: TNotifyEvent;
@@ -101,11 +106,26 @@ type
     class procedure CheckValidFileName(const Title: string);
 
     // ● UI
+    class procedure ShowSideBarPages();
+    class procedure CloseAllUi();
+
+    class procedure ShowSettingsDialog();
+    class function  ShowFolderDialog(var FolderPath: string): Boolean;
+    class procedure DisplayFileExplorer(const FileOrFolderPath: string);
     class procedure ClearPageControl(APageControl: TPageControl);
+
+    class function ShowLinkItemPage(LinkItem: TLinkItem): TTabSheet;
+
+    //static public void UpdateLinkItemUi(LinkItem LinkItem, Label lblItemTitle, RichTextEditor ucRichText)
+    class procedure UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel; Editor: TSynEdit);
+
+    // ● event triggers
+    class procedure SetGlobalSearchTerm(const Term: string);
 
     // ● Grid
     class procedure InitializeReadOnly(Grid: TDbGrid);
     class procedure AddColumn(Grid: TDbGrid; const FieldName: string; const Title: string = '');
+    class procedure AdjustGridColumns(Grid: TDBGrid);
 
     // ● project
     class procedure CreateNewProject();
@@ -119,13 +139,9 @@ type
     class procedure StopProjectStatsTimer();
 
     // ● miscs
-    class procedure DisplayFileExplorer(const FileOrFolderPath: string);
-    class function ShowFolderDialog(var FolderPath: string): Boolean;
+
     class procedure ShowTranslator();
 
-    class procedure CloseAllUi();
-    class procedure ShowSideBarPages();
-    class procedure ShowSettingsDialog();
 
     // ● properties
     class property IsInitialized: Boolean read GetIsInitialized;
@@ -137,6 +153,10 @@ type
 
     class property CurrentProject: TProject read fProject write fProject;
     class property ZoomFactor: Double read FZoomFactor write FZoomFactor;
+
+    class property LastGlobalSearchTerm: string read fLastGlobalSearchTerm write fLastGlobalSearchTerm;
+    class property LastGlobalSearchTermWholeWord: Boolean read fLastGlobalSearchTermWholeWord write fLastGlobalSearchTermWholeWord;
+
 
     // ● events
     class property OnProjectOpened: TNotifyEvent read fOnProjectOpened write fOnProjectOpened;
@@ -164,7 +184,12 @@ uses
 
   //,f_MainForm
   ,fr_CategoryList
+  ,fr_TagList
+  ,fr_ComponentList
+  ,fr_Search
+  ,fr_QuickView
   ,fr_StoryList
+  ,fr_Scene
   ;
 
 
@@ -525,6 +550,8 @@ begin
 
 end;
 
+
+
 class procedure App.DisplayFileExplorer(const FileOrFolderPath: string);
 var
   P: TProcess;
@@ -598,6 +625,11 @@ end;
 class procedure App.ShowSideBarPages();
 begin
   SideBarPagerHandler.ShowPage(TfrCategoryList, TfrCategoryList.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TfrTagList, TfrTagList.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TfrComponentList, TfrComponentList.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TfrSearch, TfrSearch.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TfrQuickView, TfrQuickView.ClassName, nil);
+
 
   SideBarPagerHandler.ShowPage(TfrStoryList, TfrStoryList.ClassName, nil);
 
@@ -619,6 +651,196 @@ begin
     APageControl.Pages[0].Free;
 end;
 
+class function App.ShowLinkItemPage(LinkItem: TLinkItem): TTabSheet;
+var
+  Comp: TSWComponent;
+  Note: TNote;
+  Story: TStory;
+  Chapter: TChapter;
+  Scene: TScene;
+  frScene: TfrScene;
+begin
+  Result := nil;
+
+  if (not Assigned(LinkItem)) or (not Assigned(LinkItem.Item)) or (not Assigned(CurrentProject)) then
+    Exit;
+
+  case LinkItem.ItemType of
+    itComponent:
+      begin
+        Comp := LinkItem.Item as TSWComponent;
+        //Result := App.ContentPagerHandler.ShowPage(TfrComponent, Comp.Id, Comp);
+      end;
+    itNote:
+      begin
+        Note :=  LinkItem.Item as TNote;
+        //Result := App.ContentPagerHandler.ShowPage(TfrNote, Note.Id, Note);
+      end;
+    itStory:
+      begin
+        Story := LinkItem.Item as TStory;
+        //Result := App.ContentPagerHandler.ShowPage(TfrStory, Story.Id, Story);
+      end;
+    itChapter:
+      begin
+        Chapter := LinkItem.Item as TChapter;
+        //Result := App.ContentPagerHandler.ShowPage(TfrChapter, Chapter.Id, Chapter);
+      end;
+    itScene:
+      begin
+        Scene := LinkItem.Item as TScene;
+        if (Assigned(Scene)) then
+        begin
+          Result := App.ContentPagerHandler.ShowPage(TfrScene, Scene.Id, Scene);
+          frScene := TfrScene(Result.Tag);
+          frScene.ShowTabPage(LinkItem.Place);
+        end;
+
+      end
+  else    //case ItemType.Scene:
+  end;
+(*
+TabPage TabPage = null;
+
+if (LinkItem != null || LinkItem.Item != null || CurrentProject != null)
+{
+    switch (LinkItem.ItemType)
+    {
+        case ItemType.Component:
+            Component Component = LinkItem.Item as Component;
+            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Component), Component.Id, Component);
+            break;
+        case ItemType.Note:
+            Note Note = LinkItem.Item as Note;
+            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Note), Note.Id, Note);
+            break;
+        case ItemType.Story:
+            Story Story = LinkItem.Item as Story;
+            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Story), Story.Id, Story);
+            break;
+        case ItemType.Chapter:
+            Chapter Chapter = LinkItem.Item as Chapter;
+            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Chapter), Chapter.Id, Chapter);
+            break;
+        default:     //case ItemType.Scene:
+            Scene Scene = LinkItem.Item as Scene;
+            if (Scene != null)
+            {
+                TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Scene), Scene.Id, Scene);
+                UC_Scene uc = TabPage.Tag as UC_Scene;
+                uc.ShowTabPage(LinkItem.Place);
+            }
+            break;
+    }
+}
+
+return TabPage;
+*)
+end;
+
+class procedure App.UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel;  Editor: TSynEdit);
+var
+  Comp: TSWComponent;
+  Note: TNote;
+  Chapter: TChapter;
+  Scene: TScene;
+begin
+  if (not Assigned(LinkItem)) or (not Assigned(LinkItem.Item)) or (not Assigned(CurrentProject)) then
+    Exit;
+
+  case LinkItem.ItemType of
+    itComponent:
+      begin
+        Comp := LinkItem.Item as TSWComponent;
+        Panel.Caption := Format('Component: %s', [Comp.DisplayTitleInProject]);
+        Editor.Text := Comp.Text;
+      end;
+    itChapter:
+      begin
+        Chapter := LinkItem.Item as TChapter;
+        Panel.Caption := Format('Chapter: %s', [Chapter.DisplayTitleInProject]);
+        Editor.Text := Chapter.Synopsis;
+      end;
+    itScene:
+      begin
+        Scene := LinkItem.Item as TScene;
+        case LinkItem.Place of
+          lpSynopsis:
+            begin
+              Panel.Caption := Format('Scene Synopsis: %s', [Scene.DisplayTitleInProject]);
+              Editor.Text := Scene.Synopsis;
+            end;
+          lpTimeline:
+            begin
+              Panel.Caption := Format('Scene Timeline: %s', [Scene.DisplayTitleInProject]);
+              Editor.Text := Scene.Timeline;
+            end;
+          lpText:
+            begin
+              Panel.Caption := Format('Scene: %s', [Scene.DisplayTitleInProject]);
+              Editor.Text := Scene.Text;
+            end;
+        end;
+      end;
+    itNote:
+      begin
+        Note :=  LinkItem.Item as TNote;
+        Panel.Caption := Format('Note: %s', [Note.DisplayTitleInProject]);
+        Editor.Text := Note.Text;
+      end;
+  end;
+
+
+(*
+if (LinkItem == null || LinkItem.Item == null || CurrentProject == null)
+    return;
+
+switch (LinkItem.ItemType)
+{
+    case ItemType.Component:
+        Component Component = LinkItem.Item as Component;
+        lblItemTitle.Text = $"Component: {Component.DisplayTitleInProject}";
+        ucRichText.PlainText = Component.Text;
+        break;
+    case ItemType.Chapter:
+        Chapter Chapter = LinkItem.Item as Chapter;
+        lblItemTitle.Text = $"Chapter: {Chapter.DisplayTitleInProject}";
+        ucRichText.PlainText = Chapter.Synopsis;
+        break;
+    case ItemType.Scene:
+        Scene Scene = LinkItem.Item as Scene;
+        switch (LinkItem.Place)
+        {
+            case LinkPlace.Synopsis:
+                lblItemTitle.Text = $"Scene Synopsis: {Scene.DisplayTitleInProject}";
+                ucRichText.PlainText = Scene.Synopsis;
+                break;
+            case LinkPlace.Timeline:
+                lblItemTitle.Text = $"Scene Timeline: {Scene.DisplayTitleInProject}";
+                ucRichText.PlainText = Scene.Timeline;
+                break;
+           default:
+                lblItemTitle.Text = $"Scene: {Scene.DisplayTitleInProject}";
+                ucRichText.PlainText = Scene.Text;
+                break;
+        }
+        break;
+    case ItemType.Note:
+        Note Note = LinkItem.Item as Note;
+        lblItemTitle.Text = $"Note: {Note.DisplayTitleInProject}";
+        ucRichText.PlainText = Note.Text;
+        break;
+}
+*)
+end;
+
+class procedure App.SetGlobalSearchTerm(const Term: string);
+begin
+  SideBarPagerHandler.ShowPage(TfrSearch, TfrSearch.ClassName, nil);
+  if Assigned(OnSearchTermIsSet) then
+     OnSearchTermIsSet(nil, Term);
+end;
+
 class procedure App.InitializeReadOnly(Grid: TDbGrid);
 begin
   Grid.Options := Grid.Options - [dgEditing];
@@ -635,6 +857,13 @@ begin
      Col.Title.Caption := Title;
 end;
 
+class procedure App.AdjustGridColumns(Grid: TDBGrid);
+var
+  i : Integer;
+begin
+  for i := 0 to Grid.Columns.Count-1 do
+    Grid.Columns[i].Width := 100;
+end;
 
 
 end.

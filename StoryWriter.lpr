@@ -13,7 +13,8 @@ uses
   Forms, f_mainform, Tripous, o_entities, o_app, Tripous.IconList,
   Tripous.Forms.FramePage, Tripous.Forms.PagerHandler, o_AppSettings,
   fr_StoryList, fr_Scene, fr_TextEditor, f_FindAndReplaceDialog, 
-o_SearchAndReplace, fr_MarkdownPreview, fr_CategoryList;
+o_SearchAndReplace, fr_MarkdownPreview, fr_CategoryList, fr_TagList, 
+fr_ComponentList, fr_Search, u_ProjectGlobalSearch, fr_QuickView;
 
 {$R *.res}
 

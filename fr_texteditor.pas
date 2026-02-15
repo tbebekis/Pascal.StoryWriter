@@ -50,6 +50,8 @@ type
     FAutoSaveDirty: Boolean;
     FAutoSaveIdleMs: Integer;
 
+    FMarkup: TSynEditMarkupHighlightAll;
+
     procedure EditorChange(Sender: TObject);
     procedure AutoSaveTimerTick(Sender: TObject);
 
@@ -70,27 +72,24 @@ type
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     procedure PrepareToolBar();
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
 
-
     procedure SaveText();
     procedure GlobalSearchForTerm();
+
+
+    procedure SetHighlightTerm(const Term: string; WholeWord, MatchCase: Boolean);
+    procedure JumpToCharPos(ACharPos: Integer);
 
 (*
 TextToFind: string;
 ReplaceWith: string;
 MatchCase: Boolean;
 WholeWord: Boolean;
-Active: Boolean;
 *)
     // ● find
-
-
-
-
 
     property Title: string read GetTitle write SetTitle;
     property EditorText : string read GetEditorText write SetEditorText;        // setting does not trigger Modified
@@ -177,6 +176,86 @@ end;
 procedure TfrTextEditor.GlobalSearchForTerm();
 begin
   // TODO: TfrTextEditor.GlobalSearchForTerm(
+end;
+
+procedure TfrTextEditor.SetHighlightTerm(const Term: string; WholeWord, MatchCase: Boolean);
+var
+  Opt: TSynSearchOptions;
+begin
+  if FMarkup = nil then
+  begin
+    FMarkup := TSynEditMarkupHighlightAll.Create(Editor);
+    Editor.MarkupManager.AddMarkUp(FMarkup);
+  end;
+
+  if Term = '' then
+  begin
+    FMarkup.SearchString := '';
+    Editor.Invalidate;
+    Exit;
+  end;
+
+  Opt := [];
+  if WholeWord then
+    Include(Opt, ssoWholeWord);
+  if MatchCase then
+    Include(Opt, ssoMatchCase);
+
+  FMarkup.SearchOptions := Opt;
+  FMarkup.SearchString := Term;
+
+  Editor.Invalidate;
+end;
+
+procedure TfrTextEditor.JumpToCharPos(ACharPos: Integer);
+
+  function SynCharPosToCaretXY(ACharPos0: Integer): TPoint;
+  var
+    i: Integer;
+    ULine: UnicodeString;
+    L: Integer;
+    Rem: Integer;
+  begin
+    Result := Point(1, 1);
+
+    if (Editor = nil) or (ACharPos0 < 0) then
+      Exit;
+
+    Rem := ACharPos0;
+
+    for i := 0 to Editor.Lines.Count - 1 do
+    begin
+      ULine := UTF8Decode(Editor.Lines[i]);
+      L := Length(ULine);
+
+      if Rem <= L then
+      begin
+        Result.Y := i + 1;      // 1-based line
+        Result.X := Rem + 1;    // 1-based column
+        Exit;
+      end;
+
+      // πέρασε τη γραμμή + 1 char για newline
+      Dec(Rem, L + 1);
+    end;
+
+    // αν βγήκαμε εκτός, πήγαινε τέλος
+    Result.Y := Editor.Lines.Count;
+    if Result.Y < 1 then Result.Y := 1;
+
+    ULine := UTF8Decode(Editor.Lines[Result.Y - 1]);
+    Result.X := Length(ULine) + 1;
+  end;
+
+var
+  P: TPoint;
+begin
+
+  P := SynCharPosToCaretXY(ACharPos);
+  Editor.CaretY := P.Y;
+  Editor.CaretX := P.X;
+  Editor.EnsureCursorPosVisible;
+  Editor.SetFocus;
 end;
 
 procedure TfrTextEditor.InitWordWrap(Data: PtrInt);

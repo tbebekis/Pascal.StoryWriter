@@ -52,7 +52,43 @@ inherited frStoryList: TfrStoryList
     Top = 373
     Width = 450
     Align = alClient
+    ClientHeight = 231
+    ClientWidth = 450
     TabOrder = 1
+    object pnlTitle: TPanel
+      Left = 1
+      Height = 32
+      Top = 1
+      Width = 448
+      Align = alTop
+      Alignment = taLeftJustify
+      Caption = 'No Selection'
+      Font.Height = -15
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+    end
+    inline frText: TfrTextEditor
+      Left = 1
+      Height = 197
+      Top = 33
+      Width = 448
+      Align = alClient
+      ClientHeight = 197
+      ClientWidth = 448
+      TabOrder = 1
+      inherited ToolBar: TToolBar
+        Width = 448
+      end
+      inherited StatusBar: TStatusBar
+        Top = 171
+        Width = 448
+      end
+      inherited Editor: TSynEdit
+        Height = 145
+        Width = 448
+      end
+    end
   end
   object Splitter: TSplitter[2]
     Cursor = crVSplit

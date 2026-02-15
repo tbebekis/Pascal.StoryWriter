@@ -147,6 +147,43 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Tripous.MemTable"/>
       </Unit>
+      <Unit>
+        <Filename Value="fr_taglist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frTagList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_TagList"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_componentlist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frComponentList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_ComponentList"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_search.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frSearch"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_Search"/>
+      </Unit>
+      <Unit>
+        <Filename Value="u_projectglobalsearch.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="u_ProjectGlobalSearch"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_quickview.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frQuickView"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_QuickView"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

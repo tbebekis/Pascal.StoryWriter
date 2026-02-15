@@ -20,6 +20,8 @@ type
   TScene = class;
   TSWComponent = class;
   TNote = class;
+  TLinkItem = class;
+  TLinkItemList = class;
 
   { ItemType }
   TItemType = (
@@ -480,8 +482,9 @@ type
     function AddComponent(const Title: string): TSWComponent; overload;
     function AddComponent(AComponent: TSWComponent): TSWComponent; overload;
 
-    function GetCategoryList(SourceList: TSWComponentCollection = nil): TStrings;
-    function GetComponentList(): TObjectList;   // sorted by Title
+    function GetCategoryList(SourceList: TSWComponentCollection = nil): TStrings;            // sorted
+    function GetTagList(SourceList: TSWComponentCollection = nil): TStrings;                 // sorted
+    function GetComponentList(): TObjectList;                                                // sorted by Title
 
     function CategoryExists(const Category: string): Boolean;
     function TagExists(const Tag: string): Boolean;
@@ -494,6 +497,9 @@ type
 
     function NoteCount: Integer;
     function NoteAt(Index: Integer): TNote;
+
+    // ● global search
+    function  GlobalSearch(const Term: string): TLinkItemList;
 
     property Loading: Boolean read fLoading;
     property FolderPath: string read fFolderPath write fFolderPath;
@@ -583,7 +589,9 @@ type
 implementation
 
 uses
-  o_app;
+  u_ProjectGlobalSearch
+  ,o_app
+  ;
 
 function ItemTypeToString(Value: TItemType): string;
 begin
@@ -2239,6 +2247,28 @@ begin
   Result := StringList;
 end;
 
+function TProject.GetTagList(SourceList: TSWComponentCollection): TStrings;
+var
+  i : Integer;
+  j : Integer;
+  StringList : TStringList;
+begin
+  if not Assigned(SourceList) then
+    SourceList := Self.ComponentList;
+
+  StringList := TStringList.Create();
+  StringList.Duplicates := dupIgnore;
+  StringList.Sorted := True;
+  StringList.CaseSensitive := False;
+
+  for i := 0 to SourceList.Count - 1 do
+    for j := 0 to SourceList[i].TagList.Count - 1 do
+        if Trim(SourceList[i].TagList[j]) <> '' then
+          StringList.Add(SourceList[i].TagList[j]);
+
+  Result := StringList;
+end;
+
 function TProject.GetComponentList(): TObjectList;
 var
   i : Integer;
@@ -2250,14 +2280,12 @@ begin
   StringList.CaseSensitive := False;
 
   for i := 0 to ComponentList.Count - 1 do
-    if Trim(ComponentList[i].Title) <> '' then
-      StringList.AddObject(ComponentList[i].Title, ComponentList[i]);           // (SourceList[i].Title);
-
+    if (Trim(ComponentList[i].Category) <> '') and (Trim(ComponentList[i].Title) <> '') then
+      StringList.AddObject(ComponentList[i].Category + '#1' + ComponentList[i].Title, ComponentList[i]);           // (SourceList[i].Title);
 
   Result := TObjectList.Create(False);
   for i := 0 to StringList.Count - 1 do
     Result.Add(StringList.Objects[i]);
-
 end;
 
 function TProject.CategoryExists(const Category: string): Boolean;
@@ -2313,6 +2341,11 @@ end;
 function TProject.NoteAt(Index: Integer): TNote;
 begin
   Result := NoteList[Index];
+end;
+
+function TProject.GlobalSearch(const Term: string): TLinkItemList;
+begin
+  Result := TProjectGlobalSearch.Execute(Self, Term);
 end;
 
 

@@ -43,10 +43,7 @@ type
     ToolBar: TToolBar;
   public const
     STitle = 'Story Writer';
-
   private
-
-
     btnNewProject : TToolButton;
     btnOpenProject: TToolButton;
     btnShowProjectFolder: TToolButton;
@@ -87,6 +84,7 @@ type
     procedure DoDestroy; override;
     procedure DoShow; override;
     procedure DoClose(var CloseAction: TCloseAction); override;
+    function CloseQuery: Boolean; override;
   public
 
   end;
@@ -314,6 +312,12 @@ procedure TMainForm.DoClose(var CloseAction: TCloseAction);
 begin
   LogBox.Finalize();
   inherited DoClose(CloseAction);
+end;
+
+function TMainForm.CloseQuery: Boolean;
+begin
+  Result := inherited CloseQuery;
+  //Result := True;
 end;
 
 initialization

@@ -73,8 +73,6 @@ type
     procedure SelectedCategoryChanged();
     procedure SelectedComponentChanged();
   public
-    constructor Create(AOwner: TComponent); override;
-
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
   end;
@@ -90,12 +88,16 @@ uses
 
 { TfrCategoryList }
 
-constructor TfrCategoryList.Create(AOwner: TComponent);
+procedure TfrCategoryList.ControlInitialize;
 begin
-  inherited Create(AOwner);
+  inherited ControlInitialize;
+
+  ParentTabPage.Caption := 'Categories';
 
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
+
+  Pager.ActivePage := tabText;
 
   App.OnProjectOpened := AppOnProjectOpened;
   App.OnProjectClosed := AppOnProjectClosed;
@@ -106,13 +108,6 @@ begin
 
   Grid.OnDblClick := GridOnDblClick;
   lboCategoryList.OnSelectionChange := lboCategoryList_OnSelectionChange;
-end;
-
-procedure TfrCategoryList.ControlInitialize;
-begin
-  inherited ControlInitialize;
-
-  ParentTabPage.Caption := 'Categories';
 
   ReLoad();
 end;
@@ -135,7 +130,7 @@ begin
   ReLoadCategoryList();
   ReloadComponents();
 
-  if lboCategoryList.ItemIndex > 0 then
+  if (lboCategoryList.ItemIndex = -1) and (lboCategoryList.Count > 0) then
     lboCategoryList.ItemIndex := 0;
 
   if SelectedName <> '' then
@@ -144,6 +139,8 @@ begin
     if Index >= 0 then
       lboCategoryList.ItemIndex := Index;
   end;
+
+  SelectedComponentChanged();
 end;
 
 procedure TfrCategoryList.ReLoadCategoryList();
@@ -159,15 +156,6 @@ begin
   end;
 
   SelectedCategoryChanged();
-(*
-List<string> NamesList = App.CurrentProject.GetCategoryList();
-lboCategoryList.BeginUpdate();
-lboCategoryList.Items.Clear();
-lboCategoryList.Items.AddRange(NamesList.ToArray());
-lboCategoryList.EndUpdate();
-
-SelectedCategoryChanged();
-*)
 end;
 
 procedure TfrCategoryList.ReloadComponents();
@@ -191,6 +179,8 @@ begin
     App.InitializeReadOnly(Grid);
     App.AddColumn(Grid, 'Title', 'Component');
     Grid.DataSource := DS;
+
+    App.AdjustGridColumns(Grid);
 
     tblComponents.Active := True;
     tblComponents.AfterScroll := tblComponents_OnAfterScroll;
@@ -218,16 +208,8 @@ begin
       List.Free();
     end;
   end;
-end;
 
-procedure TfrCategoryList.lboCategoryList_OnSelectionChange(Sender: TObject; User: boolean);
-begin
-  SelectedCategoryChanged();
-end;
 
-procedure TfrCategoryList.tblComponents_OnAfterScroll(Dataset: TDataset);
-begin
-  SelectedComponentChanged();
 end;
 
 procedure TfrCategoryList.SelectedCategoryChanged();
@@ -288,6 +270,26 @@ begin
   lboAliases.Items.AddStrings(Comp.AliasList);
 end;
 
+procedure TfrCategoryList.PrepareToolBar();
+begin
+
+end;
+
+procedure TfrCategoryList.DeleteCategory();
+begin
+
+end;
+
+procedure TfrCategoryList.EditComponentText();
+begin
+
+end;
+
+procedure TfrCategoryList.AddToQuickView();
+begin
+
+end;
+
 procedure TfrCategoryList.AnyClick(Sender: TObject);
 begin
 
@@ -323,29 +325,15 @@ begin
 
 end;
 
-
-
-procedure TfrCategoryList.PrepareToolBar();
+procedure TfrCategoryList.lboCategoryList_OnSelectionChange(Sender: TObject; User: boolean);
 begin
-
+  SelectedCategoryChanged();
 end;
 
-procedure TfrCategoryList.DeleteCategory();
+procedure TfrCategoryList.tblComponents_OnAfterScroll(Dataset: TDataset);
 begin
-
+  SelectedComponentChanged();
 end;
-
-procedure TfrCategoryList.EditComponentText();
-begin
-
-end;
-
-procedure TfrCategoryList.AddToQuickView();
-begin
-
-end;
-
-
 
 
 

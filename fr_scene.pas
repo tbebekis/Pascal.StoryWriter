@@ -52,6 +52,10 @@ type
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
 
+    procedure ShowTabPage(Place: TLinkPlace);
+    procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); override;
+
+
     { editor handler }
     procedure EditorModifiedChanged(TextEditor: TfrTextEditor); override;
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
@@ -113,6 +117,39 @@ begin
   inherited ControlInitializeAfter();
 
   frText.Width := (Self.ClientWidth - Splitter.Width) div 2;
+end;
+
+procedure TfrScene.ShowTabPage(Place: TLinkPlace);
+begin
+  case Place of
+    lpSynopsis: Pager.ActivePage := tabSynopsis;
+    lpTimeline: Pager.ActivePage := tabTimeline;
+  else
+    Pager.ActivePage := tabText;
+  end;
+end;
+
+procedure TfrScene.HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
+var
+  frEditor: TfrTextEditor;
+begin
+  if not Assigned(LinkItem) then
+    Exit;
+
+  frEditor := nil;
+
+  case LinkItem.Place of
+    lpText: frEditor := frText;
+    lpTextEn: if App.Settings.EnglishVisible then frEditor := frTextEn;
+    lpSynopsis: frEditor := frSynopsis;
+    lpTimeline: frEditor := frTimeline;
+  end;
+
+  if Assigned(frEditor) then
+  begin
+    frEditor.SetHighlightTerm(Term, IsWholeWord, MatchCase);
+    frEditor.JumpToCharPos(LinkItem.CharPos);
+  end;
 end;
 
 procedure TfrScene.EditorModifiedChanged(TextEditor: TfrTextEditor);
