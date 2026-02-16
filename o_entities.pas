@@ -578,6 +578,8 @@ type
   public
     constructor Create(AOwner: TPersistent);
 
+    function FindById(const Id: string): TLinkItem;
+
     function Add: TLinkItem;
     property Items[Index: Integer]: TLinkItem read GetItem write SetItem; default;
   end;
@@ -2419,6 +2421,21 @@ constructor TLinkItemList.Create(AOwner: TPersistent);
 begin
   inherited Create(TLinkItem);
   fOwner := AOwner;
+end;
+
+function TLinkItemList.FindById(const Id: string): TLinkItem;
+var
+  Item: TCollectionItem;
+begin
+  Result := nil;
+  for Item in Self do
+  begin
+    if AnsiSameText(Id, TLinkItem(Item).Id) then
+    begin
+      Result := TLinkItem(Item);
+      break;
+    end;
+  end;
 end;
 
 function TLinkItemList.GetOwner: TPersistent;

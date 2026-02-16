@@ -125,7 +125,7 @@ type
     // ● Grid
     class procedure InitializeReadOnly(Grid: TDbGrid);
     class procedure AddColumn(Grid: TDbGrid; const FieldName: string; const Title: string = '');
-    class procedure AdjustGridColumns(Grid: TDBGrid);
+    class procedure AdjustGridColumns(Grid: TDBGrid; Width: Integer = 100);
 
     // ● project
     class procedure CreateNewProject();
@@ -188,6 +188,8 @@ uses
   ,fr_ComponentList
   ,fr_Search
   ,fr_QuickView
+  ,fr_NoteList
+  ,fr_TempText
   ,fr_StoryList
   ,fr_Scene
   ;
@@ -629,15 +631,10 @@ begin
   SideBarPagerHandler.ShowPage(TfrComponentList, TfrComponentList.ClassName, nil);
   SideBarPagerHandler.ShowPage(TfrSearch, TfrSearch.ClassName, nil);
   SideBarPagerHandler.ShowPage(TfrQuickView, TfrQuickView.ClassName, nil);
-
+  SideBarPagerHandler.ShowPage(TfrNoteList, TfrNoteList.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TfrTempText, TfrTempText.ClassName, nil);
 
   SideBarPagerHandler.ShowPage(TfrStoryList, TfrStoryList.ClassName, nil);
-
-{       TfrCategoryList
-var Page = SideBarPagerHandler.ShowPage(typeof(UC_StoryList), nameof(UC_StoryList), null);
-TabControl Pager = Page.Parent as TabControl;
-Pager.SelectTab(Pager.TabPages.Count - 1);
-}
 end;
 
 class procedure App.ShowSettingsDialog();
@@ -857,12 +854,12 @@ begin
      Col.Title.Caption := Title;
 end;
 
-class procedure App.AdjustGridColumns(Grid: TDBGrid);
+class procedure App.AdjustGridColumns(Grid: TDBGrid; Width: Integer);
 var
   i : Integer;
 begin
   for i := 0 to Grid.Columns.Count-1 do
-    Grid.Columns[i].Width := 100;
+    Grid.Columns[i].Width := Width;
 end;
 
 

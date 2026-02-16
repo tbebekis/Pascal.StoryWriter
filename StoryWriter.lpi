@@ -184,6 +184,22 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_QuickView"/>
       </Unit>
+      <Unit>
+        <Filename Value="fr_notelist.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frNoteList"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_NoteList"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_temptext.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frTempText"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_TempText"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

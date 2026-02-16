@@ -45,9 +45,9 @@ type
     procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
 
     procedure TitleChanged();
-    procedure AdjustTabTitle();
-  protected
 
+  protected
+     procedure AdjustTabTitle(); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
@@ -57,7 +57,7 @@ type
 
 
     { editor handler }
-    procedure EditorModifiedChanged(TextEditor: TfrTextEditor); override;
+
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
     procedure GlobalSearchForTerm(const Term: string); override;
   end;
@@ -150,11 +150,6 @@ begin
     frEditor.SetHighlightTerm(Term, IsWholeWord, MatchCase);
     frEditor.JumpToCharPos(LinkItem.CharPos);
   end;
-end;
-
-procedure TfrScene.EditorModifiedChanged(TextEditor: TfrTextEditor);
-begin
-  AdjustTabTitle();
 end;
 
 procedure TfrScene.SaveEditorText(TextEditor: TfrTextEditor);

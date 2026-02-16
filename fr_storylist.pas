@@ -12,7 +12,7 @@ uses
   , Graphics
   , Dialogs
   , ExtCtrls
-  , ComCtrls, Menus
+  , ComCtrls, Menus, StdCtrls
   , Tripous.Forms.FramePage
   , o_Entities, fr_TextEditor
   ;
@@ -23,15 +23,17 @@ type
 
   TfrStoryList = class(TFramePage)
     frText: TfrTextEditor;
+    mmoTextMetrics: TMemo;
     mnuAddStory: TMenuItem;
     mnuAddChapter: TMenuItem;
     mnuAddScene: TMenuItem;
     mnuAddItem: TPopupMenu;
+    Panel1: TPanel;
     pnlTitle: TPanel;
     tvImages: TImageList;
     pnlTop: TPanel;
     pnlBottom: TPanel;
-    Panel3: TPanel;
+    pnlTextMetrics: TPanel;
     Splitter: TSplitter;
     Splitter2: TSplitter;
     ToolBar: TToolBar;
@@ -139,6 +141,7 @@ procedure TfrStoryList.ControlInitializeAfter();
 begin
   inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
+  tv.Width :=  (pnlTop.ClientWidth - Splitter2.Width) div 2;
 end;
 
 procedure TfrStoryList.AnyClick(Sender: TObject);

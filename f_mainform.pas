@@ -139,6 +139,8 @@ begin
   App.Initialize(Self);
 
   // Test();
+
+  pagerSideBar.Width:= 560;
 end;
 
 procedure TMainForm.FormFinalize();

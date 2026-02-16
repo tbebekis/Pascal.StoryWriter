@@ -117,6 +117,11 @@ begin
   frText.ToolBarVisible := False;
   frText.Editor.ReadOnly := True;
 
+  App.OnProjectOpened := AppOnProjectOpened;
+  App.OnProjectClosed := AppOnProjectClosed;
+  App.OnItemChanged := AppOnItemChanged;
+  App.OnItemChanged := AppOnItemChanged;
+
   LoadList();
 end;
 
@@ -215,6 +220,9 @@ begin
     ListToDelete.Free();
   end;
 
+
+  SelectedLinkItemRowChanged();
+
 end;
 
 procedure TfrQuickView.SaveList();
@@ -253,6 +261,51 @@ begin
 
   Message := Format('Item is added to Quick View: %s', [LinkItem.Title]);
   LogBox.AppendLine(Message);
+
+  SelectedLinkItemRowChanged();
+end;
+
+procedure TfrQuickView.SelectedLinkItemRowChanged();
+var
+  LinkItem: TLinkItem;
+  Id: string;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblList) then
+    Exit;
+
+  Id := tblList.FieldByName('Id').AsString;
+  LinkItem := LinkItemList.FindById(Id);
+  if Assigned(LinkItem) then
+  begin
+    App.UpdateLinkItemUi(LinkItem, pnlTitle, frText.Editor);
+    Application.ProcessMessages();
+  end else begin
+    pnlTitle.Caption := 'No selection';
+    frText.Editor.Clear();
+  end;
+
+  (*
+  if Assigned(tv.Selected) and Assigned(tv.Selected.Data) then
+  begin
+    LinkItem := TLinkItem(tv.Selected.Data);
+    App.UpdateLinkItemUi(LinkItem, pnlTitle, frText.Editor);
+    Application.ProcessMessages();
+  end;
+
+
+lblItemTitle.Text = "No selection";
+ucText.Clear();
+
+DataRow Row = bsList.CurrentDataRow();
+if (Row != null)
+{
+    LinkItem LinkItem = Row["OBJECT"] as LinkItem;
+    App.UpdateLinkItemUi(LinkItem, lblItemTitle, ucText);
+}
+*)
 end;
 
 procedure TfrQuickView.AnyClick(Sender: TObject);
@@ -282,7 +335,7 @@ end;
 
 procedure TfrQuickView.tblList_OnAfterScroll(Dataset: TDataset);
 begin
-
+  SelectedLinkItemRowChanged();
 end;
 
 procedure TfrQuickView.ShowLinkItemPage();
@@ -315,10 +368,7 @@ begin
 
 end;
 
-procedure TfrQuickView.SelectedLinkItemRowChanged();
-begin
 
-end;
 
 
 
