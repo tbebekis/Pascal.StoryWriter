@@ -1,0 +1,10 @@
+object FramePage: TFramePage
+  Left = 0
+  Height = 519
+  Top = 0
+  Width = 379
+  LCLVersion = '4.4.0.0'
+  TabOrder = 0
+  DesignLeft = 342
+  DesignTop = 120
+end

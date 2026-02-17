@@ -13,7 +13,7 @@ uses
   , Dialogs
   , ExtCtrls
   , ComCtrls, Menus, StdCtrls
-  , Tripous.Forms.FramePage
+  , fr_FramePage
   , o_Entities, fr_TextEditor
   ;
 
@@ -105,8 +105,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Tripous.IconList
-  ,o_App
+  o_App
 
   ,fr_Scene
   ;
@@ -248,22 +247,22 @@ begin
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnAddItem := IconList.AddButton(ToolBar, 'table_add', 'Add Chapter or Scene', nil);
+  btnAddItem := AddButton(ToolBar, 'table_add', 'Add Chapter or Scene', nil);
   btnAddItem.Style := tbsDropDown;
   btnAddItem.DropdownMenu := mnuAddItem;
   mnuAddStory.OnClick := AnyClick;
   mnuAddChapter.OnClick := AnyClick;
   mnuAddScene.OnClick := AnyClick;
-  btnEditItem := IconList.AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
-  btnDeleteItem := IconList.AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
-  IconList.AddSeparator(ToolBar);
-  btnEditText := IconList.AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
-  btnExportStory := IconList.AddButton(ToolBar, 'table_export', 'Export Story', AnyClick);
-  btnChangeParent := IconList.AddButton(ToolBar, 'scroll_pane_tree', 'Export Story', AnyClick);
-  btnCollapseAll := IconList.AddButton(ToolBar, 'Tree_Collapse', 'Change Parent', AnyClick);
-  btnExpandAll := IconList.AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
-  btnUp := IconList.AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
-  btnDown := IconList.AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
+  btnEditItem := AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
+  btnDeleteItem := AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
+  AddSeparator(ToolBar);
+  btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
+  btnExportStory := AddButton(ToolBar, 'table_export', 'Export Story', AnyClick);
+  btnChangeParent := AddButton(ToolBar, 'scroll_pane_tree', 'Export Story', AnyClick);
+  btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Change Parent', AnyClick);
+  btnExpandAll := AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
+  btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
+  btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
 end;
 
 procedure TfrStoryList.ReLoad;

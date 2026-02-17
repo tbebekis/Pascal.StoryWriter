@@ -7,7 +7,7 @@ object FindAndReplaceDialog: TFindAndReplaceDialog
   Caption = 'Find and Replace'
   ClientHeight = 178
   ClientWidth = 462
-  Position = poMainFormCenter
+  Position = poDesktopCenter
   LCLVersion = '4.4.0.0'
   object Label1: TLabel
     Left = 33

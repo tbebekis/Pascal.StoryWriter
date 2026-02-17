@@ -98,7 +98,7 @@ inherited frComponentList: TfrComponentList
       TabOrder = 1
       object tabText: TTabSheet
         Caption = 'Text'
-        ClientHeight = 175
+        ClientHeight = 172
         ClientWidth = 373
         inline Preview: TMarkdownPreview
           Height = 175
@@ -118,7 +118,7 @@ inherited frComponentList: TfrComponentList
       end
       object tabTags: TTabSheet
         Caption = 'Tags'
-        ClientHeight = 175
+        ClientHeight = 172
         ClientWidth = 373
         object lboTags: TListBox
           Left = 0
@@ -133,7 +133,7 @@ inherited frComponentList: TfrComponentList
       end
       object tabAliases: TTabSheet
         Caption = 'Aliases'
-        ClientHeight = 175
+        ClientHeight = 172
         ClientWidth = 373
         object lboAliases: TListBox
           Left = 0

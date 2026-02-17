@@ -17,14 +17,12 @@ uses
   , Menus
   , SynEdit
   , fr_TextEditor
-  , Tripous.Forms.FramePage
+  , fr_FramePage
   , o_Entities
   ;
 
 type
-
   { TfrScene }
-
   TfrScene = class(TFramePage)
     frText: TfrTextEditor;
     frSynopsis: TfrTextEditor;
@@ -37,27 +35,21 @@ type
     tabTimeline: TTabSheet;
   private
      Scene: TScene;
-     TitleText: string;
-     Initializing: Boolean;
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
     procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-
-    procedure TitleChanged();
-
-  protected
-     procedure AdjustTabTitle(); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
 
+    procedure TitleChanged(); override;
+    procedure AdjustTabTitle(); override;
+
     procedure ShowTabPage(Place: TLinkPlace);
     procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); override;
 
-
     { editor handler }
-
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
     procedure GlobalSearchForTerm(const Term: string); override;
   end;
@@ -67,8 +59,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Tripous.IconList
-  ,Tripous.Logs
+   Tripous.Logs
   ,o_App
   ;
 

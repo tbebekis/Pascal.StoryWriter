@@ -93,25 +93,18 @@ inherited frNoteList: TfrNoteList
       ClientHeight = 205
       ClientWidth = 377
       TabOrder = 1
-      object ToolBar1: TToolBar[0]
-        Left = 0
-        Height = 26
-        Top = 26
+      inherited ToolBar: TToolBar
         Width = 377
-        ButtonHeight = 32
-        ButtonWidth = 32
-        Caption = 'ToolBar'
-        TabOrder = 1
       end
       inherited StatusBar: TStatusBar
         Top = 179
         Width = 377
       end
       inherited Editor: TSynEdit
-        Height = 101
+        Height = 127
         Top = 52
         Width = 377
-        TabOrder = 4
+        TabOrder = 3
       end
     end
   end

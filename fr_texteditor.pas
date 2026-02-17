@@ -83,6 +83,10 @@ type
     procedure SetHighlightTerm(const Term: string; WholeWord, MatchCase: Boolean);
     procedure JumpToCharPos(ACharPos: Integer);
 
+    // ● toolbar
+    function AddButton(const AIconName: string; const AHint: string; AOnClick: TNotifyEvent): TToolButton;
+    function AddSeparator(): TToolButton;
+
 (*
 TextToFind: string;
 ReplaceWith: string;
@@ -109,7 +113,7 @@ implementation
 
 uses
    Tripous.IconList
-  , Tripous.Forms.FramePage
+  , fr_FramePage
   , o_App
   , f_FindAndReplaceDialog
   ;
@@ -258,6 +262,16 @@ begin
   Editor.SetFocus;
 end;
 
+function TfrTextEditor.AddButton(const AIconName: string; const AHint: string; AOnClick: TNotifyEvent): TToolButton;
+begin
+  Result := IconList.AddButton(ToolBar, AIconName, AHint, AOnClick);
+end;
+
+function TfrTextEditor.AddSeparator(): TToolButton;
+begin
+  Result := IconList.AddSeparator(ToolBar);
+end;
+
 procedure TfrTextEditor.InitWordWrap(Data: PtrInt);
 begin
   if FWrapPlugin = nil then
@@ -390,10 +404,10 @@ begin
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnFind := IconList.AddButton(ToolBar, 'page_find', 'Find and Replace (Ctrl + F)', AnyClick);
-  btnSearchForTerm := IconList.AddButton(ToolBar, 'table_tab_search', 'Search for Term (Ctrl + T or Ctrl + LeftClick)', AnyClick);
-  btnSave := IconList.AddButton(ToolBar, 'disk', 'Save (Ctrl + S)', AnyClick);
-  IconList.AddSeparator(ToolBar);
+  btnFind := AddButton('page_find', 'Find and Replace (Ctrl + F)', AnyClick);
+  btnSearchForTerm := AddButton('table_tab_search', 'Search for Term (Ctrl + T or Ctrl + LeftClick)', AnyClick);
+  btnSave := AddButton('disk', 'Save (Ctrl + S)', AnyClick);
+  AddSeparator();
 
   lblTitle := TLabel.Create(ToolBar);
   lblTitle.AutoSize:= True;

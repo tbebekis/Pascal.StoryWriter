@@ -20,8 +20,9 @@ uses
   , DB
   , DBCtrls
   , DBGrids
-  , Tripous.Forms.FramePage
+  , fr_FramePage
   , Tripous.MemTable
+  , Tripous.Broadcaster
   , o_Entities, fr_MarkdownPreview
   ;
 
@@ -58,11 +59,6 @@ type
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
-    procedure AppOnComponentListChanged(Sender: TObject);
-    procedure AppOnCategoryListChanged(Sender: TObject);
-    procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
 
     procedure GridOnDblClick(Sender: TObject);
     procedure GridOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -74,14 +70,18 @@ type
     procedure PrepareToolBar();
 
     procedure AddComponent();
-    procedure DeleteComponent();
     procedure EditComponent();
+    procedure DeleteComponent();
     procedure EditComponentText();
     procedure AddToQuickView();
 
     procedure ReLoad();
     procedure SelectedComponentChanged();
     procedure FilterChanged();
+
+    procedure AddToTable(Item: TSWComponent);
+  protected
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
@@ -92,10 +92,13 @@ implementation
 {$R *.lfm}
 
 uses
-  Tripous.Logs
-  ,Tripous.IconList
+   Tripous.Logs
+  ,o_Consts
   ,o_App
+  ,fr_Component
   ,fr_QuickView
+  ,f_EditComponentDialog
+
   ;
 
 
@@ -113,12 +116,6 @@ begin
   ToolBar.ButtonWidth := 32;
 
   Pager.ActivePage := tabText;
-
-  App.OnProjectOpened := AppOnProjectOpened;
-  App.OnProjectClosed := AppOnProjectClosed;
-  App.OnComponentListChanged := AppOnComponentListChanged;
-  App.OnCategoryListChanged := AppOnCategoryListChanged;
-  App.OnItemChanged := AppOnItemChanged;
 
   Grid.OnDblClick := GridOnDblClick;
   Grid.OnMouseDown := GridOnMouseDown;
@@ -179,12 +176,7 @@ begin
       for i := 0 to List.Count - 1 do
       begin
         Item := List[i] as TSWComponent;
-        tblComponents.Append();
-        tblComponents.FieldByName('Id').AsString := Item.Id;
-        tblComponents.FieldByName('Title').AsString := Item.Title;
-        tblComponents.FieldByName('Category').AsString := Item.Category;
-        tblComponents.FieldByName('TagList').AsString := Item.GetTagsAsLine();
-        tblComponents.Post();
+        AddToTable(Item);
       end;
     finally
       tblComponents.EnableControls();
@@ -259,18 +251,46 @@ begin
 
 end;
 
+procedure TfrComponentList.AddToTable(Item: TSWComponent);
+begin
+  tblComponents.Append();
+  tblComponents.FieldByName('Id').AsString := Item.Id;
+  tblComponents.FieldByName('Title').AsString := Item.Title;
+  tblComponents.FieldByName('Category').AsString := Item.Category;
+  tblComponents.FieldByName('TagList').AsString := Item.GetTagsAsLine();
+  tblComponents.Post();
+end;
+
+procedure TfrComponentList.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
+begin
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectOpened : ReLoad();
+    aekProjectClosed : SelectedComponentChanged();
+    //aekItemListChanged: AppOnItemListChanged(Args);     // (TItemType(TBroadcasterIntegerArgs(Args).Value));
+    //aekItemChanged: AppOnItemChanged(Args);             // (TBaseItem(Args.Data));
+    //aekSearchTermIsSet: AppOnSearchTermIsSet(Args);     // (string(TBroadcasterTextArgs(Args).Value));
+    aekCategoryListChanged: if Args.Sender <> Self then ReLoad();
+    //aekTagListChanged: AppOnTagListChanged(Args);
+    aekComponentListChanged: if Args.Sender <> Self then ReLoad();
+    //aekProjectMetricsChanged: AppOnProjectMetricsChanged(Args);
+  end;
+end;
+
 procedure TfrComponentList.PrepareToolBar();
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnAddComponent := IconList.AddButton(ToolBar, 'table_add', 'New Add', AnyClick);
-  btnEditComponent := IconList.AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
-  btnDeleteComponent := IconList.AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
-  IconList.AddSeparator(ToolBar);
-  btnEditText := IconList.AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
-  btnAddToQuickView := IconList.AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
+  btnAddComponent := AddButton(ToolBar, 'table_add', 'New Add', AnyClick);
+  btnEditComponent := AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
+  btnDeleteComponent := AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
+  AddSeparator(ToolBar);
+  btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
+  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
 end;
 
 procedure TfrComponentList.AddToQuickView();
@@ -306,52 +326,140 @@ begin
   LinkItem.Title := Comp.Title;
 
   QuickView.AddToQuickView(LinkItem);
-(*
-DataRow Row = bsComponents.CurrentDataRow();
-if (Row != null)
-{
-    string ComponentId = Row.AsString("Id");
-    Component Component = App.CurrentProject.ComponentList.FirstOrDefault(x => x.Id == ComponentId);
-    if (Component != null)
-    {
-        LinkItem LinkItem = new();
-        LinkItem.ItemType = ItemType.Component;
-        LinkItem.Place = LinkPlace.Title;
-        LinkItem.Title = Component.Title;
-        LinkItem.Item = Component;
 
-        TabPage Page = App.SideBarPagerHandler.FindTabPage(nameof(UC_QuickView));
-        if (Page != null)
-        {
-            UC_QuickView ucQuickViewList = Page.Tag as UC_QuickView;
-            ucQuickViewList.AddToQuickView(LinkItem);
-        }
-    }
-}
-*)
 end;
 
 procedure TfrComponentList.AddComponent();
+var
+  Message: string;
+  Comp: TSWComponent;
+  IsInsert: Boolean;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblComponents) then
+    Exit;
+
+  Comp := TSWComponent.Create(nil);
+  Comp.Title := 'New Component';
+  Comp.Category := 'No Category';
+
+  IsInsert := True;
+  if TEditComponentDialog.Execute('Add Component', Comp, IsInsert) then
+  begin
+    App.CurrentProject.AddComponent(Comp);
+    AddToTable(Comp);
+
+    Message := Format('Component added: %s', [Comp.Title]);
+    LogBox.AppendLine(Message);
+
+    Broadcaster.Broadcast(SItemListChanged, Integer(itComponent), Self);
+    Broadcaster.Broadcast(SComponentListChanged, Self);
+  end;
+end;
+
+procedure TfrComponentList.EditComponent();
+var
+  Message: string;
+  OldTitle : string;
+  TabPage: TTabSheet;
+  Id : string;
+  Comp: TSWComponent;
+  IsInsert: Boolean;
+  frComponent: TfrComponent;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblComponents) then
+    Exit;
+
+  if tblComponents.IsEmpty then
+    Exit;
+
+  Id := tblComponents.FieldByName('Id').AsString;
+  Comp := App.CurrentProject.FindComponentById(Id);
+  if not Assigned(Comp) then
+    Exit;
+
+  OldTitle := Comp.Title;
+
+  IsInsert := False;
+  if TEditComponentDialog.Execute('Add Component', Comp, IsInsert) then
+  begin
+    tblComponents.Edit();
+    tblComponents.FieldByName('Title').AsString := Comp.Title;
+    tblComponents.FieldByName('Category').AsString := Comp.Category;
+    tblComponents.FieldByName('TagList').AsString := Comp.GetTagsAsLine();
+    tblComponents.Post();
+
+    TabPage := App.ContentPagerHandler.FindTabPage(Comp.Id);
+    if Assigned(TabPage) then
+    begin
+      frComponent := TfrComponent(TabPage.Tag);
+      frComponent.TitleChanged();
+    end;
+
+    Message := Format('Component updated: %s', [Comp.Title]);
+    LogBox.AppendLine(Message);
+
+    Broadcaster.Broadcast(SItemListChanged, Integer(itComponent), Self);
+    Broadcaster.Broadcast(SComponentListChanged, Self);
+  end;
 
 end;
 
 procedure TfrComponentList.DeleteComponent();
+var
+  Id : string;
+  Comp: TSWComponent;
+  Message: string;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
-end;
+  if not Assigned(tblComponents) then
+    Exit;
 
-procedure TfrComponentList.EditComponent();
-begin
+  Id := tblComponents.FieldByName('Id').AsString;
 
+  Comp := App.CurrentProject.FindComponentById(Id);
+  if not Assigned(Comp) then
+    Exit;
+
+  if not App.QuestionBox(Format('Are you sure you want to delete the component ''%s''?', [Comp.Title])) then
+    Exit;
+
+  App.ContentPagerHandler.ClosePage(Comp.Id);
+  Comp.Delete();
+  tblComponents.Delete();
+
+  Message := Format('Component deleted: %s', [Comp.Title]);
+  LogBox.AppendLine(Message);
+
+  Broadcaster.Broadcast(SItemListChanged, Integer(itComponent), Self);
+  Broadcaster.Broadcast(SComponentListChanged, Self);
 end;
 
 procedure TfrComponentList.EditComponentText();
+var
+  Id: string;
+  Comp: TSWComponent;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
+  if not Assigned(tblComponents) then
+    Exit;
+
+  Id := tblComponents.FieldByName('Id').AsString;
+  Comp := App.CurrentProject.FindComponentById(Id);
+  if not Assigned(Comp) then
+    Exit;
+
+  App.ContentPagerHandler.ShowPage(TfrComponent, Comp.Id, Comp);
 end;
-
-
 
 procedure TfrComponentList.AnyClick(Sender: TObject);
 begin
@@ -403,33 +511,6 @@ begin
   S := Trim(edtFilter.Text);
   if S = '' then
      tblComponents.Filter := '';
-end;
-
-
-
-procedure TfrComponentList.AppOnProjectOpened(Sender: TObject);
-begin
-
-end;
-
-procedure TfrComponentList.AppOnProjectClosed(Sender: TObject);
-begin
-
-end;
-
-procedure TfrComponentList.AppOnComponentListChanged(Sender: TObject);
-begin
-
-end;
-
-procedure TfrComponentList.AppOnCategoryListChanged(Sender: TObject);
-begin
-
-end;
-
-procedure TfrComponentList.AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-begin
-
 end;
 
 procedure TfrComponentList.tblComponents_OnAfterScroll(Dataset: TDataset);

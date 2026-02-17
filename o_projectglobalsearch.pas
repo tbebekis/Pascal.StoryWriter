@@ -1,4 +1,4 @@
-unit u_ProjectGlobalSearch;
+unit o_ProjectGlobalSearch;
 
 {$MODE DELPHI}{$H+}
 

@@ -1,0 +1,22 @@
+inherited frNote: TfrNote
+  Width = 620
+  ClientWidth = 620
+  inline frText: TfrTextEditor[0]
+    Height = 519
+    Width = 620
+    Align = alClient
+    ClientHeight = 519
+    ClientWidth = 620
+    inherited ToolBar: TToolBar
+      Width = 620
+    end
+    inherited StatusBar: TStatusBar
+      Top = 493
+      Width = 620
+    end
+    inherited Editor: TSynEdit
+      Height = 467
+      Width = 620
+    end
+  end
+end

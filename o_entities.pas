@@ -1,6 +1,7 @@
-unit o_entities;
+unit o_Entities;
 
 {$MODE DELPHI}{$H+}
+{$modeswitch nestedprocvars}
 {$WARN 5024 off : Parameter "$1" not used}
 
 interface
@@ -30,9 +31,9 @@ type
     itTag       = 2,
     itComponent = 3,
     itStory     = 4,
-    itChapter   = 8,
-    itScene     = $10,
-    itNote      = $20
+    itChapter   = 5,
+    itScene     = 6,
+    itNote      = 7
   );
 
   { Base item for collection-based entities }
@@ -126,7 +127,7 @@ type
     procedure RemoveTag(const Tag: string);
 
     function GetTagsAsLine: string;
-    procedure SetTagsFromArray(const Tags: array of string);
+    procedure SetTagsFrom(SourceList: TStrings);
 
     function TextContainsTerm(const Term: string; WholeWordOnly: Boolean): Boolean; override;
 
@@ -375,6 +376,19 @@ type
 
   { --- Collection classes (typed) ------------------------------------------ }
 
+  TCollectionFindMethod = function(Item: TCollectionItem): Boolean of object;
+  TCollectionFindFunc = function(Item: TCollectionItem): Boolean;
+
+  { TCollectionBase }
+
+  TCollectionBase = class(TCollection)
+  public
+    function IndexOf(Item: TCollectionItem): Integer;
+    function Remove(Item: TCollectionItem): Boolean;
+    function FindItem(Func: TCollectionFindMethod): TCollectionItem; overload;
+    function FindItem(Func: TCollectionFindFunc): TCollectionItem; overload;
+  end;
+
   TSWComponentCollection = class(TCollection)
   private
     function GetItem(Index: Integer): TSWComponent;
@@ -555,7 +569,7 @@ type
     constructor Create(ACollection: TCollection; AType: TItemType; APlace: TLinkPlace; const ATitle: string; AItem: TBaseItem); overload;
 
     function ToString: string; override;
-    procedure LoadItem;
+    procedure LoadItem();
 
     property Item: TBaseItem read fItem write fItem;
   published
@@ -591,8 +605,8 @@ type
 implementation
 
 uses
-  u_ProjectGlobalSearch
-  ,o_app
+   o_ProjectGlobalSearch
+  ,o_App
   ;
 
 function ItemTypeToString(Value: TItemType): string;
@@ -969,13 +983,11 @@ begin
   Result := StringReplace(fTagList.CommaText, ',', ', ', [rfReplaceAll]);
 end;
 
-procedure TSWComponent.SetTagsFromArray(const Tags: array of string);
-var
-  I: Integer;
+procedure TSWComponent.SetTagsFrom(SourceList: TStrings);
 begin
   fTagList.Clear;
-  for I := Low(Tags) to High(Tags) do
-    fTagList.Add(Tags[I]);
+  fTagList.AddStrings(SourceList);
+
 
   if Project <> nil then
     Project.SaveJson;
@@ -1898,6 +1910,58 @@ begin
     Result := App.ContainsText(Text, Term);
 end;
 
+{ TCollectionBase }
+
+function TCollectionBase.IndexOf(Item: TCollectionItem): Integer;
+var
+  I: Integer;
+begin
+  Result := -1;
+  if Item = nil then
+    Exit;
+
+  for I := 0 to Count - 1 do
+    if Items[I] = Item then
+      Exit(I);
+end;
+
+function TCollectionBase.Remove(Item: TCollectionItem): Boolean;
+begin
+  Result := IndexOf(Item) >= 0;
+  if Result then
+    Item.Free;
+end;
+
+function TCollectionBase.FindItem(Func: TCollectionFindMethod): TCollectionItem;
+var
+  I: Integer;
+  Item: TCollectionItem;
+begin
+  Result := nil;
+
+  for I := 0 to Count - 1 do
+  begin
+    Item := Items[I];
+    if Func(Item) then
+      Exit(Item);
+  end;
+end;
+
+function TCollectionBase.FindItem(Func: TCollectionFindFunc): TCollectionItem;
+var
+  I: Integer;
+  Item: TCollectionItem;
+begin
+  Result := nil;
+
+  for I := 0 to Count - 1 do
+  begin
+    Item := Items[I];
+    if Func(Item) then
+      Exit(Item);
+  end;
+end;
+
 { TProject }
 
 function TProject.GetId: string;
@@ -2225,6 +2289,7 @@ end;
 function TProject.AddComponent(AComponent: TSWComponent): TSWComponent;
 begin
   Result := AComponent;
+  Result.Collection := ComponentList;
   Result.Project := Self;
   SaveJson;
 end;
@@ -2378,9 +2443,10 @@ end;
 
 procedure TLinkItem.LoadItem;
 begin
-  if (App.CurrentProject = nil) then Exit;
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
-  case fItemType of
+  case Self.ItemType of
     itComponent: fItem := App.CurrentProject.FindComponentById(Id);
     itChapter  : fItem := App.CurrentProject.FindChapterById(Id);
     itScene    : fItem := App.CurrentProject.FindSceneById(Id);

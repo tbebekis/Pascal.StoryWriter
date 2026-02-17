@@ -19,8 +19,9 @@ uses
   , DB
   , DBCtrls
   , DBGrids
-  , Tripous.Forms.FramePage
+  , fr_FramePage
   , Tripous.MemTable
+  , Tripous.Broadcaster
   , o_Entities, fr_MarkdownPreview
   ;
 
@@ -45,20 +46,19 @@ type
     tabText: TTabSheet;
     ToolBar: TToolBar;
   private
-    tblTags : TMemTable;
+    tblComponents : TMemTable;
     DS: TDatasource;
+
+    btnDeleteTag : TToolButton;
+    btnEditComponentText : TToolButton;
+    btnAddToQuickView : TToolButton;
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
-    procedure AppOnComponentListChanged(Sender: TObject);
-    procedure AppOnCategoryListChanged(Sender: TObject);
-    procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
 
     procedure GridOnDblClick(Sender: TObject);
     procedure lboTagList_OnSelectionChange(Sender: TObject; User: boolean);
-    procedure tblTags_OnAfterScroll(Dataset: TDataset);
+    procedure tblComponents_OnAfterScroll(Dataset: TDataset);
 
     procedure PrepareToolBar();
 
@@ -72,6 +72,8 @@ type
 
     procedure SelectedTagChanged();
     procedure SelectedComponentChanged();
+  protected
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
@@ -82,8 +84,11 @@ implementation
 {$R *.lfm}
 
 uses
-  Tripous.Logs
+   Tripous.Logs
+  ,o_Consts
   ,o_App
+  ,fr_Component
+  ,fr_QuickView
   ;
 
 { TfrTagList }
@@ -97,14 +102,9 @@ begin
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
+  PrepareToolBar();
+
   Pager.ActivePage := tabText;
-
-  App.OnProjectOpened := AppOnProjectOpened;
-  App.OnProjectClosed := AppOnProjectClosed;
-
-  App.OnComponentListChanged := AppOnComponentListChanged;
-  App.OnCategoryListChanged := AppOnCategoryListChanged;
-  App.OnItemChanged := AppOnItemChanged;
 
   Grid.OnDblClick := GridOnDblClick;
   lboTagList.OnSelectionChange := lboTagList_OnSelectionChange;
@@ -116,6 +116,7 @@ procedure TfrTagList.ControlInitializeAfter();
 begin
   inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
+  lboTagList.Width := (pnlTop.ClientWidth - Splitter2.Width) div 2;
 end;
 
 procedure TfrTagList.ReLoad();
@@ -165,17 +166,17 @@ var
   Item : TSWComponent;
   List: TObjectList;
 begin
-  if not Assigned(tblTags) then
+  if not Assigned(tblComponents) then
   begin
-    tblTags := TMemTable.Create(Self);
-    tblTags.FieldDefs.Add('Id', ftString, 100);
-    tblTags.FieldDefs.Add('Title', ftString, 100);
-    tblTags.FieldDefs.Add('Category', ftString, 100);
-    tblTags.FieldDefs.Add('TagList', ftString, 100);
-    tblTags.CreateDataset;
+    tblComponents := TMemTable.Create(Self);
+    tblComponents.FieldDefs.Add('Id', ftString, 100);
+    tblComponents.FieldDefs.Add('Title', ftString, 100);
+    tblComponents.FieldDefs.Add('Category', ftString, 100);
+    tblComponents.FieldDefs.Add('TagList', ftString, 100);
+    tblComponents.CreateDataset;
 
     DS := TDataSource.Create(Self);
-    DS.DataSet := tblTags;
+    DS.DataSet := tblComponents;
 
     App.InitializeReadOnly(Grid);
     App.AddColumn(Grid, 'Category', 'Category');
@@ -184,35 +185,32 @@ begin
 
     App.AdjustGridColumns(Grid);
 
-    tblTags.Active := True;
-    tblTags.AfterScroll := tblTags_OnAfterScroll;
+    tblComponents.Active := True;
+    tblComponents.AfterScroll := tblComponents_OnAfterScroll;
   end;
 
   if Assigned(App.CurrentProject) then
   begin
     List := App.CurrentProject.GetComponentList();
-    tblTags.DisableControls();
+    tblComponents.DisableControls();
     try
-      tblTags.EmptyDataSet();
+      tblComponents.EmptyDataSet();
 
       for i := 0 to List.Count - 1 do
       begin
         Item := List[i] as TSWComponent;
-        tblTags.Append();
-        tblTags.FieldByName('Id').AsString := Item.Id;
-        tblTags.FieldByName('Title').AsString := Item.Title;
-        tblTags.FieldByName('Category').AsString := Item.Category;
-        tblTags.FieldByName('TagList').AsString := Item.GetTagsAsLine();
-        tblTags.Post();
+        tblComponents.Append();
+        tblComponents.FieldByName('Id').AsString := Item.Id;
+        tblComponents.FieldByName('Title').AsString := Item.Title;
+        tblComponents.FieldByName('Category').AsString := Item.Category;
+        tblComponents.FieldByName('TagList').AsString := Item.GetTagsAsLine();
+        tblComponents.Post();
       end;
     finally
-      tblTags.EnableControls();
+      tblComponents.EnableControls();
       List.Free();
     end;
   end;
-
-
-
 
 end;
 
@@ -224,7 +222,7 @@ begin
   if not Assigned(App.CurrentProject) then
     Exit;
 
-  if not Assigned(tblTags) then
+  if not Assigned(tblComponents) then
     Exit;
 
   SelectedName := '';
@@ -237,9 +235,9 @@ begin
 
   //S := Format('TagList LIKE ''%s''', [S]);
   S := Format('TagList LIKE ''%%%s%%''', [S]);
-  tblTags.Filtered := False;
-  tblTags.Filter := S;
-  tblTags.Filtered := True;
+  tblComponents.Filtered := False;
+  tblComponents.Filter := S;
+  tblComponents.Filtered := True;
 
   SelectedComponentChanged();
 end;
@@ -252,7 +250,7 @@ begin
   if not Assigned(App.CurrentProject) then
     Exit;
 
-  if not Assigned(tblTags) then
+  if not Assigned(tblComponents) then
     Exit;
 
   pnlTitle.Caption := 'No selection';
@@ -260,10 +258,10 @@ begin
   lboAliases.Items.Clear();
   Preview.SetMarkdownText('');
 
-  if tblTags.IsEmpty then
+  if tblComponents.IsEmpty then
     Exit;
 
-  Id := tblTags.FieldByName('Id').AsString;
+  Id := tblComponents.FieldByName('Id').AsString;
   Comp := App.CurrentProject.FindComponentById(Id);
   if not Assigned(Comp) then
     Exit;
@@ -275,59 +273,135 @@ begin
   lboAliases.Items.AddStrings(Comp.AliasList);
 end;
 
+procedure TfrTagList.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
+begin
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectOpened : ReLoad();
+    aekProjectClosed : SelectedComponentChanged();
+    //aekItemListChanged: AppOnItemListChanged(Args);     // (TItemType(TBroadcasterIntegerArgs(Args).Value));
+    //aekItemChanged: AppOnItemChanged(Args);             // (TBaseItem(Args.Data));
+    //aekSearchTermIsSet: AppOnSearchTermIsSet(Args);     // (string(TBroadcasterTextArgs(Args).Value));
+    //aekCategoryListChanged: AppOnCategoryListChanged(Args);
+    aekTagListChanged: if Args.Sender <> Self then ReLoad();
+    aekComponentListChanged: if Args.Sender <> Self then ReLoad();
+    //aekProjectMetricsChanged: AppOnProjectMetricsChanged(Args);
+  end;
+end;
+
 procedure TfrTagList.PrepareToolBar();
 begin
+  ToolBar.AutoSize := True;
+  ToolBar.ButtonHeight := 32;
+  ToolBar.ButtonWidth := 32;
 
+  btnDeleteTag := AddButton(ToolBar, 'table_delete', 'Remove Tag', AnyClick);
+  btnEditComponentText := AddButton(ToolBar, 'page_edit', 'Edit Component Text', AnyClick);
+  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
 end;
 
 procedure TfrTagList.DeleteTag();
+var
+  sTag: string;
+  Comp: TCollectionItem;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblComponents) then
+    Exit;
+
+  if lboTagList.ItemIndex >= 0 then
+  begin
+    sTag := lboTagList.Items[lboTagList.ItemIndex];
+
+    if not App.QuestionBox(Format('Delete Tag ''%s''?', [sTag])) then
+      Exit;
+
+    for Comp in App.CurrentProject.ComponentList do
+    begin
+      if TSWComponent(Comp).ContainsTag(sTag) then
+        TSWComponent(Comp).RemoveTag(sTag);
+    end;
+
+    lboTagList.Items.Delete(lboTagList.ItemIndex);
+
+    App.CurrentProject.SaveJson;
+    ReLoad();
+    Broadcaster.Broadcast(STagListChanged, Self);
+    LogBox.AppendLine(Format('Tag ''%s'' deleted.', [sTag]));
+  end;
 
 end;
 
 procedure TfrTagList.EditComponentText();
+var
+  Id: string;
+  Comp: TSWComponent;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
+  if not Assigned(tblComponents) then
+    Exit;
+
+  Id := tblComponents.FieldByName('Id').AsString;
+  Comp := App.CurrentProject.FindComponentById(Id);
+  if not Assigned(Comp) then
+    Exit;
+
+  App.ContentPagerHandler.ShowPage(TfrComponent, Comp.Id, Comp);
 end;
 
 procedure TfrTagList.AddToQuickView();
+var
+  Id : string;
+  Comp: TSWComponent;
+  LinkItem : TLinkItem;
+  TabPage : TTabSheet;
+  QuickView: TfrQuickView;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
+  if not Assigned(tblComponents) then
+    Exit;
+
+  Id := tblComponents.FieldByName('Id').AsString;
+  Comp := App.CurrentProject.FindComponentById(Id);
+  if not Assigned(Comp) then
+    Exit;
+
+  TabPage :=  App.SideBarPagerHandler.ShowPage(TfrQuickView, TfrQuickView.ClassName, nil);
+  if (not Assigned(TabPage)) or (TabPage.Tag = 0) then
+    Exit;
+
+  QuickView := TfrQuickView(TabPage.Tag);
+
+  LinkItem := TLinkItem.Create(nil);
+  LinkItem.Item := Comp;
+  LinkItem.ItemType := itComponent;
+  LinkItem.Place := lpTitle;
+  LinkItem.Title := Comp.Title;
+
+  QuickView.AddToQuickView(LinkItem);
 end;
 
 procedure TfrTagList.AnyClick(Sender: TObject);
 begin
-
-end;
-
-procedure TfrTagList.AppOnProjectOpened(Sender: TObject);
-begin
-
-end;
-
-procedure TfrTagList.AppOnProjectClosed(Sender: TObject);
-begin
-
-end;
-
-procedure TfrTagList.AppOnComponentListChanged(Sender: TObject);
-begin
-
-end;
-
-procedure TfrTagList.AppOnCategoryListChanged(Sender: TObject);
-begin
-
-end;
-
-procedure TfrTagList.AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-begin
-
+  if btnDeleteTag = Sender then
+     DeleteTag()
+  else if btnEditComponentText = Sender then
+    EditComponentText()
+  else if btnAddToQuickView = Sender then
+    AddToQuickView();
 end;
 
 procedure TfrTagList.GridOnDblClick(Sender: TObject);
 begin
-
+  EditComponentText();
 end;
 
 procedure TfrTagList.lboTagList_OnSelectionChange(Sender: TObject; User: boolean);
@@ -335,7 +409,7 @@ begin
   SelectedTagChanged();
 end;
 
-procedure TfrTagList.tblTags_OnAfterScroll(Dataset: TDataset);
+procedure TfrTagList.tblComponents_OnAfterScroll(Dataset: TDataset);
 begin
   SelectedComponentChanged();
 end;

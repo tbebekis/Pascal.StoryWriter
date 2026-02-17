@@ -21,8 +21,9 @@ uses
   , DB
   , DBCtrls
   , DBGrids
-  , Tripous.Forms.FramePage
+  , fr_FramePage
   , Tripous.MemTable
+  , Tripous.Broadcaster
   , o_Entities
   , fr_TextEditor
   ;
@@ -46,19 +47,27 @@ type
     ToolBar: TToolBar;
     ToolBar1: TToolBar;
   private
+    btnAddNote : TToolButton;
+    btnEditNote : TToolButton;
+    btnDeleteNote : TToolButton;
+    btnEditText : TToolButton;
+    btnAddToQuickView : TToolButton;
+    btnUp : TToolButton;
+    btnDown : TToolButton;
+
     fSelectedNote: TNote;
     SettingText: Boolean;
     TitleText : string;
-    procedure SetSelectedNote(AValue: TNote);
-  private
+
     tblNotes : TMemTable;
     DS: TDatasource;
 
+    RowId: Integer;
+
+    procedure SetSelectedNote(AValue: TNote);
+
     // ● event handler
     procedure AnyClick(Sender: TObject);
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
-    procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
 
     procedure GridOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtFilterOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -66,7 +75,6 @@ type
     procedure tblNotes_OnAfterScroll(Dataset: TDataset);
 
     procedure ReLoad();
-
 
     procedure SelectedRowChanged();
     procedure FilterChanged();
@@ -83,6 +91,7 @@ type
 
     property SelectedNote : TNote read fSelectedNote write SetSelectedNote;
   protected
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
     procedure AdjustTabTitle(); override;
   public
     procedure ControlInitialize; override;
@@ -103,8 +112,11 @@ implementation
 uses
    Tripous
   ,Tripous.Logs
+  ,o_Consts
   ,o_App
   ,fr_QuickView
+  ,fr_Note
+
   ;
 
 
@@ -123,10 +135,6 @@ begin
 
   frText.ToolBarVisible := False;
   frText.Editor.ReadOnly := True;
-
-  App.OnProjectOpened := AppOnProjectOpened;
-  App.OnProjectClosed := AppOnProjectClosed;
-  App.OnItemChanged := AppOnItemChanged;
 
   Grid.OnKeyDown := GridOnKeyDown;
 
@@ -155,9 +163,13 @@ begin
   if not Assigned(tblNotes) then
   begin
     tblNotes := TMemTable.Create(Self);
+
+    tblNotes.FieldDefs.Add('RowId', ftInteger);
     tblNotes.FieldDefs.Add('Id', ftString, 100);
     tblNotes.FieldDefs.Add('Title', ftString, 200);
     tblNotes.CreateDataset;
+
+    tblNotes.Sort('RowId', smAsc);
 
     DS := TDataSource.Create(Self);
     DS.DataSet := tblNotes;
@@ -183,6 +195,8 @@ begin
       for Note in NoteList do
       begin
         tblNotes.Append();
+        Inc(RowId);
+        tblNotes.FieldByName('RowId').AsInteger := RowId;
         tblNotes.FieldByName('Id').AsString := TNote(Note).Id;
         tblNotes.FieldByName('Title').AsString := TNote(Note).Title;
         tblNotes.Post();
@@ -197,7 +211,6 @@ begin
     tblNotes.Locate('Id', Id, []);
 
   SelectedRowChanged();
-
 end;
 
 procedure TfrNoteList.SetSelectedNote(AValue: TNote);
@@ -253,7 +266,6 @@ begin
     pnlTitle.Caption := TitleText + '*'
   else
     pnlTitle.Caption := TitleText;
-
 end;
 
 procedure TfrNoteList.FilterChanged();
@@ -333,32 +345,57 @@ end;
 
 procedure TfrNoteList.PrepareToolBar();
 begin
+  ToolBar.AutoSize := True;
+  ToolBar.ButtonHeight := 32;
+  ToolBar.ButtonWidth := 32;
 
+  btnAddNote := AddButton(ToolBar, 'table_add', 'New Note', AnyClick);
+  btnEditNote := AddButton(ToolBar, 'table_edit', 'Edit Note', AnyClick);
+  btnDeleteNote := AddButton(ToolBar, 'table_delete', 'Remove Note', AnyClick);
+  AddSeparator(ToolBar);
+  btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Note Text', AnyClick);
+  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Note to Quick View List', AnyClick);
+  AddSeparator(ToolBar);
+  btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
+  btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
 end;
 
 procedure TfrNoteList.AnyClick(Sender: TObject);
 begin
-
+  if btnAddNote = Sender then
+    AddNote()
+  else if btnEditNote = Sender then
+    EditNote()
+  else if btnDeleteNote = Sender then
+    DeleteNote()
+  else if btnEditText = Sender then
+    EditNoteText()
+  else if btnAddToQuickView = Sender then
+    AddToQuickView()
+  else if btnUp = Sender then
+    MoveRow(True)
+  else if btnDown = Sender then
+    MoveRow(False);
 end;
 
-procedure TfrNoteList.AppOnProjectOpened(Sender: TObject);
+procedure TfrNoteList.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
 begin
-
-end;
-
-procedure TfrNoteList.AppOnProjectClosed(Sender: TObject);
-begin
-
-end;
-
-procedure TfrNoteList.AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-begin
-
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectOpened : ReLoad();
+    aekProjectClosed : SelectedRowChanged();
+  end;
 end;
 
 procedure TfrNoteList.GridOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-
+  if Key = VK_F2 then
+  begin
+    EditNoteText();
+    Key := 0;
+  end;
 end;
 
 procedure TfrNoteList.edtFilterOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -384,11 +421,9 @@ begin
   SelectedRowChanged();
 end;
 
-
-
 procedure TfrNoteList.AddNote();
 begin
-
+  // EDW - EditItemDialog
 end;
 
 procedure TfrNoteList.EditNote();
@@ -415,19 +450,59 @@ end;
   This method updates the text of that note. }
 procedure TfrNoteList.UpdateComponentListNote(const NoteText: string);
 begin
+  // TODO: TfrNoteList.UpdateComponentListNote
+(*
 
+string Filter = $"Name = '{SComponentListNoteName}'";
+DataRow[] FoundRows = tblNotes.Select(Filter);
+DataRow Row = null;
+if (FoundRows.Length > 0)
+    Row = FoundRows[0];
+
+if (Row == null)
+{
+    Note item = App.CurrentProject.AddNote(SComponentListNoteName, NoteText);
+    Row = tblNotes.Rows.Add(item.Id, item.Title, item);
+    item.Save();
+}
+else
+{
+    Note item = Row["OBJECT"] as Note;
+    item.Text = NoteText;
+    item.Save();
+}
+
+
+Row = Grid.CurrentDataRow();
+
+ReLoad();
+
+if (Row != null)
+    Grid.PositionToRow(Row);
+
+*)
 end;
 
-
-
 procedure TfrNoteList.SaveEditorText(TextEditor: TfrTextEditor);
+var
+  Message: string;
 begin
-  inherited SaveEditorText(TextEditor);
+  if Assigned(SelectedNote) then
+  begin
+    SelectedNote.Text := TextEditor.EditorText;
+    SelectedNote.Save();
+
+    Message := Format('Note text saved: %s', [SelectedNote.DisplayTitle]);
+    LogBox.AppendLine(Message);
+  end;
+
+  TextEditor.Modified := False;
+  AdjustTabTitle();
 end;
 
 procedure TfrNoteList.GlobalSearchForTerm(const Term: string);
 begin
-  inherited GlobalSearchForTerm(Term);
+  App.SetGlobalSearchTerm(Term);
 end;
 
 end.

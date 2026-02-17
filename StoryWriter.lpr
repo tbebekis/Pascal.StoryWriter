@@ -10,12 +10,36 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, f_mainform, Tripous, o_entities, o_app, Tripous.IconList,
-  Tripous.Forms.FramePage, Tripous.Forms.PagerHandler, o_AppSettings,
-  fr_StoryList, fr_Scene, fr_TextEditor, f_FindAndReplaceDialog,
-  o_SearchAndReplace, fr_MarkdownPreview, fr_CategoryList, fr_TagList,
-  fr_ComponentList, fr_Search, u_ProjectGlobalSearch, fr_QuickView, fr_NoteList,
-  fr_TempText;
+  Forms
+  , Tripous
+  , Tripous.IconList
+  , Tripous.Broadcaster
+  , o_App
+  , o_AppSettings
+  , o_Entities
+  , o_PageHandler
+  , o_SearchAndReplace
+  , o_ProjectGlobalSearch
+  , o_Consts
+  , f_MainForm
+  , f_FindAndReplaceDialog
+  , fr_FramePage
+  , fr_TextEditor
+  , fr_MarkdownPreview
+  , fr_StoryList
+  , fr_CategoryList
+  , fr_TagList
+  , fr_ComponentList
+  , fr_Search
+  , fr_QuickView
+  , fr_NoteList
+  , fr_Scene
+  , fr_Chapter
+  , fr_Story
+  , fr_Note
+  , fr_Component
+  , fr_TempText, f_EditComponentDialog
+  ;
 
 {$R *.res}
 

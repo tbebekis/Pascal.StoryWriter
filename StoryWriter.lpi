@@ -52,6 +52,7 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_MainForm"/>
       </Unit>
       <Unit>
         <Filename Value="../Pascal.Tripous/tripous.pas"/>
@@ -61,10 +62,12 @@
       <Unit>
         <Filename Value="o_entities.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Entities"/>
       </Unit>
       <Unit>
         <Filename Value="o_app.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="o_App"/>
       </Unit>
       <Unit>
         <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
@@ -72,17 +75,17 @@
         <UnitName Value="Tripous.IconList"/>
       </Unit>
       <Unit>
-        <Filename Value="../Pascal.Tripous/tripous.forms.framepage.pas"/>
+        <Filename Value="fr_framepage.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FramePage"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Tripous.Forms.FramePage"/>
+        <UnitName Value="fr_FramePage"/>
       </Unit>
       <Unit>
-        <Filename Value="../Pascal.Tripous/tripous.forms.pagerhandler.pas"/>
+        <Filename Value="o_pagehandler.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Tripous.Forms.PagerHandler"/>
+        <UnitName Value="o_PageHandler"/>
       </Unit>
       <Unit>
         <Filename Value="o_appsettings.pas"/>
@@ -172,9 +175,9 @@
         <UnitName Value="fr_Search"/>
       </Unit>
       <Unit>
-        <Filename Value="u_projectglobalsearch.pas"/>
+        <Filename Value="o_projectglobalsearch.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="u_ProjectGlobalSearch"/>
+        <UnitName Value="o_ProjectGlobalSearch"/>
       </Unit>
       <Unit>
         <Filename Value="fr_quickview.pas"/>
@@ -200,6 +203,55 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_TempText"/>
       </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.broadcaster.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.Broadcaster"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_consts.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Consts"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_chapter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frChapter"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_Chapter"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_component.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frComponent"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_Component"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_note.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frNote"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_Note"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_story.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frStory"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_Story"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_editcomponentdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditComponentDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_EditComponentDialog"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -222,6 +274,11 @@
         </Win32>
       </Options>
     </Linking>
+    <Other>
+      <CompilerMessages>
+        <IgnoredMessages idx5024="True"/>
+      </CompilerMessages>
+    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions>

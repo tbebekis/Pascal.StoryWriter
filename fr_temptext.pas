@@ -21,7 +21,7 @@ uses
   , DB
   , DBCtrls
   , DBGrids
-  , Tripous.Forms.FramePage
+  , fr_FramePage
   , Tripous.MemTable
   , o_Entities
   , fr_TextEditor

@@ -89,7 +89,7 @@ inherited frTagList: TfrTagList
       TabOrder = 1
       object tabText: TTabSheet
         Caption = 'Text'
-        ClientHeight = 244
+        ClientHeight = 241
         ClientWidth = 367
         inline Preview: TMarkdownPreview
           Height = 244
@@ -100,7 +100,6 @@ inherited frTagList: TfrTagList
           inherited HtmlPanel: TIpHtmlPanel
             Height = 244
             Width = 367
-            TabOrder = 1
           end
           inherited HtmlDataProvider: TIpHtmlDataProvider
             Left = 282
@@ -110,7 +109,7 @@ inherited frTagList: TfrTagList
       end
       object tabTags: TTabSheet
         Caption = 'Tags'
-        ClientHeight = 244
+        ClientHeight = 241
         ClientWidth = 367
         object lboTags: TListBox
           Left = 0
@@ -125,7 +124,7 @@ inherited frTagList: TfrTagList
       end
       object tabAliases: TTabSheet
         Caption = 'Aliases'
-        ClientHeight = 244
+        ClientHeight = 241
         ClientWidth = 367
         object lboAliases: TListBox
           Left = 0

@@ -1,0 +1,192 @@
+object EditComponentDialog: TEditComponentDialog
+  Left = 342
+  Height = 600
+  Top = 370
+  Width = 822
+  BorderStyle = bsDialog
+  Caption = 'EditComponentDialog'
+  ClientHeight = 600
+  ClientWidth = 822
+  Position = poDesktopCenter
+  LCLVersion = '4.4.0.0'
+  object btnOK: TButton
+    Left = 665
+    Height = 25
+    Top = 570
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    TabOrder = 0
+  end
+  object btnCancel: TButton
+    Left = 741
+    Height = 25
+    Top = 570
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 9
+    Height = 16
+    Top = 8
+    Width = 27
+    Caption = 'Title'
+  end
+  object Label2: TLabel
+    Left = 304
+    Height = 16
+    Top = 8
+    Width = 42
+    Caption = 'Aliases'
+  end
+  object edtTitle: TEdit
+    Left = 51
+    Height = 28
+    Top = 4
+    Width = 247
+    TabOrder = 2
+  end
+  object edtAliases: TEdit
+    Left = 352
+    Height = 28
+    Top = 4
+    Width = 464
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+  end
+  object GroupBox1: TGroupBox
+    Left = 32
+    Height = 519
+    Top = 48
+    Width = 240
+    Anchors = [akTop, akBottom]
+    Caption = 'Categories'
+    ClientHeight = 502
+    ClientWidth = 238
+    TabOrder = 4
+    object btnAddCategory: TButton
+      Left = 8
+      Height = 25
+      Top = 468
+      Width = 53
+      Anchors = [akLeft, akBottom]
+      Caption = 'Add'
+      TabOrder = 0
+    end
+    object edtCategory: TEdit
+      Left = 64
+      Height = 28
+      Top = 467
+      Width = 167
+      Anchors = [akLeft, akRight, akBottom]
+      TabOrder = 1
+    end
+    object lboCategory: TListBox
+      Left = 8
+      Height = 454
+      Top = 8
+      Width = 220
+      Anchors = [akTop, akLeft, akBottom]
+      ItemHeight = 0
+      TabOrder = 2
+      TopIndex = -1
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 289
+    Height = 518
+    Top = 48
+    Width = 527
+    Anchors = [akTop, akLeft, akBottom]
+    Caption = 'Tags'
+    ClientHeight = 501
+    ClientWidth = 525
+    TabOrder = 5
+    object Label3: TLabel
+      Left = 26
+      Height = 16
+      Top = 3
+      Width = 56
+      Caption = 'Available'
+    end
+    object Label4: TLabel
+      Left = 257
+      Height = 16
+      Top = 2
+      Width = 51
+      Caption = 'Selected'
+    end
+    object lboAvail: TListBox
+      Left = 8
+      Height = 437
+      Top = 24
+      Width = 220
+      Anchors = [akTop, akLeft, akBottom]
+      ItemHeight = 0
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object btnSelectAll: TButton
+      Left = 239
+      Height = 43
+      Top = 71
+      Width = 46
+      Caption = '>>'
+      TabOrder = 1
+    end
+    object btnSelectOne: TButton
+      Left = 239
+      Height = 43
+      Top = 120
+      Width = 46
+      Caption = '>'
+      TabOrder = 2
+    end
+    object btnUnselectOne: TButton
+      Left = 239
+      Height = 43
+      Top = 168
+      Width = 46
+      Caption = '<'
+      TabOrder = 3
+    end
+    object btnUnselectAll: TButton
+      Left = 239
+      Height = 43
+      Top = 216
+      Width = 46
+      Caption = '<<'
+      TabOrder = 4
+    end
+    object lboSelected: TListBox
+      Left = 295
+      Height = 438
+      Top = 23
+      Width = 220
+      Anchors = [akTop, akLeft, akBottom]
+      ItemHeight = 0
+      TabOrder = 5
+      TopIndex = -1
+    end
+    object btnAddTags: TButton
+      Left = 8
+      Height = 25
+      Top = 467
+      Width = 53
+      Anchors = [akLeft, akBottom]
+      Caption = 'Add'
+      TabOrder = 6
+    end
+    object edtTags: TEdit
+      Left = 67
+      Height = 28
+      Top = 466
+      Width = 450
+      Anchors = [akLeft, akRight, akBottom]
+      TabOrder = 7
+    end
+  end
+end

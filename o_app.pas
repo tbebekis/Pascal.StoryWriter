@@ -1,4 +1,4 @@
-unit o_app;
+unit o_App;
 
 {$MODE DELPHI}{$H+}
 
@@ -21,7 +21,7 @@ uses
   ,SynEdit
 
   ,Tripous
-  ,Tripous.Forms.PagerHandler
+  ,o_PageHandler
 
   ,o_Entities
   ,o_AppSettings
@@ -121,6 +121,9 @@ type
 
     // ● event triggers
     class procedure SetGlobalSearchTerm(const Term: string);
+    class procedure PerformCategoryListChanged(Sender: TObject);
+    class procedure PerformTagListChanged(Sender: TObject);
+
 
     // ● Grid
     class procedure InitializeReadOnly(Grid: TDbGrid);
@@ -181,6 +184,9 @@ uses
   ,fpjson
 
   ,Tripous.Logs
+  ,Tripous.Broadcaster
+
+  ,o_Consts
 
   //,f_MainForm
   ,fr_CategoryList
@@ -836,6 +842,16 @@ begin
   SideBarPagerHandler.ShowPage(TfrSearch, TfrSearch.ClassName, nil);
   if Assigned(OnSearchTermIsSet) then
      OnSearchTermIsSet(nil, Term);
+end;
+
+class procedure App.PerformCategoryListChanged(Sender: TObject);
+begin
+  Broadcaster.Broadcast(SCategoryListChanged, Sender);
+end;
+
+class procedure App.PerformTagListChanged(Sender: TObject);
+begin
+  Broadcaster.Broadcast(STagListChanged, Sender);
 end;
 
 class procedure App.InitializeReadOnly(Grid: TDbGrid);

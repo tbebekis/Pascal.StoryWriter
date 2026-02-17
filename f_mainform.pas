@@ -1,4 +1,4 @@
-unit f_mainform;
+unit f_MainForm;
 
 {$MODE DELPHI}{$H+}
 
@@ -22,7 +22,7 @@ uses
   ,LazFileUtils
   ,LResources, ExtCtrls, StdCtrls
   ,Tripous
-  ,Tripous.Forms.PagerHandler
+  ,o_PageHandler
 
   ;
 
@@ -102,7 +102,7 @@ implementation
 uses
   Tripous.IconList
   ,Tripous.Logs
-  ,o_app
+  ,o_App
   ,o_Entities
   ;
 
