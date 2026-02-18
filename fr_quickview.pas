@@ -23,6 +23,7 @@ uses
   , DBGrids
   , fr_FramePage
   , Tripous.MemTable
+  , Tripous.Broadcaster
   , o_Entities
   , fr_TextEditor
   ;
@@ -42,18 +43,24 @@ type
   private
     tblList: TMemTable;
     DS : TDatasource;
-    LinkItemList: TLinkItemList;
+    //LinkItemList: TLinkItemList;
+
+    btnEditText: TToolButton;
+    btnRemoveItem: TToolButton;
+    btnRemoveAll: TToolButton;
+    btnShowItemInListPage: TToolButton;
+    btnUp : TToolButton;
+    btnDown : TToolButton;
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
-    procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-    procedure AppOnItemListChanged(Sender: TObject; ItemType: TItemType);
+    function GetQuickView: TQuickView;
 
     procedure tblList_OnAfterScroll(Dataset: TDataset);
 
-    procedure LoadList();
+    procedure PrepareToolBar();
+
+    procedure ReLoad();
     procedure SaveList();
 
     procedure ShowLinkItemPage();
@@ -65,7 +72,14 @@ type
     procedure ClearResults();
     procedure SelectedLinkItemRowChanged();
 
+    procedure EnsureTable();
+    procedure DisposeTable();
     procedure AddToTable(LinkItem: TLinkItem);
+    function  GetId(): string;
+    procedure GotToId(const Id: string);
+    function  GetItem(): TLinkItem;
+  protected
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
@@ -74,6 +88,8 @@ type
     procedure ControlInitializeAfter(); override;
 
     procedure AddToQuickView(LinkItem: TLinkItem);
+
+    property QuickView: TQuickView read GetQuickView;
   end;
 
 implementation
@@ -83,6 +99,7 @@ implementation
 uses
    Tripous
   ,Tripous.Logs
+  ,o_Consts
   ,o_App
   ;
 
@@ -92,16 +109,10 @@ uses
 constructor TfrQuickView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  LinkItemList := TLinkItemList.Create(nil);
 end;
 
 destructor TfrQuickView.Destroy();
 begin
-  if Assigned(LinkItemList) then
-  begin
-
-    FreeAndNil(LinkItemList);
-  end;
   inherited Destroy();
 end;
 
@@ -111,24 +122,72 @@ begin
 
   ParentTabPage.Caption := 'Quick View';
 
-  ToolBar.ButtonHeight := 32;
-  ToolBar.ButtonWidth := 32;
+  PrepareToolBar();
 
   frText.ToolBarVisible := False;
   frText.Editor.ReadOnly := True;
 
-  App.OnProjectOpened := AppOnProjectOpened;
-  App.OnProjectClosed := AppOnProjectClosed;
-  App.OnItemChanged := AppOnItemChanged;
-  App.OnItemChanged := AppOnItemChanged;
-
-  LoadList();
+  ReLoad();
 end;
 
 procedure TfrQuickView.ControlInitializeAfter();
 begin
   inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
+end;
+
+procedure TfrQuickView.OnBroadcasterEvent(Args: TBroadcasterArgs);
+   // -------------------------------------
+   procedure ItemChanged();
+   var
+     LinkItem: TLinkItem;
+   begin
+     if Args.Sender = Self then
+       Exit;
+
+     LinkItem := GetItem();
+     if not Assigned(LinkItem) then
+       Exit;
+
+     if (not Assigned(tblList)) or tblList.IsEmpty then
+       Exit;
+
+     if tblList.Locate('Id', Id, []) then
+     begin
+       tblList.Edit();
+       tblList.FieldByName('Name').AsString := LinkItem.Title;
+       tblList.Post();
+     end;
+
+   end;
+   // -------------------------------------
+   procedure ItemListChanged(ItemType: TItemType);
+   begin
+     if Args.Sender = Self then
+       Exit;
+     ReLoad();
+   end;
+
+   // -------------------------------------
+var
+  EventKind : TAppEventKind;
+begin
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectOpened :
+    begin
+      ClearResults();
+      ReLoad();
+    end;
+    aekProjectClosed : ClearResults();
+    aekItemListChanged: ItemListChanged(TItemType(TBroadcasterIntegerArgs(Args).Value));     // (TItemType(TBroadcasterIntegerArgs(Args).Value));
+    aekItemChanged: ItemChanged();             // (TBaseItem(Args.Data));
+    //aekSearchTermIsSet: AppOnSearchTermIsSet(Args);     // (string(TBroadcasterTextArgs(Args).Value));
+    //aekCategoryListChanged: AppOnCategoryListChanged(Args);
+    //aekTagListChanged: AppOnTagListChanged(Args);
+    //aekComponentListChanged: AppOnComponentListChanged(Args);
+    //aekProjectMetricsChanged: AppOnProjectMetricsChanged(Args);
+  end;
 end;
 
 procedure TfrQuickView.AddToTable(LinkItem: TLinkItem);
@@ -141,13 +200,33 @@ begin
  tblList.Post();
 end;
 
-procedure TfrQuickView.LoadList();
+function TfrQuickView.GetId(): string;
+begin
+  Result := '';
+  if Assigned(tblList) and (not tblList.IsEmpty) then
+    Result := tblList.FieldByName('Id').AsString;
+end;
+
+function TfrQuickView.GetItem(): TLinkItem;
 var
-  Item: TLinkItem;
-  ListCount, i: Integer;
-  FilePath: string;
-  ListToDelete: TObjectList;
-  Message: string;
+  Id : string;
+begin
+  Result := nil;
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Id := GetId();
+  if Id <> '' then
+    Result := QuickView.FindById(Id);
+end;
+
+procedure TfrQuickView.GotToId(const Id: string);
+begin
+  if (Id <> '') and Assigned(tblList) and (not tblList.IsEmpty)  then
+    tblList.Locate('Id', Id, []);
+end;
+
+procedure TfrQuickView.EnsureTable();
 begin
   if not Assigned(tblList) then
   begin
@@ -161,6 +240,7 @@ begin
     DS := TDataSource.Create(Self);
     DS.DataSet := tblList;
 
+    Grid.Columns.Clear();
     App.AddColumn(Grid, 'Type', 'Type');
     App.AddColumn(Grid, 'Place', 'Place');
     App.AddColumn(Grid, 'Name', 'Name');
@@ -172,41 +252,66 @@ begin
     tblList.Active := True;
     tblList.AfterScroll := tblList_OnAfterScroll;
   end;
+end;
+
+procedure TfrQuickView.DisposeTable();
+begin
+  Grid.Columns.Clear();
+  Grid.DataSource := nil;
+  if Assigned(DS) then
+    DS.DataSet := nil;
+
+  if Assigned(tblList) then
+  begin
+    tblList.AfterScroll := nil;
+    tblList.Active := False;
+    tblList.Free();
+    tblList := nil;
+  end;
+end;
+
+procedure TfrQuickView.ReLoad();
+var
+  Id : string;
+  Item: TLinkItem;
+  ListCount, i: Integer;
+  FilePath: string;
+  ListToDelete: TObjectList;
+  Message: string;
+begin
+  Id := GetId();
+  DisposeTable();
+  EnsureTable();
 
   if not Assigned(App.CurrentProject) then
     Exit;
 
-  FilePath := App.CurrentProject.QuickViewListFilePath;
-
-  if not FileExists(FilePath) then
-    Exit;
+  QuickView.Load();
 
   ListToDelete := TObjectList.Create(False);
   try
-    LinkItemList.Clear();
-    Json.LoadFromFile(FilePath, LinkItemList);
-    ListCount := LinkItemList.Count;
+    ListCount := QuickView.List.Count;
 
-    for i := 0 to LinkItemList.Count - 1 do
+    for i := 0 to QuickView.List.Count - 1 do
     begin
-      LinkItemList[i].LoadItem();
-      if not Assigned(LinkItemList[i].Item) then
-        ListToDelete.Add(LinkItemList[i]);
+      QuickView.List[i].LoadItem();
+      if not Assigned(QuickView.List[i].Item) then
+        ListToDelete.Add(QuickView.List[i]);
     end;
 
     for i := 0 to ListToDelete.Count - 1 do
-      LinkItemList[i].Free();
+      QuickView.List[i].Free();
 
     // if needs saving, save the list
-    if ListCount <> LinkItemList.Count then
-      Json.SaveToFile(App.CurrentProject.QuickViewListFilePath, LinkItemList);
+    if ListCount <> QuickView.List.Count then
+      QuickView.Save();
 
     tblList.DisableControls;
     try
       tblList.EmptyDataSet;
-      for i := 0 to LinkItemList.Count - 1 do
+      for i := 0 to QuickView.List.Count - 1 do
       begin
-        Item := LinkItemList[i] as TLinkItem;
+        Item := QuickView.List[i] as TLinkItem;
         AddToTable(Item);
       end;
 
@@ -214,15 +319,15 @@ begin
       LogBox.AppendLine(Message);
     finally
       tblList.EnableControls;
+      tblList.First;
     end;
 
   finally
     ListToDelete.Free();
   end;
 
-
+  GotToId(Id);
   SelectedLinkItemRowChanged();
-
 end;
 
 procedure TfrQuickView.SaveList();
@@ -232,7 +337,7 @@ begin
   if not Assigned(App.CurrentProject) then
     Exit;
 
-  Json.SaveToFile(App.CurrentProject.QuickViewListFilePath, LinkItemList);
+  QuickView.Save();
   Message := Format('Quick View List saved to: %s', [App.CurrentProject.QuickViewListFilePath]);
   LogBox.AppendLine(Message);
 end;
@@ -246,15 +351,15 @@ begin
     Exit;
 
   // check if it is already in quick view
-  for i := 0 to LinkItemList.Count - 1 do
-      if LinkItem.Item.Id = LinkItemList[i].Item.Id then
+  for i := 0 to QuickView.List.Count - 1 do
+      if LinkItem.Item.Id = QuickView.List[i].Item.Id then
       begin
         Message := Format('Item is already in Quick View: %s', [LinkItem.Title]);
         LogBox.AppendLine(Message);
         Exit;
       end;
 
-  LinkItem.Collection := LinkItemList;
+  LinkItem.Collection := QuickView.List;
   AddToTable(LinkItem);
 
   SaveList();
@@ -273,99 +378,159 @@ begin
   if not Assigned(App.CurrentProject) then
     Exit;
 
-  if not Assigned(tblList) then
-    Exit;
-
-  Id := tblList.FieldByName('Id').AsString;
-  LinkItem := LinkItemList.FindById(Id);
+  Id := GetId();
+  LinkItem := GetItem();
   if Assigned(LinkItem) then
   begin
     App.UpdateLinkItemUi(LinkItem, pnlTitle, frText.Editor);
     Application.ProcessMessages();
   end else begin
     pnlTitle.Caption := 'No selection';
-    frText.Editor.Clear();
+    frText.EditorText := '';
   end;
 
-  (*
-  if Assigned(tv.Selected) and Assigned(tv.Selected.Data) then
-  begin
-    LinkItem := TLinkItem(tv.Selected.Data);
-    App.UpdateLinkItemUi(LinkItem, pnlTitle, frText.Editor);
-    Application.ProcessMessages();
-  end;
-
-
-lblItemTitle.Text = "No selection";
-ucText.Clear();
-
-DataRow Row = bsList.CurrentDataRow();
-if (Row != null)
-{
-    LinkItem LinkItem = Row["OBJECT"] as LinkItem;
-    App.UpdateLinkItemUi(LinkItem, lblItemTitle, ucText);
-}
-*)
-end;
-
-procedure TfrQuickView.AnyClick(Sender: TObject);
-begin
-
-end;
-
-procedure TfrQuickView.AppOnProjectOpened(Sender: TObject);
-begin
-
-end;
-
-procedure TfrQuickView.AppOnProjectClosed(Sender: TObject);
-begin
-
-end;
-
-procedure TfrQuickView.AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-begin
-
-end;
-
-procedure TfrQuickView.AppOnItemListChanged(Sender: TObject; ItemType: TItemType);
-begin
-
-end;
-
-procedure TfrQuickView.tblList_OnAfterScroll(Dataset: TDataset);
-begin
-  SelectedLinkItemRowChanged();
 end;
 
 procedure TfrQuickView.ShowLinkItemPage();
+var
+  LinkItem: TLinkItem;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
+  LinkItem := GetItem();
+  if not Assigned(LinkItem) then
+    Exit;
+
+  App.ShowLinkItemPage(LinkItem);
 end;
 
 procedure TfrQuickView.RemoveLinkItem();
+var
+  LinkItem: TLinkItem;
+
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  LinkItem := GetItem();
+  if not Assigned(LinkItem) then
+    Exit;
+
+  QuickView.List.Delete(LinkItem.Index);
+
+  SaveList();
+  ReLoad();
 
 end;
 
 procedure TfrQuickView.RemoveAllLinkItems();
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+  if QuickView.List.Count = 0 then
+    Exit;
 
+  if not App.QuestionBox('Are you sure you want to remove all items from Quick View?') then
+    Exit;
+
+  ClearResults();
 end;
 
 procedure TfrQuickView.ShowItemInListPage();
+var
+  LinkItem: TLinkItem;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+  if QuickView.List.Count = 0 then
+    Exit;
+
+  LinkItem := GetItem();
+  if not Assigned(LinkItem) then
+    Exit;
+
+  App.ShowItemInListPage(LinkItem);
 
 end;
 
 procedure TfrQuickView.MoveRow(Up: Boolean);
+var
+  Id : string;
+  LinkItem: TLinkItem;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblList) then
+    Exit;
+
+  if tblList.IsEmpty then
+    Exit;
+
+  Id := GetId();
+  LinkItem := GetItem();
+  if not Assigned(LinkItem) then
+    Exit;
+
+  if LinkItem.Move(Up) then
+  begin
+    ReLoad();
+    tblList.Locate('Id', Id, []);
+  end;
 
 end;
 
 procedure TfrQuickView.ClearResults();
 begin
+  SaveList();
+  ReLoad();
+end;
 
+procedure TfrQuickView.PrepareToolBar();
+begin
+  ToolBar.AutoSize := True;
+
+  ToolBar.ButtonHeight := 32;
+  ToolBar.ButtonWidth := 32;
+
+  btnRemoveItem := AddButton(ToolBar, 'table_delete', 'Remove Item', AnyClick);
+  btnRemoveAll := AddButton(ToolBar, 'shape_square_delete', 'Remove All', AnyClick);
+  btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
+  AddSeparator(ToolBar);
+  btnShowItemInListPage := AddButton(ToolBar, 'table_select_row', 'Show item in its List Page', AnyClick);
+  AddSeparator(ToolBar);
+  btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
+  btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
+end;
+
+procedure TfrQuickView.AnyClick(Sender: TObject);
+begin
+  if btnRemoveItem = Sender then
+    RemoveLinkItem()
+  else if btnRemoveAll = Sender then
+    RemoveAllLinkItems()
+  else if btnEditText = Sender then
+    ShowLinkItemPage()
+  else if btnShowItemInListPage = Sender then
+    ShowItemInListPage()
+  else if btnUp = Sender then
+    MoveRow(True)
+  else if btnDown = Sender then
+    MoveRow(False);
+
+end;
+
+function TfrQuickView.GetQuickView: TQuickView;
+begin
+  Result := nil;
+  if Assigned(App.CurrentProject) then
+    Result := App.CurrentProject.QuickView;
+end;
+
+procedure TfrQuickView.tblList_OnAfterScroll(Dataset: TDataset);
+begin
+  SelectedLinkItemRowChanged();
 end;
 
 

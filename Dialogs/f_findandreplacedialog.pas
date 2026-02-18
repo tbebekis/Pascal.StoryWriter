@@ -10,7 +10,8 @@ uses
   , Forms
   , Controls
   , Graphics
-  , Dialogs, StdCtrls
+  , Dialogs
+  , StdCtrls
 
   , o_SearchAndReplace
   ;
@@ -41,7 +42,7 @@ type
     procedure ControlsToItem();
     procedure DoShow; override;
   public
-    class function Execute(AOptions: TSearchAndReplace): Boolean;
+    class function ShowDialog(AOptions: TSearchAndReplace): Boolean;
   end;
 
 
@@ -49,10 +50,25 @@ implementation
 
 {$R *.lfm}
 
-procedure TFindAndReplaceDialog.AnyClick(Sender: TObject);
+class function TFindAndReplaceDialog.ShowDialog(AOptions: TSearchAndReplace): Boolean;
+var
+  Dlg: TFindAndReplaceDialog;
 begin
-  if btnOK = Sender then
-    ControlsToItem();
+  Result := False;
+
+  Dlg := TFindAndReplaceDialog.Create(nil);
+  try
+    Dlg.Options := AOptions;
+    Result := Dlg.ShowModal() = mrOk;
+  finally
+    Dlg.Free;
+  end;
+end;
+
+procedure TFindAndReplaceDialog.DoShow;
+begin
+  inherited DoShow;
+  FormInitialize();
 end;
 
 procedure TFindAndReplaceDialog.FormInitialize();
@@ -93,31 +109,16 @@ begin
   Options.ReplaceAllFlag := chReplaceAll.Checked;
   Options.PromptOnReplace := chPromptOnReplace.Checked;
 
-
-
   Self.ModalResult := mrOK;
 end;
 
-procedure TFindAndReplaceDialog.DoShow;
+procedure TFindAndReplaceDialog.AnyClick(Sender: TObject);
 begin
-  inherited DoShow;
-  FormInitialize();
+  if btnOK = Sender then
+    ControlsToItem();
 end;
 
-class function TFindAndReplaceDialog.Execute(AOptions: TSearchAndReplace): Boolean;
-var
-  Dlg: TFindAndReplaceDialog;
-begin
-  Result := False;
 
-  Dlg := TFindAndReplaceDialog.Create(nil);
-  try
-    Dlg.Options := AOptions;
-    Result := Dlg.ShowModal() = mrOk;
-  finally
-    Dlg.Free;
-  end;
-end;
 
 
 end.

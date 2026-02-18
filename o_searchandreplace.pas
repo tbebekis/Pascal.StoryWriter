@@ -82,7 +82,7 @@ end;
 
 procedure TSearchAndReplace.ShowFindDialog();
 begin
-  if TFindAndReplaceDialog.Execute(Self) then
+  if TFindAndReplaceDialog.ShowDialog(Self) then
   begin
     if ReplaceFlag or ReplaceAllFlag then
     begin

@@ -98,6 +98,8 @@ type
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
+
+    function ShowItemInList(Item: TBaseItem): Boolean;
   end;
 
 implementation
@@ -141,6 +143,51 @@ begin
   inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
   tv.Width :=  (pnlTop.ClientWidth - Splitter2.Width) div 2;
+end;
+
+function TfrStoryList.ShowItemInList(Item: TBaseItem): Boolean;
+  function SetSelectedNode(Nodes: TTreeNodes): Boolean;
+  var
+    i : Integer;
+    Node: TTreeNode;
+  begin
+    Result := False;
+
+    for i := 0 to Nodes.Count - 1 do
+    begin
+      Node := Nodes[i];
+      if Assigned(Node.Data) and (TObject(Node.Data) = Item) then
+      begin
+        tv.Selected := Node;
+        Exit(True);
+      end;
+
+      if SetSelectedNode(Node.TreeNodes) then
+        Exit(True);
+    end;
+  end;
+
+
+begin
+  Result := SetSelectedNode(tv.Items);
+(*
+bool SetSelectedNode(TreeNodeCollection Nodes)
+{
+    foreach (TreeNode Node in Nodes)
+    {
+        if (Node.Tag == BaseItem)
+        {
+            tv.SelectedNode = Node;
+            return true;
+        }
+        if (SetSelectedNode(Node.Nodes))
+            return true;
+    }
+    return false;
+}
+
+return SetSelectedNode(tv.Nodes);
+*)
 end;
 
 procedure TfrStoryList.AnyClick(Sender: TObject);

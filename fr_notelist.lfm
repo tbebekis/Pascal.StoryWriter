@@ -101,10 +101,8 @@ inherited frNoteList: TfrNoteList
         Width = 377
       end
       inherited Editor: TSynEdit
-        Height = 127
-        Top = 52
+        Height = 153
         Width = 377
-        TabOrder = 3
       end
     end
   end

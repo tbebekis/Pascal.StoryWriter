@@ -55,16 +55,8 @@ type
     btnUp : TToolButton;
     btnDown : TToolButton;
 
-    fSelectedNote: TNote;
-    SettingText: Boolean;
-    TitleText : string;
-
     tblNotes : TMemTable;
     DS: TDatasource;
-
-    RowId: Integer;
-
-    procedure SetSelectedNote(AValue: TNote);
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
@@ -89,20 +81,27 @@ type
     procedure AddToQuickView();
     procedure MoveRow(Up: Boolean);
 
-    property SelectedNote : TNote read fSelectedNote write SetSelectedNote;
+    // ● table
+    procedure EnsureTable();
+    procedure DisposeTable();
+    procedure AddToTable(Note: TNote);
+    function  GetId(): string;
+    procedure GotToId(const Id: string);
+    function  GetItem(): TNote;
   protected
     procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
-    procedure AdjustTabTitle(); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
 
-    function ShowItemInList(Note: TNote): Boolean;
-    procedure UpdateComponentListNote(const NoteText: string);
+    function LocateItemInList(Note: TNote): Boolean;
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
     procedure GlobalSearchForTerm(const Term: string); override;
+
+    procedure AdjustTabTitle(); override;
+    function ShowItemInList(Item: TNote): Boolean;
   end;
 
 implementation
@@ -116,7 +115,7 @@ uses
   ,o_App
   ,fr_QuickView
   ,fr_Note
-
+  ,f_EditItemDialog
   ;
 
 
@@ -128,13 +127,14 @@ begin
 
   ParentTabPage.Caption := 'Notes';
 
-  PrepareToolBar();
-
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  frText.ToolBarVisible := False;
-  frText.Editor.ReadOnly := True;
+  PrepareToolBar();
+
+  frText.FramePage := Self;
+  frText.ToolBarVisible := True;
+  frText.Editor.ReadOnly := False;
 
   Grid.OnKeyDown := GridOnKeyDown;
 
@@ -150,30 +150,52 @@ begin
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
 end;
 
-procedure TfrNoteList.ReLoad();
+procedure TfrNoteList.AddToTable(Note: TNote);
+begin
+  tblNotes.Append();
+
+  tblNotes.FieldByName('Id').AsString := Note.Id;
+  tblNotes.FieldByName('Title').AsString := Note.Title;
+  tblNotes.Post();
+end;
+
+function TfrNoteList.GetId(): string;
+begin
+  Result := '';
+  if Assigned(tblNotes) and (not tblNotes.IsEmpty) then
+    Result := tblNotes.FieldByName('Id').AsString;
+end;
+
+procedure TfrNoteList.GotToId(const Id: string);
+begin
+  if (Id <> '') and Assigned(tblNotes) and (not tblNotes.IsEmpty)  then
+    tblNotes.Locate('Id', Id, []);
+end;
+
+function TfrNoteList.GetItem(): TNote;
 var
   Id : string;
-  Note: TCollectionItem;
-  NoteList: TNoteCollection;
 begin
+  Result := nil;
+  Id := GetId();
+  if Id <> '' then
+    Result := App.CurrentProject.FindNoteById(Id);
+end;
 
-  if Assigned(tblNotes) then
-    Id := tblNotes.FieldByName('Id').AsString;
-
+procedure TfrNoteList.EnsureTable();
+begin
   if not Assigned(tblNotes) then
   begin
     tblNotes := TMemTable.Create(Self);
 
-    tblNotes.FieldDefs.Add('RowId', ftInteger);
     tblNotes.FieldDefs.Add('Id', ftString, 100);
     tblNotes.FieldDefs.Add('Title', ftString, 200);
     tblNotes.CreateDataset;
 
-    tblNotes.Sort('RowId', smAsc);
-
     DS := TDataSource.Create(Self);
     DS.DataSet := tblNotes;
 
+    Grid.Columns.Clear();
     App.InitializeReadOnly(Grid);
     App.AddColumn(Grid, 'Title', 'Note');
     Grid.DataSource := DS;
@@ -183,6 +205,33 @@ begin
     tblNotes.Active := True;
     tblNotes.AfterScroll := tblNotes_OnAfterScroll;
   end;
+end;
+
+procedure TfrNoteList.DisposeTable();
+begin
+  Grid.Columns.Clear();
+  Grid.DataSource := nil;
+  if Assigned(DS) then
+    DS.DataSet := nil;
+
+  if Assigned(tblNotes) then
+  begin
+    tblNotes.AfterScroll := nil;
+    tblNotes.Active := False;
+    tblNotes.Free();
+    tblNotes := nil;
+  end;
+end;
+
+procedure TfrNoteList.ReLoad();
+var
+  Id : string;
+  Note: TCollectionItem;
+  NoteList: TNoteCollection;
+begin
+  Id := GetId();
+  DisposeTable();
+  EnsureTable();
 
   if Assigned(App.CurrentProject) then
   begin
@@ -191,70 +240,44 @@ begin
     tblNotes.DisableControls();
     try
       tblNotes.EmptyDataSet();
-
+      tblNotes.CancelUpdates();
       for Note in NoteList do
-      begin
-        tblNotes.Append();
-        Inc(RowId);
-        tblNotes.FieldByName('RowId').AsInteger := RowId;
-        tblNotes.FieldByName('Id').AsString := TNote(Note).Id;
-        tblNotes.FieldByName('Title').AsString := TNote(Note).Title;
-        tblNotes.Post();
-      end;
+        AddToTable(TNote(Note));
     finally
       tblNotes.EnableControls();
       tblNotes.First();
     end;
   end;
 
-  if (Id <> '') and Assigned(tblNotes) then
-    tblNotes.Locate('Id', Id, []);
+  GotToId(Id);
 
   SelectedRowChanged();
 end;
 
-procedure TfrNoteList.SetSelectedNote(AValue: TNote);
-begin
-  if fSelectedNote = AValue then
-    Exit;
-
-  fSelectedNote := AValue;
-
-  SettingText := True;
-  try
-    if Assigned(fSelectedNote) then
-    begin
-      TitleText := fSelectedNote.Title;
-      pnlTitle.Caption := TitleText;
-      frText.EditorText := fSelectedNote.Text;
-    end else begin
-      TitleText := 'No selection';
-      pnlTitle.Caption := TitleText;
-      frText.EditorText := '';
-    end;
-  finally
-    SettingText := False;
-  end;
-
-end;
-
 procedure TfrNoteList.SelectedRowChanged();
 var
-  Id : string;
+  Note: TNote;
 begin
+  TitleText := 'No selection';
+  pnlTitle.Caption := TitleText;
+  frText.EditorText := '';
+
   if not Assigned(App.CurrentProject) then
     Exit;
 
   if not Assigned(tblNotes) then
     Exit;
 
-  SelectedNote := nil;
-
   if tblNotes.IsEmpty then
     Exit;
 
-  Id := tblNotes.FieldByName('Id').AsString;
-  SelectedNote := App.CurrentProject.FindNoteById(Id);
+  Note := GetItem();
+  if not Assigned(Note) then
+    Exit;
+
+  TitleText := Note.Title;
+  pnlTitle.Caption := TitleText;
+  frText.EditorText := Note.Text;
 end;
 
 procedure TfrNoteList.AdjustTabTitle();
@@ -266,6 +289,15 @@ begin
     pnlTitle.Caption := TitleText + '*'
   else
     pnlTitle.Caption := TitleText;
+end;
+
+function TfrNoteList.ShowItemInList(Item: TNote): Boolean;
+begin
+  Result := False;
+  if Assigned(Item) and Assigned(tblNotes) and (not tblNotes.IsEmpty) then
+  begin
+    Result := tblNotes.Locate('Id', Item.Id, []);
+  end;
 end;
 
 procedure TfrNoteList.FilterChanged();
@@ -302,9 +334,8 @@ begin
   if not Assigned(tblNotes) then
     Exit;
 
-  Id := tblNotes.FieldByName('Id').AsString;
-  Note := App.CurrentProject.FindNoteById(Id);
-
+  Id := GetId();
+  Note := GetItem();
   if not Assigned(Note) then
     Exit;
 
@@ -323,7 +354,7 @@ begin
   QuickView.AddToQuickView(LinkItem);
 end;
 
-function TfrNoteList.ShowItemInList(Note: TNote): Boolean;
+function TfrNoteList.LocateItemInList(Note: TNote): Boolean;
 var
   Filter: string;
 begin
@@ -353,7 +384,7 @@ begin
   btnEditNote := AddButton(ToolBar, 'table_edit', 'Edit Note', AnyClick);
   btnDeleteNote := AddButton(ToolBar, 'table_delete', 'Remove Note', AnyClick);
   AddSeparator(ToolBar);
-  btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Note Text', AnyClick);
+  // btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Note Text', AnyClick);      // No we do NOT use this, we edit Note text in this UI
   btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Note to Quick View List', AnyClick);
   AddSeparator(ToolBar);
   btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
@@ -376,6 +407,7 @@ begin
     MoveRow(True)
   else if btnDown = Sender then
     MoveRow(False);
+
 end;
 
 procedure TfrNoteList.OnBroadcasterEvent(Args: TBroadcasterArgs);
@@ -422,82 +454,200 @@ begin
 end;
 
 procedure TfrNoteList.AddNote();
+var
+  Message: string;
+  ResultName: string;
+  Note: TNote;
+  Count: Integer;
 begin
-  // EDW - EditItemDialog
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblNotes) then
+    Exit;
+
+  Message := '';
+  ResultName := '';
+
+  if TEditItemDialog.ShowDialog('Add Note', App.CurrentProject.Title, ResultName) then
+  begin
+
+    Count := App.CurrentProject.CountNoteTitle(ResultName);
+    if Count > 0 then
+    begin
+      Message := Format('Note already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Note := App.CurrentProject.AddNote(ResultName);
+    AddToTable(Note);
+
+    Message := Format('Note added: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+
+    Broadcaster.Broadcast(SItemListChanged, Integer(itNote), Self);
+  end;
+
 end;
 
 procedure TfrNoteList.EditNote();
+var
+  Message: string;
+  ResultName: string;
+  Note: TNote;
+  Count: Integer;
+  TabPage: TTabSheet;
+  frNote : TfrNote;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblNotes) then
+    Exit;
+
+  if tblNotes.IsEmpty then
+    Exit;
+
+  Note := GetItem();
+  if not Assigned(Note) then
+    Exit;
+
+  Message := '';
+  ResultName := Note.Title;
+
+  if TEditItemDialog.ShowDialog('Edit Note', App.CurrentProject.Title, ResultName) then
+  begin
+
+    Count := App.CurrentProject.CountNoteTitle(ResultName);
+    if Count > 0 then
+    begin
+      Message := Format('Note already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Note.Title := ResultName;
+
+    TabPage := App.ContentPagerHandler.FindTabPage(Note.Id);
+    if Assigned(TabPage) then
+    begin
+      frNote := TfrNote(TabPage.Tag);
+      frNote.TitleChanged();
+    end;
+
+    Message := Format('Note updated: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+
+    Broadcaster.Broadcast(SItemChanged, Note, Self);
+    Broadcaster.Broadcast(SItemListChanged, Integer(itNote), Self);
+  end;
 
 end;
 
 procedure TfrNoteList.DeleteNote();
+var
+  Message: string;
+  Note: TNote;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblNotes) then
+    Exit;
+
+  if tblNotes.IsEmpty then
+    Exit;
+
+  Note := GetItem();
+  if not Assigned(Note) then
+    Exit;
+
+  Message := Format('Are you sure you want to delete the Note: %s', [Note.Title]);
+  if not App.QuestionBox(Message) then
+    Exit;
+
+  App.ContentPagerHandler.ClosePage(Note.Id);
+  Note.Delete();
+  tblNotes.Delete();
+
+  Message := Format('Note deleted: %s', [Note.Title]);
+  LogBox.AppendLine(Message);
+
+  Broadcaster.Broadcast(SItemListChanged, Integer(itNote), Self);
 
 end;
 
 procedure TfrNoteList.EditNoteText();
+var
+  Note: TNote;
 begin
+  // No we do NOT use this, we edit Note text in this UI
+  Exit;
 
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if not Assigned(tblNotes) then
+    Exit;
+
+  if tblNotes.IsEmpty then
+    Exit;
+
+  Note := GetItem();
+  if not Assigned(Note) then
+    Exit;
+
+  App.ContentPagerHandler.ShowPage(TfrNote, Note.Id, Note);
 end;
 
 procedure TfrNoteList.MoveRow(Up: Boolean);
+var
+  Id : string;
+  Note: TNote;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
-end;
+  if not Assigned(tblNotes) then
+    Exit;
 
-{ There is a standard Note entry, called "Component List" which displays a list of components.
-  This method updates the text of that note. }
-procedure TfrNoteList.UpdateComponentListNote(const NoteText: string);
-begin
-  // TODO: TfrNoteList.UpdateComponentListNote
-(*
+  if tblNotes.IsEmpty then
+    Exit;
 
-string Filter = $"Name = '{SComponentListNoteName}'";
-DataRow[] FoundRows = tblNotes.Select(Filter);
-DataRow Row = null;
-if (FoundRows.Length > 0)
-    Row = FoundRows[0];
+  Id := GetId();
+  Note := GetItem();
+  if not Assigned(Note) then
+    Exit;
 
-if (Row == null)
-{
-    Note item = App.CurrentProject.AddNote(SComponentListNoteName, NoteText);
-    Row = tblNotes.Rows.Add(item.Id, item.Title, item);
-    item.Save();
-}
-else
-{
-    Note item = Row["OBJECT"] as Note;
-    item.Text = NoteText;
-    item.Save();
-}
+  if Note.Move(Up) then
+  begin
+    ReLoad();
+    tblNotes.Locate('Id', Id, []);
+  end;
 
-
-Row = Grid.CurrentDataRow();
-
-ReLoad();
-
-if (Row != null)
-    Grid.PositionToRow(Row);
-
-*)
 end;
 
 procedure TfrNoteList.SaveEditorText(TextEditor: TfrTextEditor);
 var
   Message: string;
+  Note: TNote;
 begin
-  if Assigned(SelectedNote) then
-  begin
-    SelectedNote.Text := TextEditor.EditorText;
-    SelectedNote.Save();
+  Note := GetItem();
+  if not Assigned(Note) then
+    Exit;
 
-    Message := Format('Note text saved: %s', [SelectedNote.DisplayTitle]);
-    LogBox.AppendLine(Message);
-  end;
+  Note.Text := TextEditor.EditorText;
+  Note.Save();
+
+  Message := Format('Note text saved: %s', [Note.DisplayTitle]);
+  LogBox.AppendLine(Message);
 
   TextEditor.Modified := False;
   AdjustTabTitle();
+
 end;
 
 procedure TfrNoteList.GlobalSearchForTerm(const Term: string);

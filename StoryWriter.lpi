@@ -252,6 +252,18 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_EditComponentDialog"/>
       </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_edititemdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditItemDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_EditItemDialog"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.list.helpers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.List.Helpers"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

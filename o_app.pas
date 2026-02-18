@@ -1,6 +1,7 @@
 unit o_App;
 
 {$MODE DELPHI}{$H+}
+{$modeswitch nestedprocvars}
 
 interface
 
@@ -114,10 +115,11 @@ type
     class procedure DisplayFileExplorer(const FileOrFolderPath: string);
     class procedure ClearPageControl(APageControl: TPageControl);
 
-    class function ShowLinkItemPage(LinkItem: TLinkItem): TTabSheet;
-
-    //static public void UpdateLinkItemUi(LinkItem LinkItem, Label lblItemTitle, RichTextEditor ucRichText)
+    class function  ShowLinkItemPage(LinkItem: TLinkItem): TTabSheet;
     class procedure UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel; Editor: TSynEdit);
+    class procedure ShowItemInListPage(LinkItem: TLinkItem);
+
+    class procedure UpdateComponentListNote();
 
     // ● event triggers
     class procedure SetGlobalSearchTerm(const Term: string);
@@ -183,6 +185,7 @@ uses
   ,jsonparser
   ,fpjson
 
+  ,Tripous.List.Helpers
   ,Tripous.Logs
   ,Tripous.Broadcaster
 
@@ -196,7 +199,11 @@ uses
   ,fr_QuickView
   ,fr_NoteList
   ,fr_TempText
+  ,fr_Component
+  ,fr_Note
+  ,fr_Story
   ,fr_StoryList
+  ,fr_Chapter
   ,fr_Scene
   ;
 
@@ -672,22 +679,22 @@ begin
     itComponent:
       begin
         Comp := LinkItem.Item as TSWComponent;
-        //Result := App.ContentPagerHandler.ShowPage(TfrComponent, Comp.Id, Comp);
+        Result := App.ContentPagerHandler.ShowPage(TfrComponent, Comp.Id, Comp);
       end;
     itNote:
       begin
         Note :=  LinkItem.Item as TNote;
-        //Result := App.ContentPagerHandler.ShowPage(TfrNote, Note.Id, Note);
+        Result := App.ContentPagerHandler.ShowPage(TfrNote, Note.Id, Note);
       end;
     itStory:
       begin
         Story := LinkItem.Item as TStory;
-        //Result := App.ContentPagerHandler.ShowPage(TfrStory, Story.Id, Story);
+        Result := App.ContentPagerHandler.ShowPage(TfrStory, Story.Id, Story);
       end;
     itChapter:
       begin
         Chapter := LinkItem.Item as TChapter;
-        //Result := App.ContentPagerHandler.ShowPage(TfrChapter, Chapter.Id, Chapter);
+        Result := App.ContentPagerHandler.ShowPage(TfrChapter, Chapter.Id, Chapter);
       end;
     itScene:
       begin
@@ -698,47 +705,8 @@ begin
           frScene := TfrScene(Result.Tag);
           frScene.ShowTabPage(LinkItem.Place);
         end;
-
-      end
-  else    //case ItemType.Scene:
+      end;
   end;
-(*
-TabPage TabPage = null;
-
-if (LinkItem != null || LinkItem.Item != null || CurrentProject != null)
-{
-    switch (LinkItem.ItemType)
-    {
-        case ItemType.Component:
-            Component Component = LinkItem.Item as Component;
-            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Component), Component.Id, Component);
-            break;
-        case ItemType.Note:
-            Note Note = LinkItem.Item as Note;
-            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Note), Note.Id, Note);
-            break;
-        case ItemType.Story:
-            Story Story = LinkItem.Item as Story;
-            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Story), Story.Id, Story);
-            break;
-        case ItemType.Chapter:
-            Chapter Chapter = LinkItem.Item as Chapter;
-            TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Chapter), Chapter.Id, Chapter);
-            break;
-        default:     //case ItemType.Scene:
-            Scene Scene = LinkItem.Item as Scene;
-            if (Scene != null)
-            {
-                TabPage = App.ContentPagerHandler.ShowPage(typeof(UC_Scene), Scene.Id, Scene);
-                UC_Scene uc = TabPage.Tag as UC_Scene;
-                uc.ShowTabPage(LinkItem.Place);
-            }
-            break;
-    }
-}
-
-return TabPage;
-*)
 end;
 
 class procedure App.UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel;  Editor: TSynEdit);
@@ -835,6 +803,70 @@ switch (LinkItem.ItemType)
         break;
 }
 *)
+end;
+
+class procedure App.ShowItemInListPage(LinkItem: TLinkItem);
+var
+  Item: TBaseItem;
+  TabPage : TTabSheet;
+  frComponentList: TfrComponentList;
+  frNoteList: TfrNoteList;
+  frStoryList: TfrStoryList;
+begin
+  Item := LinkItem.Item;
+  if Item is TSWComponent then
+  begin
+    TabPage := App.SideBarPagerHandler.FindTabPage(TfrComponentList.ClassName);
+    if Assigned(TabPage) and (TabPage.Tag > 0) then
+    begin
+      frComponentList := TfrComponentList(TabPage.Tag);
+      if frComponentList.ShowItemInList(Item as TSWComponent) then
+        SideBarPagerHandler.ShowPage(TfrComponentList, TfrComponentList.ClassName, nil);
+    end;
+  end else if Item is TNote then
+  begin
+    TabPage := App.SideBarPagerHandler.FindTabPage(TfrNoteList.ClassName);
+    if Assigned(TabPage) and (TabPage.Tag > 0) then
+    begin
+      frNoteList := TfrNoteList(TabPage.Tag);
+      if frNoteList.ShowItemInList(Item as TNote) then
+        SideBarPagerHandler.ShowPage(TfrNoteList, TfrNoteList.ClassName, nil);
+    end;
+  end else if (Item is TStory) or (Item is TChapter) or (Item is TScene) then
+  begin
+    TabPage := App.SideBarPagerHandler.FindTabPage(TfrStoryList.ClassName);
+    if Assigned(TabPage) and (TabPage.Tag > 0) then
+    begin
+      frStoryList := TfrStoryList(TabPage.Tag);
+      if frStoryList.ShowItemInList(Item as TBaseItem) then
+        SideBarPagerHandler.ShowPage(TfrStoryList, TfrStoryList.ClassName, nil);
+    end;
+  end;
+end;
+
+{ There is a standard Note entry, called "Component List" which displays a list of components.
+  This method updates the text of that note. }
+class procedure App.UpdateComponentListNote();
+  //------------------------------------
+  function FindNoteByName(Item: TObject): Boolean;
+  begin
+    Result := AnsiSameText(TNote(Item).Title, 'Component List');
+  end;
+  //------------------------------------
+var
+  Note: TNote;
+  ComponentText: string;
+begin
+  if not Assigned(CurrentProject) then
+    Exit;
+
+  Note := CurrentProject.NoteList.FirstOrDefault(FindNoteByName) as TNote;
+  if not Assigned(Note) then
+    Exit;
+
+  ComponentText := CurrentProject.GetComponentListText();
+  Note.Text := ComponentText;
+  Note.Save();
 end;
 
 class procedure App.SetGlobalSearchTerm(const Term: string);

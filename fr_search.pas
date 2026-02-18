@@ -23,6 +23,7 @@ uses
   , DBGrids
   , fr_FramePage
   , Tripous.MemTable
+  , Tripous.Broadcaster
   , o_Entities
   , fr_TextEditor
   ;
@@ -45,17 +46,19 @@ type
   private
     LinkItems: TLinkItemList;
 
+    btnAddToQuickView : TToolButton;
+    btnShowItemInListPage : TToolButton;
+    btnExpandAll : TToolButton;
+    btnCollapseAll : TToolButton;
+
     // ● event handler
     procedure AnyClick(Sender: TObject);
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
-    procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-    procedure AppOnItemListChanged(Sender: TObject; ItemType: TItemType);
-    procedure AppOnSearchTermIsSet(Sender: TObject; const Term: string);
 
     procedure edtSearchOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tv_OnDoubleClick(Sender: TObject);
     procedure tv_OnSelectedNodeChanged(Sender: TObject; Node: TTreeNode);
+
+    procedure PrepareToolBar();
 
     procedure GlobalSearchTermChanged();
     procedure ShowLinkItemPage();
@@ -70,6 +73,8 @@ type
 
     procedure ReLoad();
     procedure ClearAll();
+  protected
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
@@ -81,11 +86,12 @@ implementation
 
 uses
    Tripous.Logs
+  ,o_Consts
   ,o_App
+  ,fr_QuickView
   ;
 
 { TfrSearch }
-
 
 procedure TfrSearch.ControlInitialize;
 begin
@@ -93,8 +99,7 @@ begin
 
   ParentTabPage.Caption := 'Search';
 
-  ToolBar.ButtonHeight := 32;
-  ToolBar.ButtonWidth := 32;
+  PrepareToolBar();
 
   tv.ReadOnly := True ;
 
@@ -191,6 +196,24 @@ begin
   end;
 end;
 
+procedure TfrSearch.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
+begin
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectOpened : ;
+    aekProjectClosed : ClearAll();
+    aekItemListChanged: ReLoad();        // (TItemType(TBroadcasterIntegerArgs(Args).Value));
+    aekItemChanged: ReLoad();             // (TBaseItem(Args.Data));
+    aekSearchTermIsSet:
+    begin
+      edtSearch.Text := TBroadcasterTextArgs(Args).Value;
+      GlobalSearchTermChanged();
+    end;
+  end;
+end;
+
 procedure TfrSearch.GlobalSearchTermChanged();
 var
   Msg: string;
@@ -270,8 +293,18 @@ begin
 end;
 
 procedure TfrSearch.ShowItemInListPage();
+var
+  LinkItem: TLinkItem;
 begin
-  // TODO:  TfrSearch.ShowItemInListPage();
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  if Assigned(tv.Selected) and Assigned(tv.Selected.Data) then
+  begin
+    LinkItem := TLinkItem(tv.Selected.Data);
+    App.ShowItemInListPage(LinkItem);
+  end;
+
 end;
 
 procedure TfrSearch.SelectedNodeChanged();
@@ -286,34 +319,30 @@ begin
   end;
 end;
 
+procedure TfrSearch.PrepareToolBar();
+begin
+  ToolBar.AutoSize := True;
+
+  ToolBar.ButtonHeight := 32;
+  ToolBar.ButtonWidth := 32;
+
+  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected item to Quick View List', AnyClick);
+  btnShowItemInListPage := AddButton(ToolBar, 'table_select_row', 'Show item in its List Page', AnyClick);
+  AddSeparator(ToolBar);
+  btnExpandAll := AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
+  btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Collapse All', AnyClick);
+end;
+
 procedure TfrSearch.AnyClick(Sender: TObject);
 begin
-
-end;
-
-procedure TfrSearch.AppOnProjectOpened(Sender: TObject);
-begin
-
-end;
-
-procedure TfrSearch.AppOnProjectClosed(Sender: TObject);
-begin
-
-end;
-
-procedure TfrSearch.AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-begin
-
-end;
-
-procedure TfrSearch.AppOnItemListChanged(Sender: TObject; ItemType: TItemType);
-begin
-
-end;
-
-procedure TfrSearch.AppOnSearchTermIsSet(Sender: TObject; const Term: string);
-begin
-
+  if btnAddToQuickView = Sender then
+    AddToQuickView()
+  else if btnShowItemInListPage = Sender then
+    ShowItemInListPage()
+  else if btnExpandAll = Sender then
+    ExpandAll()
+  else if btnCollapseAll = Sender then
+    CollapseAll();
 end;
 
 procedure TfrSearch.edtSearchOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -333,25 +362,42 @@ begin
 end;
 
 procedure TfrSearch.AddToQuickView();
+var
+  LinkItem: TLinkItem;
+  LinkItem2: TLinkItem;
+  TabPage : TTabSheet;
+  frQuickView: TfrQuickView;
 begin
+  if Assigned(tv.Selected) and Assigned(tv.Selected.Data) then
+  begin
+    LinkItem := TLinkItem(tv.Selected.Data);
+    App.UpdateLinkItemUi(LinkItem, pnlTitle, frText.Editor);
+    Application.ProcessMessages();
+  end;
 
+  TabPage :=  App.SideBarPagerHandler.ShowPage(TfrQuickView, TfrQuickView.ClassName, nil);
+  if (not Assigned(TabPage)) or (TabPage.Tag = 0) then
+    Exit;
+
+  LinkItem2 := TLinkItem.Create(nil);
+  LinkItem2.Item := LinkItem.Item;
+  LinkItem2.ItemType := LinkItem.ItemType;
+  LinkItem2.Place := LinkItem.Place;
+  LinkItem2.Title := LinkItem.Title;
+
+  frQuickView := TfrQuickView(TabPage.Tag);
+  frQuickView.AddToQuickView(LinkItem2);
 end;
-
 
 procedure TfrSearch.ExpandAll();
 begin
-
+  tv.FullExpand();
 end;
 
 procedure TfrSearch.CollapseAll();
 begin
-
+  tv.FullCollapse();
 end;
-
-
-
-
-
 
 end.
 

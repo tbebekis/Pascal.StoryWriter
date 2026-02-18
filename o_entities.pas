@@ -23,6 +23,7 @@ type
   TNote = class;
   TLinkItem = class;
   TLinkItemList = class;
+  TQuickView = class;
 
   { ItemType }
   TItemType = (
@@ -37,6 +38,9 @@ type
   );
 
   { Base item for collection-based entities }
+
+  { TBaseItem }
+
   TBaseItem = class(TCollectionItem)
   private
     fId: string;
@@ -68,6 +72,8 @@ type
     property Id: string read GetId write fId;
     property Title: string read GetTitle write SetTitle;
   public
+    destructor Destroy(); override;
+
     property DisplayTitle: string read GetDisplayTitle;
     property DisplayTitleInStory: string read GetDisplayTitleInStory;
     property DisplayTitleInProject: string read GetDisplayTitleInProject;
@@ -445,6 +451,7 @@ type
   private
     fLoading: Boolean;
     fFolderPath: string;
+    fQuickView: TQuickView;
 
     fTempText: string;
     fMarkdownTempText: string;
@@ -512,6 +519,8 @@ type
     function NoteCount: Integer;
     function NoteAt(Index: Integer): TNote;
 
+    function GetComponentListText(): string;
+
     // ● global search
     function  GlobalSearch(const Term: string): TLinkItemList;
 
@@ -531,6 +540,8 @@ type
 
     property TempText: string read fTempText write fTempText;
     property MarkdownTempText: string read fMarkdownTempText write fMarkdownTempText;
+
+    property QuickView: TQuickView read fQuickView;
   published
     property Id: string read GetId write fId;
     property Title: string read fTitle write fTitle;
@@ -571,6 +582,9 @@ type
     function ToString: string; override;
     procedure LoadItem();
 
+    function CanMove(Up: Boolean): Boolean;
+    function Move(Up: Boolean): Boolean;
+
     property Item: TBaseItem read fItem write fItem;
   published
     property Id: string read GetId write SetId;
@@ -596,6 +610,24 @@ type
 
     function Add: TLinkItem;
     property Items[Index: Integer]: TLinkItem read GetItem write SetItem; default;
+  end;
+
+  { TQuickView }
+
+  TQuickView = class(TPersistent)
+  private
+    FList: TLinkItemList;
+  public
+    constructor Create();
+    destructor Destroy(); override;
+
+    function FindById(const Id: string): TLinkItem;
+    procedure Clear();
+
+    procedure Save();
+    procedure Load();
+  published
+    property List: TLinkItemList read FList write FList;
   end;
 
   function ItemTypeToString(Value: TItemType): string;
@@ -728,6 +760,11 @@ begin
 
   S := Sys.StrToValidFileName(S);
   Result := S;
+end;
+
+destructor TBaseItem.Destroy();
+begin
+  inherited Destroy();
 end;
 
 { --- Typed Collections ------------------------------------------------------ }
@@ -1982,10 +2019,12 @@ begin
   fStoryList := TStoryCollection.Create;
   fComponentList := TSWComponentCollection.Create;
   fNoteList := TNoteCollection.Create;
+  fQuickView := TQuickView.Create();
 end;
 
 destructor TProject.Destroy;
 begin
+  fQuickView.Free;
   fNoteList.Free;
   fComponentList.Free;
   fStoryList.Free;
@@ -2410,6 +2449,29 @@ begin
   Result := NoteList[Index];
 end;
 
+function TProject.GetComponentListText(): string;
+var
+  List: TStringList;
+  i : Integer;
+  S : string;
+begin
+  Result := '';
+
+  List := TStringList.Create();
+  try
+    for i := 0 to ComponentList.Count - 1 do
+    begin
+      S := Format('%s - %s', [ComponentList[i].Title, ComponentList[i].Category]);
+      List.Add(S);
+    end;
+
+    Result := List.Text;
+  finally
+    List.Free;
+  end;
+
+end;
+
 function TProject.GlobalSearch(const Term: string): TLinkItemList;
 begin
   Result := TProjectGlobalSearch.Execute(Self, Term);
@@ -2453,6 +2515,25 @@ begin
     itNote     : fItem := App.CurrentProject.FindNoteById(Id);
   else
     fItem := nil;
+  end;
+end;
+
+function TLinkItem.CanMove(Up: Boolean): Boolean;
+begin
+  Result := TBaseItem.CanMoveInCollection(Self, Up);
+end;
+
+function TLinkItem.Move(Up: Boolean): Boolean;
+begin
+  Result := False;
+
+  if (App.CurrentProject = nil) or (not CanMove(Up)) then
+  Exit;
+
+  Result := TBaseItem.MoveInCollection(Self, Up);
+  if Result then
+  begin
+    App.CurrentProject.QuickView.Save();
   end;
 end;
 
@@ -2515,13 +2596,66 @@ begin
 end;
 
 function TLinkItemList.GetItem(Index: Integer): TLinkItem;
+var
+  Item: TCollectionItem;
 begin
-  Result := TLinkItem(inherited Items[Index]);
+  Item := inherited Items[Index];
+  Result := TLinkItem(Item);
 end;
 
 procedure TLinkItemList.SetItem(Index: Integer; const Value: TLinkItem);
 begin
   inherited Items[Index] := Value;
+end;
+
+{ TQuickView }
+
+constructor TQuickView.Create();
+begin
+  inherited Create;
+  FList := TLinkItemList.Create(Self);
+end;
+
+destructor TQuickView.Destroy();
+begin
+  FList.Free();
+  inherited Destroy();
+end;
+
+function TQuickView.FindById(const Id: string): TLinkItem;
+begin
+  Result := FList.FindById(Id);
+end;
+
+procedure TQuickView.Clear();
+begin
+  FList.Clear;
+end;
+
+procedure TQuickView.Save();
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Json.SaveToFile(App.CurrentProject.QuickViewListFilePath, Self);
+end;
+
+procedure TQuickView.Load();
+var
+  FilePath: string;
+begin
+  Clear();
+
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  FilePath := App.CurrentProject.QuickViewListFilePath;
+
+  if not FileExists(FilePath) then
+    Exit;
+
+  Self.Clear();
+  Json.LoadFromFile(FilePath, Self);
 end;
 
 

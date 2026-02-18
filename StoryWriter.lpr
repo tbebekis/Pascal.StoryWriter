@@ -38,7 +38,9 @@ uses
   , fr_Story
   , fr_Note
   , fr_Component
-  , fr_TempText, f_EditComponentDialog
+  , fr_TempText
+  , f_EditComponentDialog
+  , f_EditItemDialog
   ;
 
 {$R *.res}

@@ -85,6 +85,8 @@ type
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
+
+    function ShowItemInList(Item: TSWComponent): Boolean;
   end;
 
 implementation
@@ -131,6 +133,15 @@ procedure TfrComponentList.ControlInitializeAfter();
 begin
   inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
+end;
+
+function TfrComponentList.ShowItemInList(Item: TSWComponent): Boolean;
+begin
+  Result := False;
+  if Assigned(Item) and Assigned(tblComponents) and (not tblComponents.IsEmpty) then
+  begin
+    Result := tblComponents.Locate('Id', Item.Id, []);
+  end;
 end;
 
 procedure TfrComponentList.ReLoad();
@@ -299,7 +310,7 @@ var
   Comp: TSWComponent;
   LinkItem : TLinkItem;
   TabPage : TTabSheet;
-  QuickView: TfrQuickView;
+  frQuickView: TfrQuickView;
 begin
   if not Assigned(App.CurrentProject) then
     Exit;
@@ -317,7 +328,7 @@ begin
   if (not Assigned(TabPage)) or (TabPage.Tag = 0) then
     Exit;
 
-  QuickView := TfrQuickView(TabPage.Tag);
+  frQuickView := TfrQuickView(TabPage.Tag);
 
   LinkItem := TLinkItem.Create(nil);
   LinkItem.Item := Comp;
@@ -325,7 +336,7 @@ begin
   LinkItem.Place := lpTitle;
   LinkItem.Title := Comp.Title;
 
-  QuickView.AddToQuickView(LinkItem);
+  frQuickView.AddToQuickView(LinkItem);
 
 end;
 
@@ -420,6 +431,9 @@ begin
     Exit;
 
   if not Assigned(tblComponents) then
+    Exit;
+
+  if tblComponents.IsEmpty then
     Exit;
 
   Id := tblComponents.FieldByName('Id').AsString;
