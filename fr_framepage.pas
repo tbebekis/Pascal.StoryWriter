@@ -52,7 +52,6 @@ type
     procedure TitleChanged(); virtual;
     procedure AdjustTabTitle(); virtual;
 
-
     // ● editor handler
     procedure EditorModifiedChanged(TextEditor: TfrTextEditor); virtual;
     procedure SaveEditorText(TextEditor: TfrTextEditor); virtual;

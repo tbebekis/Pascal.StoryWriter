@@ -373,7 +373,6 @@ end;
 procedure TfrComponentList.EditComponent();
 var
   Message: string;
-  OldTitle : string;
   TabPage: TTabSheet;
   Id : string;
   Comp: TSWComponent;
@@ -394,7 +393,6 @@ begin
   if not Assigned(Comp) then
     Exit;
 
-  OldTitle := Comp.Title;
 
   IsInsert := False;
   if TEditComponentDialog.Execute('Add Component', Comp, IsInsert) then

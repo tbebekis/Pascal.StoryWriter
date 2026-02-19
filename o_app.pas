@@ -13,7 +13,6 @@ uses
   ,ComCtrls
   ,ExtCtrls
   ,Dialogs
-  , DB
   , DBCtrls
   , DBGrids
   //,Regex
@@ -26,8 +25,6 @@ uses
 
   ,o_Entities
   ,o_AppSettings
-
-
   ;
 
 type
@@ -42,15 +39,7 @@ type
   private
     class var fLastGlobalSearchTerm: string;
     class var fLastGlobalSearchTermWholeWord: Boolean;
-    class var fOnCategoryListChanged: TNotifyEvent;
-    class var fOnComponentListChanged: TNotifyEvent;
-    class var fOnProjectMetricsChanged: TNotifyEvent;
-    class var fOnTagListChanged: TNotifyEvent;
-    class var fOnProjectOpened: TNotifyEvent;
-    class var fOnProjectClosed: TNotifyEvent;
-    class var FOnItemListChanged: TItemListChangedEvent;
-    class var FOnItemChanged: TItemChangedEvent;
-    class var FOnSearchTermIsSet: TSearchTermIsSetEvent;
+
 
     class var fContentPagerHandler: TPagerHandler;
     class var fSideBarPagerHandler: TPagerHandler;
@@ -73,16 +62,6 @@ type
 
       SInvalidTitleErrorMessage = SInvalidTitle + SValidTitle;
 
-      class procedure DoProjectOpened();
-      class procedure DoProjectClosed();
-      class procedure DoItemListChanged(ItemType: TItemType);
-      class procedure DoItemChanged(Item: TBaseItem);
-      class procedure DoSearchTermIsSet(const Term: string);
-
-      class procedure DoCategoryListChanged();
-      class procedure DoTagListChanged();
-      class procedure DoComponentListChanged();
-      class procedure DoProjectMetricsChanged();
 
       class function GetIsInitialized: Boolean; static;
   public
@@ -162,18 +141,6 @@ type
     class property LastGlobalSearchTerm: string read fLastGlobalSearchTerm write fLastGlobalSearchTerm;
     class property LastGlobalSearchTermWholeWord: Boolean read fLastGlobalSearchTermWholeWord write fLastGlobalSearchTermWholeWord;
 
-
-    // ● events
-    class property OnProjectOpened: TNotifyEvent read fOnProjectOpened write fOnProjectOpened;
-    class property OnProjectClosed: TNotifyEvent read fOnProjectClosed write fOnProjectClosed;
-    class property OnItemListChanged: TItemListChangedEvent read FOnItemListChanged write FOnItemListChanged;
-    class property OnItemChanged: TItemChangedEvent read FOnItemChanged write FOnItemChanged;
-    class property OnSearchTermIsSet: TSearchTermIsSetEvent read FOnSearchTermIsSet write FOnSearchTermIsSet;
-
-    class property OnCategoryListChanged: TNotifyEvent read fOnCategoryListChanged write fOnCategoryListChanged;
-    class property OnTagListChanged: TNotifyEvent read fOnTagListChanged write fOnTagListChanged;
-    class property OnComponentListChanged: TNotifyEvent read fOnComponentListChanged write fOnComponentListChanged;
-    class property OnProjectMetricsChanged: TNotifyEvent read fOnProjectMetricsChanged write fOnProjectMetricsChanged;
   end;
 
 implementation
@@ -211,59 +178,6 @@ uses
 
 { App }
 
-class procedure App.DoProjectOpened();
-begin
-  if Assigned(fOnProjectOpened) then
-      fOnProjectOpened(nil);
-end;
-
-class procedure App.DoProjectClosed();
-begin
-  if Assigned(FOnProjectClosed) then
-      FOnProjectClosed(nil);
-end;
-
-class procedure App.DoItemListChanged(ItemType: TItemType);
-begin
-  if Assigned(FOnItemListChanged) then
-    FOnItemListChanged(nil, ItemType);
-end;
-
-class procedure App.DoItemChanged(Item: TBaseItem);
-begin
-  if Assigned(FOnItemChanged) then
-    FOnItemChanged(nil, Item);
-end;
-
-class procedure App.DoSearchTermIsSet(const Term: string);
-begin
-  if Assigned(FOnSearchTermIsSet) then
-    FOnSearchTermIsSet(nil, Term);
-end;
-
-class procedure App.DoCategoryListChanged();
-begin
-  if Assigned(fOnCategoryListChanged) then
-      fOnCategoryListChanged(nil);
-end;
-
-class procedure App.DoTagListChanged();
-begin
-  if Assigned(fOnTagListChanged) then
-      fOnTagListChanged(nil);
-end;
-
-class procedure App.DoComponentListChanged();
-begin
-  if Assigned(fOnComponentListChanged) then
-      fOnComponentListChanged(nil);
-end;
-
-class procedure App.DoProjectMetricsChanged();
-begin
-  if Assigned(fOnProjectMetricsChanged) then
-      fOnProjectMetricsChanged(nil);
-end;
 
 class function App.GetIsInitialized: Boolean; static;
 begin
@@ -443,8 +357,7 @@ var
 begin
   if Assigned(CurrentProject) then
   begin
-    if Assigned(OnProjectClosed) then
-      OnProjectClosed(nil);
+    Broadcaster.Broadcast(SProjectClosed, nil);
 
     Title := CurrentProject.Title;
 
@@ -486,29 +399,11 @@ begin
 
 end;
 
-procedure Test(const FolderPath: string);
-var
-  FilePath: string;
-  JsonText: string;
-  Parser: TJSONParser;
-  Data: TJSONData;
-  N: Integer;
-begin
-  FilePath := Sys.CombinePaths([FolderPath, 'Project.json']);
-  JsonText := Sys.LoadFromFile(FilePath);
-
-  Parser := TJSONParser.Create(JsonText,[]);
-  Data := Parser.Parse();
-  N := Data.Count;
-end;
-
 class procedure App.LoadProject(const FolderPath: string);
 var
   Proj: TProject;
   Msg: string;
 begin
-  //Test(FolderPath);
-
   Proj := TProject.Create;
   try
     Proj.FolderPath := FolderPath;
@@ -519,8 +414,7 @@ begin
 
     CurrentProject := Proj;
 
-    if Assigned(OnProjectOpened) then
-      OnProjectOpened(nil);
+    Broadcaster.Broadcast(SProjectOpened, nil);
 
     ShowSideBarPages;
 
@@ -872,8 +766,7 @@ end;
 class procedure App.SetGlobalSearchTerm(const Term: string);
 begin
   SideBarPagerHandler.ShowPage(TfrSearch, TfrSearch.ClassName, nil);
-  if Assigned(OnSearchTermIsSet) then
-     OnSearchTermIsSet(nil, Term);
+  Broadcaster.Broadcast(TBroadcasterTextArgs.Create(SSearchTermIsSet, Term, nil), True);
 end;
 
 class procedure App.PerformCategoryListChanged(Sender: TObject);

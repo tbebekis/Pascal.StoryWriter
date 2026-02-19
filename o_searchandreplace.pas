@@ -9,7 +9,6 @@ uses
   , SysUtils
   , Forms
   , Controls
-  , StdCtrls
   , ComCtrls
   , ExtCtrls
   , Graphics

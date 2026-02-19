@@ -13,7 +13,6 @@ uses
   , Dialogs
   , ExtCtrls
   , ComCtrls
-  , StdCtrls
   , Contnrs
   , Menus
   , LCLType
@@ -275,7 +274,6 @@ var
   Id : string;
   Item: TLinkItem;
   ListCount, i: Integer;
-  FilePath: string;
   ListToDelete: TObjectList;
   Message: string;
 begin
@@ -373,7 +371,6 @@ end;
 procedure TfrQuickView.SelectedLinkItemRowChanged();
 var
   LinkItem: TLinkItem;
-  Id: string;
 begin
   if not Assigned(App.CurrentProject) then
     Exit;

@@ -20,8 +20,11 @@ uses
   , Variants
 
   ,LazFileUtils
-  ,LResources, ExtCtrls, StdCtrls
+  ,LResources
+  , ExtCtrls
+  , StdCtrls
   ,Tripous
+  ,Tripous.Broadcaster
   ,o_PageHandler
 
   ;
@@ -58,12 +61,16 @@ type
     btnPush: TToolButton;
     btnExit: TToolButton;
 
+    fBroadcasterToken: TBroadcastToken;
+
     SideBarPagerHandler: TPagerHandler;
     ContentPagerHandler: TPagerHandler;
 
 
     procedure FormInitialize();
     procedure FormFinalize();
+
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs);
 
     procedure PrepareToolBar();
     procedure ToggleSideBar();
@@ -73,20 +80,17 @@ type
     procedure Commit();
     procedure Push();
 
-    procedure Test();
-
     // ● event handler
     procedure AnyClick(Sender: TObject);
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
   protected
     procedure DoCreate; override;
     procedure DoDestroy; override;
     procedure DoShow; override;
     procedure DoClose(var CloseAction: TCloseAction); override;
-    function CloseQuery: Boolean; override;
   public
-
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function CloseQuery: Boolean; override;
   end;
 
 
@@ -100,13 +104,55 @@ implementation
 {$R *.lfm}
 
 uses
-  Tripous.IconList
+   Tripous.IconList
   ,Tripous.Logs
+  ,o_Consts
   ,o_App
   ,o_Entities
   ;
 
 { TMainForm }
+
+constructor TMainForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fBroadcasterToken := Broadcaster.Register(OnBroadcasterEvent);
+end;
+
+destructor TMainForm.Destroy;
+begin
+  Broadcaster.Unregister(fBroadcasterToken);
+  inherited Destroy;
+end;
+
+procedure TMainForm.DoCreate;
+begin
+  inherited DoCreate;
+  FormInitialize();
+end;
+
+procedure TMainForm.DoDestroy;
+begin
+  FormFinalize();
+  inherited DoDestroy;
+end;
+
+procedure TMainForm.DoShow;
+begin
+  inherited DoShow;
+end;
+
+procedure TMainForm.DoClose(var CloseAction: TCloseAction);
+begin
+  LogBox.Finalize();
+  inherited DoClose(CloseAction);
+end;
+
+function TMainForm.CloseQuery: Boolean;
+begin
+  Result := inherited CloseQuery;
+  //Result := True;
+end;
 
 procedure TMainForm.FormInitialize();
 begin
@@ -122,10 +168,6 @@ begin
   LogBox.Initialize(edtLog);
 
   pnlContent.Caption := '';
-  AppOnProjectClosed(nil);
-
-  App.OnProjectOpened := AppOnProjectOpened;
-  App.OnProjectClosed := AppOnProjectClosed;
 
   App.ClearPageControl(pagerSideBar);
   App.ClearPageControl(pagerContent);
@@ -138,8 +180,6 @@ begin
 
   App.Initialize(Self);
 
-  // Test();
-
   pagerSideBar.Width:= 560;
 end;
 
@@ -147,6 +187,25 @@ procedure TMainForm.FormFinalize();
 begin
   FreeAndNil(ContentPagerHandler);
   FreeAndNil(SideBarPagerHandler);
+end;
+
+procedure TMainForm.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
+begin
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectOpened :
+    begin
+      Self.Caption := Format('%s - [none]', [App.CurrentProject.Title]);
+      StatusBar.Panels[0].Text := Self.Caption;
+    end;
+    aekProjectClosed :
+    begin
+      Self.Caption := Format('%s - [none]', [STitle]);
+      StatusBar.Panels[0].Text := Self.Caption;
+    end;
+  end;
 end;
 
 procedure TMainForm.PrepareToolBar();
@@ -173,7 +232,6 @@ begin
   btnPush := IconList.AddButton(ToolBar, 'book_go', 'Push to Remote git repository', AnyClick);
   IconList.AddSeparator(ToolBar);
   btnExit := IconList.AddButton(ToolBar, 'door_out', 'Exit', AnyClick);
-
 end;
 
 procedure TMainForm.ToggleSideBar();
@@ -190,65 +248,22 @@ end;
 
 procedure TMainForm.BuildWiki(InEnglish: Boolean);
 begin
-
+  // TODO: TMainForm.BuildWiki
 end;
 
 procedure TMainForm.ShowWiki();
 begin
-
+  // TODO: TMainForm.ShowWiki
 end;
 
 procedure TMainForm.Commit();
 begin
-
+  // TODO: TMainForm.Commit
 end;
 
 procedure TMainForm.Push();
 begin
-
-end;
-
-procedure TMainForm.Test();
-var
-  Project: TProject;
-  Story: TStory;
-  Chapter: TChapter;
-  Scene: TScene;
-  Component: TSWComponent;
-
-  JsonText : string;
-begin
-  Project := TProject.Create();
-  Project.Title := 'Project 1';
-
-  Component := Project.ComponentList.Add();
-
-  Component.Title := 'Comp 1';
-  Component.TagList.Add('Planet');
-  Component.TagList.Add('Location');
-
-  Story := Project.StoryList.Add();
-  Story.Title := 'Nice Story';
-
-  Chapter := Story.ChapterList.Add();
-  Chapter.Title := 'Space Battle';
-
-  Scene := Chapter.SceneList.Add();
-  Scene.Title := 'Very Dramatic';
-
-  JsonText := Json.Serialize(Project);
-  LogBox.AppendLine(JsonText);
-
-  LogBox.AppendLine('===============================================================');
-  LogBox.AppendLine('===============================================================');
-
-
-  Project := TProject.Create();
-  Json.Deserialize(Project, JsonText);
-
-  JsonText := Json.Serialize(Project);
-  LogBox.AppendLine(JsonText);
-
+  // TODO: TMainForm.Push
 end;
 
 procedure TMainForm.AnyClick(Sender: TObject);
@@ -281,46 +296,7 @@ begin
     Close();
 end;
 
-procedure TMainForm.AppOnProjectOpened(Sender: TObject);
-begin
-  Self.Caption := Format('%s - [none]', [App.CurrentProject.Title]);
-  StatusBar.Panels[0].Text := Self.Caption;
-end;
 
-procedure TMainForm.AppOnProjectClosed(Sender: TObject);
-begin
-  Self.Caption := Format('%s - [none]', [STitle]);
-  StatusBar.Panels[0].Text := Self.Caption;
-end;
-
-procedure TMainForm.DoCreate;
-begin
-  inherited DoCreate;
-  FormInitialize();
-end;
-
-procedure TMainForm.DoDestroy;
-begin
-  FormFinalize();
-  inherited DoDestroy;
-end;
-
-procedure TMainForm.DoShow;
-begin
-  inherited DoShow;
-end;
-
-procedure TMainForm.DoClose(var CloseAction: TCloseAction);
-begin
-  LogBox.Finalize();
-  inherited DoClose(CloseAction);
-end;
-
-function TMainForm.CloseQuery: Boolean;
-begin
-  Result := inherited CloseQuery;
-  //Result := True;
-end;
 
 initialization
 {$I Images.lrs}

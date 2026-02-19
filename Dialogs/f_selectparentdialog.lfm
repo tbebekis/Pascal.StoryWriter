@@ -1,27 +1,27 @@
-object EditItemDialog: TEditItemDialog
+object SelectParentDialog: TSelectParentDialog
   Left = 342
-  Height = 124
+  Height = 460
   Top = 370
-  Width = 487
+  Width = 460
   BorderStyle = bsDialog
-  Caption = 'EditItemDialog'
-  ClientHeight = 124
-  ClientWidth = 487
+  Caption = 'SelectParentDialog'
+  ClientHeight = 460
+  ClientWidth = 460
   Position = poDesktopCenter
   LCLVersion = '4.4.0.0'
   object btnOK: TButton
-    Left = 328
+    Left = 300
     Height = 25
-    Top = 96
+    Top = 428
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     TabOrder = 0
   end
   object btnCancel: TButton
-    Left = 404
+    Left = 376
     Height = 25
-    Top = 96
+    Top = 428
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'Cancel'
@@ -29,35 +29,37 @@ object EditItemDialog: TEditItemDialog
     TabOrder = 1
   end
   object Label1: TLabel
-    Left = 24
+    Left = 66
     Height = 16
-    Top = 24
-    Width = 40
-    Caption = 'Parent'
+    Top = 16
+    Width = 27
+    Caption = 'Item'
   end
   object Label2: TLabel
-    Left = 29
+    Left = 11
     Height = 16
-    Top = 56
-    Width = 35
-    Caption = 'Name'
+    Top = 45
+    Width = 82
+    Caption = 'Avail. Parents'
   end
-  object edtParentName: TEdit
-    Left = 75
+  object edtItem: TEdit
+    Left = 101
     Height = 28
-    Top = 16
-    Width = 404
+    Top = 13
+    Width = 350
     Anchors = [akTop, akLeft, akRight]
     Color = clForm
     ReadOnly = True
     TabOrder = 2
   end
-  object edtName: TEdit
-    Left = 75
-    Height = 28
-    Top = 48
-    Width = 404
-    Anchors = [akTop, akLeft, akRight]
+  object lboAvailParents: TListBox
+    Left = 101
+    Height = 375
+    Top = 45
+    Width = 352
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
     TabOrder = 3
+    TopIndex = -1
   end
 end

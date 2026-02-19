@@ -50,7 +50,6 @@ implementation
 uses
    Tripous.Logs
   ,o_Consts
-  ,o_App
   ;
 
 { TfrNote }

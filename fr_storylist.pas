@@ -12,9 +12,14 @@ uses
   , Graphics
   , Dialogs
   , ExtCtrls
-  , ComCtrls, Menus, StdCtrls
+  , ComCtrls
+  , Contnrs
+  , Menus
+  , StdCtrls
+  , Tripous.Broadcaster
   , fr_FramePage
-  , o_Entities, fr_TextEditor
+  , o_Entities
+  , fr_TextEditor
   ;
 
 type
@@ -52,9 +57,6 @@ type
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
-    procedure AppOnProjectMetricsChanged(Sender: TObject);
 
     procedure tv_OnDblClick(Sender: TObject);
     procedure tv_OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -66,6 +68,7 @@ type
     function NodeAsScene(Node: TTreeNode): TScene;
 
     procedure PrepareToolBar();
+
     procedure ReLoad();
     procedure SelectedNodeChanged();
 
@@ -91,10 +94,17 @@ type
     procedure MoveChapter(Chapter: TChapter; Node: TTreeNode; Up: Boolean);
     procedure MoveScene(Scene: TScene; Node: TTreeNode; Up: Boolean);
     procedure MoveNode(Up: Boolean);
+    procedure UpdateNodeTitles(ParentNode: TTreeNode);
 
     procedure ChangeParent();
     procedure CollapseAll();
     procedure ExpandAll();
+
+
+    function GetStoryNode: TTreeNode;
+    function GetChapterNode: TTreeNode;
+  protected
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
@@ -107,9 +117,14 @@ implementation
 {$R *.lfm}
 
 uses
-  o_App
-
+   Tripous.Logs
+  ,o_Consts
+  ,o_App
+  ,fr_Story
+  ,fr_Chapter
   ,fr_Scene
+  ,f_EditItemDialog
+  ,f_SelectParentDialog
   ;
 
 
@@ -122,19 +137,16 @@ begin
 
   ParentTabPage.Caption := 'Stories';
 
+  PrepareToolBar();
+
   frText.ToolBarVisible := False;
   frText.Editor.ReadOnly := True;
-
-  App.OnProjectOpened := AppOnProjectOpened;
-  App.OnProjectClosed := AppOnProjectClosed;
-  App.OnProjectMetricsChanged := AppOnProjectMetricsChanged;
 
   tv.ReadOnly := True ;
   tv.OnDblClick := tv_OnDblClick;
   tv.OnMouseDown := tv_OnMouseDown;
   tv.OnChange := tv_OnSelectedNodeChanged;
 
-  PrepareToolBar();
   ReLoad();
 end;
 
@@ -146,6 +158,7 @@ begin
 end;
 
 function TfrStoryList.ShowItemInList(Item: TBaseItem): Boolean;
+  // -------------------------------------------
   function SetSelectedNode(Nodes: TTreeNodes): Boolean;
   var
     i : Integer;
@@ -166,28 +179,9 @@ function TfrStoryList.ShowItemInList(Item: TBaseItem): Boolean;
         Exit(True);
     end;
   end;
-
-
+  // -------------------------------------------
 begin
   Result := SetSelectedNode(tv.Items);
-(*
-bool SetSelectedNode(TreeNodeCollection Nodes)
-{
-    foreach (TreeNode Node in Nodes)
-    {
-        if (Node.Tag == BaseItem)
-        {
-            tv.SelectedNode = Node;
-            return true;
-        }
-        if (SetSelectedNode(Node.Nodes))
-            return true;
-    }
-    return false;
-}
-
-return SetSelectedNode(tv.Nodes);
-*)
 end;
 
 procedure TfrStoryList.AnyClick(Sender: TObject);
@@ -216,58 +210,11 @@ begin
     MoveNode(True)
   else if btnDown = Sender then
     MoveNode(False)
-{
-mnuAddStory.Click += (s, e) => AddStory();
-mnuAddChapter.Click += (s, e) => AddChapter();
-mnuAddScene.Click += (s, e) => AddScene();
-btnEditItem.Click += (s, e) => EditItem();
-btnDeleteItem.Click += (s, e) => DeleteItem();
-btnEditText.Click += (s, e) => EditItemText();
-btnExportStory.Click += (s, e) => ExportStory();
-
-btnChangeParent.Click += (s, e) => ChangeParent();
-
-btnExpandAll.Click += (s, e) => ExpandAll();
-btnCollapseAll.Click += (s, e) => CollapseAll();
-
-btnUp.Click += (s, e) => MoveNode(Up: true);
-btnDown.Click += (s, e) => MoveNode(Up: false);
-
-btnAddItem : TToolButton;
-btnEditItem : TToolButton;
-btnDeleteItem : TToolButton;
-btnEditText: TToolButton;
-btnExportStory: TToolButton;
-btnChangeParent: TToolButton;
-btnCollapseAll: TToolButton;
-btnExpandAll: TToolButton;
-btnUp: TToolButton;
-btnDown: TToolButton;
-}
-
-
-
-
-end;
-
-procedure TfrStoryList.AppOnProjectOpened(Sender: TObject);
-begin
-
-end;
-
-procedure TfrStoryList.AppOnProjectClosed(Sender: TObject);
-begin
-
-end;
-
-procedure TfrStoryList.AppOnProjectMetricsChanged(Sender: TObject);
-begin
-
 end;
 
 procedure TfrStoryList.tv_OnDblClick(Sender: TObject);
 begin
-  // TODO: Edit item title
+  EditItem();
 end;
 
 procedure TfrStoryList.tv_OnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -305,8 +252,8 @@ begin
   AddSeparator(ToolBar);
   btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
   btnExportStory := AddButton(ToolBar, 'table_export', 'Export Story', AnyClick);
-  btnChangeParent := AddButton(ToolBar, 'scroll_pane_tree', 'Export Story', AnyClick);
-  btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Change Parent', AnyClick);
+  btnChangeParent := AddButton(ToolBar, 'scroll_pane_tree', 'Change Parent', AnyClick);
+  btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Collapse All', AnyClick);
   btnExpandAll := AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
   btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
   btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
@@ -403,98 +350,422 @@ begin
     frText.EditorText := Scene.Text;
   end;
 
-(*
-lblTitle.Text = "No selection";
-ucText.Clear();
-
-if (App.CurrentProject == null)
-    return;
-
-TreeNode Node = tv.SelectedNode;
-if (Node == null)
-    return;
-
-if (Node.Tag is Story)
-{
-    Story Story = Node.Tag as Story;
-    lblTitle.Text = $"Story: {Story.Title}";
-
-    ucText.PlainText = Story.Synopsis;
-}
-else if (Node.Tag is Scene)
-{
-    Scene Scene = Node.Tag as Scene;
-    lblTitle.Text = $"Scene: {Scene.Title}";
-
-    ucText.PlainText = Scene.Text;
-}
-else if (Node.Tag is Chapter)
-{
-    Chapter Chapter = Node.Tag as Chapter;
-    lblTitle.Text = $"Chapter: {Chapter.Title}";
-
-    ucText.PlainText = Chapter.Synopsis;
-}
-*)
-end;
-
-procedure TfrStoryList.AddStory();
-begin
-
-end;
-
-procedure TfrStoryList.EditStory();
-begin
-
-end;
-
-procedure TfrStoryList.DeleteStory();
-begin
-
-end;
-
-procedure TfrStoryList.AddChapter();
-begin
-
-end;
-
-procedure TfrStoryList.EditChapter();
-begin
-
-end;
-
-procedure TfrStoryList.DeleteChapter();
-begin
-
-end;
-
-procedure TfrStoryList.AddScene();
-begin
-
-end;
-
-procedure TfrStoryList.EditScene();
-begin
-
-end;
-
-procedure TfrStoryList.DeleteScene();
-begin
-
 end;
 
 procedure TfrStoryList.EditItem();
+var
+  Node: TTreeNode;
+  Item: TObject;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Item := TObject(Node.Data);
+
+  if Item is TStory then
+  begin
+    EditStory();
+  end else if Item is TChapter then
+  begin
+    EditChapter();
+  end else if Item is TScene then
+  begin
+    EditScene();
+  end;
 
 end;
 
 procedure TfrStoryList.DeleteItem();
+var
+  Node: TTreeNode;
+  Item: TObject;
 begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Item := TObject(Node.Data);
+
+  if Item is TStory then
+  begin
+    DeleteStory();
+  end else if Item is TChapter then
+  begin
+    DeleteChapter();
+  end else if Item is TScene then
+  begin
+    DeleteScene();
+  end;
 end;
 
 procedure TfrStoryList.EditItemText();
 var
+  Node: TTreeNode;
+  Item: TBaseItem;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Item := TBaseItem(Node.Data);
+
+  if Item is TStory then
+  begin
+    App.ContentPagerHandler.ShowPage(TfrStory, Item.Id, Item)
+  end else if Item is TChapter then
+  begin
+    App.ContentPagerHandler.ShowPage(TfrChapter, Item.Id, Item)
+  end else if Item is TScene then
+  begin
+    App.ContentPagerHandler.ShowPage(TfrScene, Item.Id, Item);
+  end;
+
+end;
+
+procedure TfrStoryList.AddStory();
+var
+  Message: string;
+  ResultName: string;
+  Count: Integer;
+  Node: TTreeNode;
+  Story: TStory;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  ResultName := '';
+
+  if TEditItemDialog.ShowDialog('Add Story', App.CurrentProject.Title, ResultName) then
+  begin
+    Count := App.CurrentProject.CountStoryTitle(ResultName);
+    if Count > 0 then
+    begin
+      Message := Format('Story already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Story := App.CurrentProject.AddStory(ResultName);
+    Node :=  tv.Items.Add(nil, Story.DisplayTitle);
+    Node.Data := Story;
+    Node.ImageIndex := 0;
+    Node.SelectedIndex := 0;
+
+    Message := Format('Story added: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+
+    tv.Selected := Node;
+  end;
+end;
+
+procedure TfrStoryList.EditStory();
+var
+  Message: string;
+  ResultName: string;
+  Count: Integer;
+  Node: TTreeNode;
+  Story: TStory;
+  TabPage: TTabSheet;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Story := TStory(Node.Data);
+
+  ResultName := Story.Title;
+  if TEditItemDialog.ShowDialog('Edit Story', App.CurrentProject.Title, ResultName) then
+  begin
+    Count := App.CurrentProject.CountStoryTitle(ResultName);
+    if Count > 1 then
+    begin
+      Message := Format('Story already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Story.Title := ResultName;
+    Node.Text := Story.DisplayTitle;
+
+    TabPage := App.ContentPagerHandler.FindTabPage(Story.Id);
+    if Assigned(TabPage) and (TabPage.Tag > 0) then
+      TfrStory(TabPage.Tag).TitleChanged();
+
+    Message := Format('Story updated: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+  end;
+
+end;
+
+procedure TfrStoryList.DeleteStory();
+var
+  Message: string;
+  Node: TTreeNode;
+  Story: TStory;
+  Item: TCollectionItem;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Story := TStory(Node.Data);
+  Message :=
+    'Deleting a Story deletes all of its Chapters too.' + LineEnding +
+    'Are you sure you want to delete the Story' + LineEnding +
+    '''' + Story.Title + '''?';
+
+  if not App.QuestionBox(Message) then
+    Exit;
+
+  tv.Items.Delete(Node);
+
+  for Item in Story.ChapterList do
+    App.ContentPagerHandler.ClosePage(TBaseItem(Item).Id);
+
+  App.ContentPagerHandler.ClosePage(Story.Id);
+
+  Story.Delete();
+end;
+
+procedure TfrStoryList.AddChapter();
+var
+  Node: TTreeNode;
+  Story: TStory;
+  Chapter: TChapter;
+  StoryNode: TTreeNode;
+  Count: Integer;
+  Message: string;
+  ResultName: string;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  StoryNode := GetStoryNode();
+  if not Assigned(StoryNode) then
+  begin
+    Message := 'Please, select a Story first.';
+    App.ErrorBox(Message);
+    LogBox.AppendLine(Message);
+    Exit;
+  end;
+
+  Story := TStory(StoryNode.Data);
+  ResultName := '';
+
+  if TEditItemDialog.ShowDialog('Add Chapter', App.CurrentProject.Title, ResultName) then
+  begin
+    Count := Story.CountChapterTitle(ResultName);
+    if (Count > 0) then
+    begin
+      Message := Format('Chapter already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Chapter := Story.AddChapter(ResultName);
+    Node := tv.Items.AddChild(StoryNode, Chapter.DisplayTitle);
+    Node.Data := Chapter;
+    Node.ImageIndex := 1;
+    Node.SelectedIndex := 1;
+
+    Message := Format('Chapter added: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+
+    tv.Selected := Node;
+  end;
+
+end;
+
+procedure TfrStoryList.EditChapter();
+var
+  Message: string;
+  ResultName: string;
+  Count: Integer;
+  Node: TTreeNode;
+  Chapter: TChapter;
+  TabPage: TTabSheet;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Chapter := TChapter(Node.Data);
+
+  ResultName := Chapter.Title;
+  if TEditItemDialog.ShowDialog('Edit Chapter', App.CurrentProject.Title, ResultName) then
+  begin
+    Count := Chapter.Story.CountChapterTitle(ResultName);
+    if Count > 1 then
+    begin
+      Message := Format('Chapter already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Chapter.Title := ResultName;
+    Node.Text := Chapter.DisplayTitle;
+
+    TabPage := App.ContentPagerHandler.FindTabPage(Chapter.Id);
+    if Assigned(TabPage) and (TabPage.Tag > 0) then
+      TfrChapter(TabPage.Tag).TitleChanged();
+
+    Message := Format('Chapter updated: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+  end;
+end;
+
+procedure TfrStoryList.DeleteChapter();
+var
+  Message: string;
+  Node: TTreeNode;
+  Chapter: TChapter;
+  Item: TCollectionItem;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Chapter := TChapter(Node.Data);
+  Message :=
+    'Deleting a Chapter deletes all of its Scenes too.' + LineEnding +
+    'Are you sure you want to delete the Chapter' + LineEnding +
+    '''' + Chapter.Title + '''?';
+
+  if not App.QuestionBox(Message) then
+    Exit;
+
+  tv.Items.Delete(Node);
+
+  for Item in Chapter.SceneList do
+    App.ContentPagerHandler.ClosePage(TBaseItem(Item).Id);
+
+  App.ContentPagerHandler.ClosePage(Chapter.Id);
+
+  Chapter.Delete();
+
+end;
+
+procedure TfrStoryList.AddScene();
+var
+  Node: TTreeNode;
+  Chapter: TChapter;
+  Scene: TScene;
+  ChapterNode: TTreeNode;
+  Count: Integer;
+  Message: string;
+  ResultName: string;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  ChapterNode := GetChapterNode();
+  if not Assigned(ChapterNode) then
+  begin
+    Message := 'Please, select a Chapter first.';
+    App.ErrorBox(Message);
+    LogBox.AppendLine(Message);
+    Exit;
+  end;
+
+  Chapter := TChapter(ChapterNode.Data);
+  ResultName := '';
+
+  if TEditItemDialog.ShowDialog('Add Scene', App.CurrentProject.Title, ResultName) then
+  begin
+    Count := Chapter.CountSceneTitle(ResultName);
+    if (Count > 0) then
+    begin
+      Message := Format('Scene already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Scene := Chapter.AddScene(ResultName);
+    Node := tv.Items.AddChild(ChapterNode, Scene.DisplayTitle);
+    Node.Data := Scene;
+    Node.ImageIndex := 2;
+    Node.SelectedIndex := 2;
+
+    Message := Format('Scene added: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+
+    tv.Selected := Node;
+  end;
+end;
+
+procedure TfrStoryList.EditScene();
+var
+  Message: string;
+  ResultName: string;
+  Count: Integer;
+  Node: TTreeNode;
+  Scene: TScene;
+  TabPage: TTabSheet;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Node := tv.Selected;
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
+    Exit;
+
+  Scene := TScene(Node.Data);
+
+  ResultName := Scene.Title;
+  if TEditItemDialog.ShowDialog('Edit Scene', App.CurrentProject.Title, ResultName) then
+  begin
+    Count := Scene.Chapter.CountSceneTitle(ResultName);
+    if Count > 1 then
+    begin
+      Message := Format('Scene already exists: %s', [ResultName]);
+      App.ErrorBox(Message);
+      LogBox.AppendLine(Message);
+      Exit;
+    end;
+
+    Scene.Title := ResultName;
+    Node.Text := Scene.DisplayTitle;
+
+    TabPage := App.ContentPagerHandler.FindTabPage(Scene.Id);
+    if Assigned(TabPage) and (TabPage.Tag > 0) then
+      TfrScene(TabPage.Tag).TitleChanged();
+
+    Message := Format('Scene updated: %s', [ResultName]);
+    LogBox.AppendLine(Message);
+  end;
+
+end;
+
+procedure TfrStoryList.DeleteScene();
+var
+  Message: string;
   Node: TTreeNode;
   Scene: TScene;
 begin
@@ -502,80 +773,397 @@ begin
     Exit;
 
   Node := tv.Selected;
-  if not Assigned(Node) then
+  if (not Assigned(Node)) or (not Assigned(Node.Data)) then
     Exit;
 
-  Scene := NodeAsScene(Node);
-  if Assigned(Scene) then
-    App.ContentPagerHandler.ShowPage(TfrScene, Scene.Id, Scene);
-  {
-  if Node.Data is TScene then
-  begin
-    Scene := Node.Data as TScene;
-    App.ContentPagerHandler.ShowPage(TfrScene, Scene.Id, Scene);
-  end;
- {
- if (App.CurrentProject == null)
-     return;
+  Scene := TScene(Node.Data);
+  Message :=
+    'Are you sure you want to delete the Scene' + LineEnding +
+    '''' + Scene.Title + '''?';
 
- TreeNode Node = tv.SelectedNode;
- if (Node == null)
-     return;
+  if not App.QuestionBox(Message) then
+    Exit;
 
- if (Node.Tag is Story)
-     App.ContentPagerHandler.ShowPage(typeof(UC_Story), (Node.Tag as Story).Id, Node.Tag);
- else if (Node.Tag is Chapter)
-    App.ContentPagerHandler.ShowPage(typeof(UC_Chapter), (Node.Tag as Chapter).Id, Node.Tag);
- else if (Node.Tag is Scene)
-     App.ContentPagerHandler.ShowPage(typeof(UC_Scene), (Node.Tag as Scene).Id, Node.Tag);
- }
+  tv.Items.Delete(Node);
+
+  App.ContentPagerHandler.ClosePage(Scene.Id);
+
+  Scene.Delete();
+
 end;
 
 procedure TfrStoryList.ExportStory();
 begin
-
+  // TODO: TfrStoryList.ExportStory
 end;
 
 procedure TfrStoryList.MoveStory(Story: TStory; Node: TTreeNode; Up: Boolean);
+var
+  Index: Integer;
 begin
+  if (Story = nil) or (Node = nil) then
+    Exit;
+
+  Index := Node.Index;       // index among top-level nodes
+  //Count := tv.Items.Count;   // includes children too, so DO NOT use this for bounds
+
+  // bounds check using siblings:
+  if Up then
+    if Index = 0 then Exit
+  else if Node.GetNextSibling = nil
+    then Exit;
+
+  if Story.CanMove(Up) then
+  begin
+    Story.Move(Up);
+
+    tv.Items.BeginUpdate;
+    try
+      Node.MoveTo(nil, naAdd);                         // detach safety; optional
+      Node.MoveTo(tv.Items.GetFirstNode, naInsert);    // placeholder; we'll use MoveTo with sibling below
+      // Better: move relative to siblings by OrderIndex:
+      // We'll locate target sibling at AStory.OrderIndex and insert before it.
+      // But easiest is: delete+insert using Items.Insert + manual copy isn't worth it.
+    finally
+      tv.Items.EndUpdate;
+    end;
+
+    // Practical approach: use Index-based MoveTo.
+    // MoveTo supports: naInsert (before a sibling) or naAddChild etc.
+    // We'll move node before/after sibling based on Up.
+    if Up then
+      Node.MoveTo(Node.GetPrevSibling, naInsert)
+    else
+      Node.MoveTo(Node.GetNextSibling, naInsertBehind);
+
+    UpdateNodeTitles(nil);
+  end;
 
 end;
 
-procedure TfrStoryList.MoveChapter(Chapter: TChapter; Node: TTreeNode;
-  Up: Boolean);
+procedure TfrStoryList.MoveChapter(Chapter: TChapter; Node: TTreeNode; Up: Boolean);
+var
+  ParentNode: TTreeNode;
 begin
+  if (Chapter = nil) or (Node = nil) then
+    Exit;
+
+  ParentNode := Node.Parent;
+  if ParentNode = nil then
+    Exit;
+
+  if Up then
+  begin
+    if Node.GetPrevSibling = nil then Exit;
+  end
+  else
+  begin
+    if Node.GetNextSibling = nil then Exit;
+  end;
+
+  if Chapter.CanMove(Up) then
+  begin
+    Chapter.Move(Up);
+
+    if Up then
+      Node.MoveTo(Node.GetPrevSibling, naInsert)
+    else
+      Node.MoveTo(Node.GetNextSibling, naInsertBehind);
+
+    UpdateNodeTitles(ParentNode);
+  end;
 
 end;
 
 procedure TfrStoryList.MoveScene(Scene: TScene; Node: TTreeNode; Up: Boolean);
+var
+  ParentNode: TTreeNode;
 begin
+  if (Scene = nil) or (Node = nil) then
+    Exit;
+
+  ParentNode := Node.Parent;
+  if ParentNode = nil then
+    Exit;
+
+  if Up then
+  begin
+    if Node.GetPrevSibling = nil then Exit;
+  end
+  else
+  begin
+    if Node.GetNextSibling = nil then Exit;
+  end;
+
+  if Scene.CanMove(Up) then
+  begin
+    Scene.Move(Up);
+
+    if Up then
+      Node.MoveTo(Node.GetPrevSibling, naInsert)
+    else
+      Node.MoveTo(Node.GetNextSibling, naInsertBehind);
+
+    UpdateNodeTitles(ParentNode);
+  end;
 
 end;
 
 procedure TfrStoryList.MoveNode(Up: Boolean);
+var
+  Node: TTreeNode;
+  Obj: TObject;
 begin
+  Node := tv.Selected;
+  if Node = nil then
+    Exit;
+
+  Obj := TObject(Node.Data);
+
+  if Obj is TStory then
+    MoveStory(TStory(Obj), Node, Up)
+  else if Obj is TChapter then
+    MoveChapter(TChapter(Obj), Node, Up)
+  else if Obj is TScene then
+    MoveScene(TScene(Obj), Node, Up);
+
+  tv.Selected := Node;
 
 end;
 
-procedure TfrStoryList.ChangeParent();
+procedure TfrStoryList.UpdateNodeTitles(ParentNode: TTreeNode);
+var
+  N: TTreeNode;
+  Item: TBaseItem;
 begin
+  if ParentNode <> nil then
+    N := ParentNode.GetFirstChild
+  else
+    N := tv.Items.GetFirstNode; // top-level
 
+  while N <> nil do
+  begin
+    Item := TBaseItem(N.Data);
+    if Item <> nil then
+      N.Text := Item.DisplayTitle;
+
+    if ParentNode <> nil then
+      N := N.GetNextSibling
+    else
+      N := N.GetNextSibling; // only top-level siblings (stories)
+  end;
+
+end;
+
+procedure TfrStoryList.ChangeParent;
+  // --------------------------------------------------------------
+  function FindNodeByData(ANodes: TTreeNodes; AData: Pointer): TTreeNode;
+  var
+    N: TTreeNode;
+  begin
+    Result := nil;
+    N := ANodes.GetFirstNode;
+    while N <> nil do
+    begin
+      if N.Data = AData then
+        Exit(N);
+
+      if N.HasChildren then
+      begin
+        Result := FindNodeByData(N.Owner, AData); // fallback, but better recurse via child list (see below)
+      end;
+
+      N := N.GetNext;
+    end;
+  end;
+  // --------------------------------------------------------------
+  function FindNodeByDataRec(ANode: TTreeNode; AData: Pointer): TTreeNode;
+  var
+    C: TTreeNode;
+  begin
+    Result := nil;
+    if (ANode <> nil) and (ANode.Data = AData) then
+      Exit(ANode);
+
+    if ANode = nil then
+      Exit(nil);
+
+    C := ANode.GetFirstChild;
+    while C <> nil do
+    begin
+      Result := FindNodeByDataRec(C, AData);
+      if Result <> nil then
+        Exit;
+      C := C.GetNextSibling;
+    end;
+  end;
+  // --------------------------------------------------------------
+  function FindNodeInTree(ATree: TCustomTreeView; AData: Pointer): TTreeNode;
+  var
+    N: TTreeNode;
+  begin
+    Result := nil;
+    N := ATree.Items.GetFirstNode;
+    while N <> nil do
+    begin
+      Result := FindNodeByDataRec(N, AData);
+      if Result <> nil then
+        Exit;
+      N := N.GetNextSibling;
+    end;
+  end;
+  // --------------------------------------------------------------
+  function GetParentsExcept(Chapter: TChapter): TObjectList; overload;
+  var
+    Item: TCollectionItem;
+  begin
+    Result := TObjectList.Create(False);
+    for Item in Chapter.Story.Project.StoryList do
+    begin
+      if Item <> Chapter.Story then
+        Result.Add(Item);
+    end;
+  end;
+  // --------------------------------------------------------------
+  function GetParentsExcept(Scene: TScene): TObjectList; overload;
+  var
+    Item: TCollectionItem;
+  begin
+    Result := TObjectList.Create(False);
+    for Item in Scene.Chapter.Story.ChapterList do
+    begin
+      if Item <> Scene.Chapter then
+        Result.Add(Item);
+    end;
+  end;
+  // --------------------------------------------------------------
+var
+  Node, ParentNode: TTreeNode;
+  ParentItem: TBaseItem;
+  Chapter: TChapter;
+  Scene: TScene;
+  NewStory: TStory;
+  NewChapter: TChapter;
+
+  StoryList: TObjectList;   // non-owned list of items (or your list type)
+  ChapterList: TObjectList; // non-owned list of items
+begin
+  Node := tv.Selected;
+  if Node = nil then
+    Exit;
+
+  ParentItem := nil;
+
+  // --- CHAPTER: change parent story -----------------------------------------
+  if TObject(Node.Data) is TChapter then
+  begin
+    Chapter := TChapter(Node.Data);
+
+    // build list of candidate stories except current
+    StoryList := GetParentsExcept(Chapter);
+    try
+
+      if StoryList.Count = 0 then
+        Exit;
+
+      if TSelectParentDialog.ShowDialog(Chapter, StoryList, ParentItem) then
+      begin
+        NewStory := TStory(ParentItem);
+        Chapter.ChangeParent(NewStory);
+
+        ReLoad;
+
+        ParentNode := FindNodeInTree(tv, Pointer(NewStory));
+        if ParentNode <> nil then
+        begin
+          if ParentNode.Parent <> nil then
+            ParentNode.Parent.Expand(True)
+          else
+            ParentNode.Expand(True);
+
+          tv.Selected := FindNodeInTree(tv, Pointer(Chapter));
+        end;
+      end;
+    finally
+      StoryList.Free;
+    end;
+  end
+  // --- SCENE: change parent chapter -----------------------------------------
+  else if TObject(Node.Data) is TScene then
+  begin
+    Scene := TScene(Node.Data);
+
+    ChapterList := GetParentsExcept(Scene);
+    try
+      if ChapterList.Count = 0 then
+        Exit;
+
+      if TSelectParentDialog.ShowDialog(Scene, ChapterList, ParentItem) then
+      begin
+        NewChapter := TChapter(ParentItem);
+        Scene.ChangeParent(NewChapter);
+
+        ReLoad;
+
+        ParentNode := FindNodeInTree(tv, Pointer(NewChapter));
+        if ParentNode <> nil then
+        begin
+          if ParentNode.Parent <> nil then
+            ParentNode.Parent.Expand(True)
+          else
+            ParentNode.Expand(True);
+
+          tv.Selected := FindNodeInTree(tv, Pointer(Scene));
+        end;
+      end;
+    finally
+      ChapterList.Free;
+    end;
+  end;
 end;
 
 procedure TfrStoryList.CollapseAll();
 begin
-
+  tv.BeginUpdate();
+  try
+    tv.FullCollapse();
+  finally
+    tv.EndUpdate();
+  end;
 end;
 
 procedure TfrStoryList.ExpandAll();
 begin
-
+  tv.BeginUpdate();
+  try
+    tv.FullExpand();
+  finally
+    tv.EndUpdate();
+  end;
 end;
 
-
-
-
-
+procedure TfrStoryList.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
+begin
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectOpened :
+    begin
+      ReLoad();
+      SelectedNodeChanged();
+    end;
+    aekProjectClosed :
+    begin
+      tv.Items.Clear();
+      SelectedNodeChanged();
+    end;
+    aekProjectMetricsChanged:
+    begin
+      // TODO: Update Text Metrics
+    end;
+  end;
+end;
 
 function TfrStoryList.NodeAsObject(Node: TTreeNode): TObject;
 begin
@@ -615,6 +1203,42 @@ begin
     if Obj is TScene then
       Result := TScene(Obj);
   except
+  end;
+end;
+
+function TfrStoryList.GetStoryNode: TTreeNode;
+var
+  Item: TBaseItem;
+begin
+  Result := nil;
+
+  if Assigned(App.CurrentProject) and Assigned(tv.Selected) and Assigned(tv.Selected.Data)  then
+  begin
+    Item := TBaseItem(tv.Selected.Data);
+
+    if Item is TStory then
+      Result := tv.Selected
+    else if Item is TChapter then
+      Result := tv.Selected.Parent
+    else if Item is TScene then;
+      Result := tv.Selected.Parent.Parent;
+  end;
+end;
+
+function TfrStoryList.GetChapterNode: TTreeNode;
+var
+  Item: TBaseItem;
+begin
+  Result := nil;
+
+  if Assigned(App.CurrentProject) and Assigned(tv.Selected) and Assigned(tv.Selected.Data)  then
+  begin
+    Item := TBaseItem(tv.Selected.Data);
+
+    if Item is TChapter then
+      Result := tv.Selected
+    else if Item is TScene then;
+      Result := tv.Selected.Parent;
   end;
 end;
 

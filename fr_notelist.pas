@@ -14,7 +14,6 @@ uses
   , ExtCtrls
   , ComCtrls
   , StdCtrls
-  , Contnrs
   , Menus
   , LCLType
   , LCLIntf
@@ -323,7 +322,6 @@ end;
 
 procedure TfrNoteList.AddToQuickView();
 var
-  Id : string;
   Note: TNote;
   LinkItem : TLinkItem;
   TabPage : TTabSheet;
@@ -334,7 +332,6 @@ begin
   if not Assigned(tblNotes) then
     Exit;
 
-  Id := GetId();
   Note := GetItem();
   if not Assigned(Note) then
     Exit;

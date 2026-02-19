@@ -249,6 +249,7 @@
         <Filename Value="Dialogs/f_editcomponentdialog.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditComponentDialog"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_EditComponentDialog"/>
       </Unit>
@@ -256,6 +257,7 @@
         <Filename Value="Dialogs/f_edititemdialog.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditItemDialog"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_EditItemDialog"/>
       </Unit>
@@ -263,6 +265,14 @@
         <Filename Value="../Pascal.Tripous/tripous.list.helpers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Tripous.List.Helpers"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_selectparentdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SelectParentDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_SelectParentDialog"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -288,7 +298,7 @@
     </Linking>
     <Other>
       <CompilerMessages>
-        <IgnoredMessages idx5024="True"/>
+        <IgnoredMessages idx6058="True" idx5079="True" idx5024="True"/>
       </CompilerMessages>
     </Other>
   </CompilerOptions>

@@ -14,11 +14,9 @@ uses
   , ExtCtrls
   , ComCtrls
   , StdCtrls
-  , Contnrs
   , Menus
   , LCLType
   , LCLIntf
-  , DB
   , DBCtrls
   , DBGrids
   , fr_FramePage

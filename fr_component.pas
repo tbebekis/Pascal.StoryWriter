@@ -152,8 +152,6 @@ begin
   AdjustTabTitle();
 end;
 
-
-
 procedure TfrComponent.AnyClick(Sender: TObject);
 begin
   // TODO:  TfrComponent.AnyClick

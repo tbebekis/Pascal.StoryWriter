@@ -13,12 +13,9 @@ uses
   , Dialogs
   , ExtCtrls
   , ComCtrls
-  , StdCtrls
-  , Contnrs
   , Menus
   , LCLType
   , LCLIntf
-  , DB
   , DBCtrls
   , DBGrids
   , fr_FramePage
@@ -36,16 +33,11 @@ type
   private
     TitleText: string;
 
-    // ● event handler
-    procedure AppOnProjectOpened(Sender: TObject);
-    procedure AppOnProjectClosed(Sender: TObject);
-
-
     procedure ReLoad();
-
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
+
     { editor handler }
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
     procedure GlobalSearchForTerm(const Term: string); override;
@@ -71,10 +63,6 @@ begin
   ParentTabPage.Caption := 'Temp Text';
 
   ReLoad();
-
-  App.OnProjectOpened := AppOnProjectOpened;
-  App.OnProjectClosed := AppOnProjectClosed;
-
   AdjustTabTitle();
 end;
 
@@ -104,23 +92,28 @@ begin
 end;
 
 procedure TfrTempText.SaveEditorText(TextEditor: TfrTextEditor);
-begin
-  inherited SaveEditorText(TextEditor);
-end;
-
-procedure TfrTempText.AppOnProjectOpened(Sender: TObject);
+var
+  Message: string;
 begin
 
-end;
+  if not Assigned(App.CurrentProject) then
+    Exit;
 
-procedure TfrTempText.AppOnProjectClosed(Sender: TObject);
-begin
+  if TextEditor = frText then
+  begin
+    App.CurrentProject.TempText := TextEditor.EditorText;
+    App.CurrentProject.SaveTempText();
+    Message := Format('Temp Text saved to: %s.', [App.CurrentProject.TempFilePath]);
+    LogBox.AppendLine(Message);
+  end;
 
+  TextEditor.Modified := False;
+  AdjustTabTitle();
 end;
 
 procedure TfrTempText.GlobalSearchForTerm(const Term: string);
 begin
-  inherited GlobalSearchForTerm(Term);
+  App.SetGlobalSearchTerm(Term);
 end;
 
 end.

@@ -115,7 +115,6 @@ uses
    Tripous.IconList
   , fr_FramePage
   , o_App
-  , f_FindAndReplaceDialog
   ;
 
 

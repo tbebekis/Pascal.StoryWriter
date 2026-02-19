@@ -11,11 +11,11 @@ uses
   , Controls
   , Graphics
   , Dialogs
-  , StdCtrls
   , ExtCtrls
   , ComCtrls
   , Menus
   , SynEdit
+  , Tripous.Broadcaster
   , fr_TextEditor
   , fr_FramePage
   , o_Entities
@@ -36,9 +36,8 @@ type
   private
      Scene: TScene;
 
-    // ● event handler
-    procedure AnyClick(Sender: TObject);
-    procedure AppOnItemChanged(Sender: TObject; Item: TBaseItem);
+  protected
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs); override;
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
@@ -60,6 +59,7 @@ implementation
 
 uses
    Tripous.Logs
+  ,o_Consts
   ,o_App
   ;
 
@@ -96,8 +96,6 @@ begin
     Splitter.Visible := False;
   end;
 
-  App.OnItemChanged := AppOnItemChanged;
-
   Pager.ActivePage := tabText;
   if frText.CanFocus() then
        frText.Editor.SetFocus();
@@ -110,15 +108,55 @@ begin
   frText.Width := (Self.ClientWidth - Splitter.Width) div 2;
 end;
 
-procedure TfrScene.ShowTabPage(Place: TLinkPlace);
+procedure TfrScene.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
 begin
-  case Place of
-    lpSynopsis: Pager.ActivePage := tabSynopsis;
-    lpTimeline: Pager.ActivePage := tabTimeline;
-  else
-    Pager.ActivePage := tabText;
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekItemChanged:               // (TBaseItem(Args.Data));
+    begin
+      if (Args.Sender <> Self) and ((TBaseItem(Args.Data) = Scene)) then
+        TitleChanged();
+    end;
   end;
 end;
+
+procedure TfrScene.TitleChanged();
+begin
+  TitleText := Scene.DisplayTitleInProject;
+  frText.Title := TitleText;
+  frTextEn.Title := TitleText;
+  frSynopsis.Title := TitleText;
+  frTimeline.Title := TitleText;
+  AdjustTabTitle();
+end;
+
+procedure TfrScene.AdjustTabTitle();
+begin
+  if frText.Modified or frTextEn.Modified or frSynopsis.Modified or frTimeline.Modified then
+    ParentTabPage.Caption := TitleText + '*'
+  else
+    ParentTabPage.Caption := TitleText;
+
+  if frText.Modified or frTextEn.Modified then
+     tabText.Caption := 'Text*'
+  else
+     tabText.Caption := 'Text';
+
+  if frSynopsis.Modified  then
+     tabSynopsis.Caption := 'Synopsis*'
+  else
+     tabSynopsis.Caption := 'Synopsis';
+
+  if frTimeline.Modified  then
+     tabTimeline.Caption := 'Timeline*'
+  else
+     tabTimeline.Caption := 'Timeline';
+
+end;
+
+
 
 procedure TfrScene.HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
 var
@@ -178,52 +216,17 @@ end;
 
 procedure TfrScene.GlobalSearchForTerm(const Term: string);
 begin
-  // TODO: TfrScene.GlobalSearchForTerm
+  App.SetGlobalSearchTerm(Term);
 end;
 
-procedure TfrScene.AnyClick(Sender: TObject);
+procedure TfrScene.ShowTabPage(Place: TLinkPlace);
 begin
-  // TODO: TfrScene.AnyClick
-end;
-
-procedure TfrScene.AppOnItemChanged(Sender: TObject; Item: TBaseItem);
-begin
-  if (Item = Scene) and (Sender <> Self) then
-    TitleChanged();
-end;
-
-procedure TfrScene.TitleChanged();
-begin
-  TitleText := Scene.DisplayTitleInProject;
-  frText.Title := TitleText;
-  frTextEn.Title := TitleText;
-  frSynopsis.Title := TitleText;
-  frTimeline.Title := TitleText;
-  AdjustTabTitle();
-end;
-
-procedure TfrScene.AdjustTabTitle();
-begin
-  if frText.Modified or frTextEn.Modified or frSynopsis.Modified or frTimeline.Modified then
-    ParentTabPage.Caption := TitleText + '*'
+  case Place of
+    lpSynopsis: Pager.ActivePage := tabSynopsis;
+    lpTimeline: Pager.ActivePage := tabTimeline;
   else
-    ParentTabPage.Caption := TitleText;
-
-  if frText.Modified or frTextEn.Modified then
-     tabText.Caption := 'Text*'
-  else
-     tabText.Caption := 'Text';
-
-  if frSynopsis.Modified  then
-     tabSynopsis.Caption := 'Synopsis*'
-  else
-     tabSynopsis.Caption := 'Synopsis';
-
-  if frTimeline.Modified  then
-     tabTimeline.Caption := 'Timeline*'
-  else
-     tabTimeline.Caption := 'Timeline';
-
+    Pager.ActivePage := tabText;
+  end;
 end;
 
 
