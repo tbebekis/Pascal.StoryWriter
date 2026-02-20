@@ -131,7 +131,6 @@ end;
 
 procedure TfrComponentList.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
 end;
 
@@ -291,17 +290,27 @@ begin
 end;
 
 procedure TfrComponentList.PrepareToolBar();
+var
+  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnAddComponent := AddButton(ToolBar, 'table_add', 'New Add', AnyClick);
-  btnEditComponent := AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
-  btnDeleteComponent := AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
-  AddSeparator(ToolBar);
-  btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
-  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
+  P := ToolBar.Parent;
+  ToolBar.Parent := nil;
+  try
+    btnAddComponent := AddButton(ToolBar, 'table_add', 'New Add', AnyClick);
+    btnEditComponent := AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
+    btnDeleteComponent := AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
+    AddSeparator(ToolBar);
+    btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
+    btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
+  finally
+    ToolBar.Parent := P;
+  end;
+
+
 end;
 
 procedure TfrComponentList.AddToQuickView();

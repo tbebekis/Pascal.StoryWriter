@@ -274,6 +274,22 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_SelectParentDialog"/>
       </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_projecteditdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectEditDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_ProjectEditDialog"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_appsettingsdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AppSettingsDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_AppSettingsDialog"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

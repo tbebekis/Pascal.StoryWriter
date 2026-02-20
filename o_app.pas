@@ -40,7 +40,6 @@ type
     class var fLastGlobalSearchTerm: string;
     class var fLastGlobalSearchTermWholeWord: Boolean;
 
-
     class var fContentPagerHandler: TPagerHandler;
     class var fSideBarPagerHandler: TPagerHandler;
     class var fMainForm: TForm;
@@ -105,7 +104,6 @@ type
     class procedure PerformCategoryListChanged(Sender: TObject);
     class procedure PerformTagListChanged(Sender: TObject);
 
-
     // ● Grid
     class procedure InitializeReadOnly(Grid: TDbGrid);
     class procedure AddColumn(Grid: TDbGrid; const FieldName: string; const Title: string = '');
@@ -123,9 +121,8 @@ type
     class procedure StopProjectStatsTimer();
 
     // ● miscs
-
     class procedure ShowTranslator();
-
+    class procedure LogLine(const Text: string);
 
     // ● properties
     class property IsInitialized: Boolean read GetIsInitialized;
@@ -157,6 +154,9 @@ uses
   ,Tripous.Broadcaster
 
   ,o_Consts
+
+  ,f_AppSettingsDialog
+  ,f_ProjectEditDialog
 
   //,f_MainForm
   ,fr_CategoryList
@@ -335,7 +335,6 @@ begin
   end;
 end;
 
-
 class procedure App.CheckValidFileName(const Title: string);
 var
   Msg: string;
@@ -346,8 +345,30 @@ begin
 end;
 
 class procedure App.CreateNewProject();
+var
+  Project: TProject;
+  Message: string;
 begin
-  InfoBox('CreateNewProject');
+  Project := TProject.Create();
+  if not TProjectEditDialog.ShowDialog(Project) then
+  begin
+    Project.Free();
+    Exit;
+  end;
+
+  CloseProject();
+
+  Project.Save();
+
+  App.Settings.LastProjectFolderPath := Project.FolderPath;
+  App.Settings.Save();
+
+  CurrentProject := Project;
+  Broadcaster.Broadcast(SProjectOpened, nil);
+
+  Message := Format('New Project created: %s', [Project.Title]);
+  LogBox.AppendLine(Message);
+
 end;
 
 class procedure App.CloseProject();
@@ -357,17 +378,18 @@ var
 begin
   if Assigned(CurrentProject) then
   begin
+    StopProjectStatsTimer;
+
     Broadcaster.Broadcast(SProjectClosed, nil);
 
     Title := CurrentProject.Title;
 
     CloseAllUi;
+    CurrentProject.Free();
     CurrentProject := nil;
 
     Msg := 'Project closed: ''' + Title + '''.';
     LogBox.AppendLine(Msg);
-
-    StopProjectStatsTimer;
   end;
 
 end;
@@ -451,15 +473,13 @@ end;
 
 class procedure App.StartProjectStatsTimer();
 begin
-
+  // TODO: App.StartProjectStatsTimer()
 end;
 
 class procedure App.StopProjectStatsTimer();
 begin
-
+  // TODO: App.StopProjectStatsTimer()
 end;
-
-
 
 class procedure App.DisplayFileExplorer(const FileOrFolderPath: string);
 var
@@ -522,7 +542,12 @@ end;
 
 class procedure App.ShowTranslator();
 begin
+  // TODO: App.ShowTranslator();
+end;
 
+class procedure App.LogLine(const Text: string);
+begin
+  LogBox.AppendLine(Text);
 end;
 
 class procedure App.CloseAllUi();
@@ -545,8 +570,26 @@ begin
 end;
 
 class procedure App.ShowSettingsDialog();
+var
+  Message: string;
 begin
+  Message :=
+    'This will close all opened UI.' + LineEnding +
+    'Any unsaved changes will be lost.' + LineEnding +
+    'Do you want to continue?';
 
+  if not App.QuestionBox(Message) then
+    Exit;
+
+  App.CloseProject;
+  Application.ProcessMessages;
+
+  if TAppSettingsDialog.ShowDialog() then
+  begin
+    // nothing
+  end;
+
+  App.LoadLastProject();
 end;
 
 class procedure App.ClearPageControl(APageControl: TPageControl);
@@ -655,48 +698,6 @@ begin
       end;
   end;
 
-
-(*
-if (LinkItem == null || LinkItem.Item == null || CurrentProject == null)
-    return;
-
-switch (LinkItem.ItemType)
-{
-    case ItemType.Component:
-        Component Component = LinkItem.Item as Component;
-        lblItemTitle.Text = $"Component: {Component.DisplayTitleInProject}";
-        ucRichText.PlainText = Component.Text;
-        break;
-    case ItemType.Chapter:
-        Chapter Chapter = LinkItem.Item as Chapter;
-        lblItemTitle.Text = $"Chapter: {Chapter.DisplayTitleInProject}";
-        ucRichText.PlainText = Chapter.Synopsis;
-        break;
-    case ItemType.Scene:
-        Scene Scene = LinkItem.Item as Scene;
-        switch (LinkItem.Place)
-        {
-            case LinkPlace.Synopsis:
-                lblItemTitle.Text = $"Scene Synopsis: {Scene.DisplayTitleInProject}";
-                ucRichText.PlainText = Scene.Synopsis;
-                break;
-            case LinkPlace.Timeline:
-                lblItemTitle.Text = $"Scene Timeline: {Scene.DisplayTitleInProject}";
-                ucRichText.PlainText = Scene.Timeline;
-                break;
-           default:
-                lblItemTitle.Text = $"Scene: {Scene.DisplayTitleInProject}";
-                ucRichText.PlainText = Scene.Text;
-                break;
-        }
-        break;
-    case ItemType.Note:
-        Note Note = LinkItem.Item as Note;
-        lblItemTitle.Text = $"Note: {Note.DisplayTitleInProject}";
-        ucRichText.PlainText = Note.Text;
-        break;
-}
-*)
 end;
 
 class procedure App.ShowItemInListPage(LinkItem: TLinkItem);

@@ -145,7 +145,6 @@ end;
 
 procedure TfrNoteList.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
 end;
 
@@ -372,20 +371,30 @@ begin
 end;
 
 procedure TfrNoteList.PrepareToolBar();
+var
+  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnAddNote := AddButton(ToolBar, 'table_add', 'New Note', AnyClick);
-  btnEditNote := AddButton(ToolBar, 'table_edit', 'Edit Note', AnyClick);
-  btnDeleteNote := AddButton(ToolBar, 'table_delete', 'Remove Note', AnyClick);
-  AddSeparator(ToolBar);
-  // btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Note Text', AnyClick);      // No we do NOT use this, we edit Note text in this UI
-  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Note to Quick View List', AnyClick);
-  AddSeparator(ToolBar);
-  btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
-  btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
+  P := ToolBar.Parent;
+  ToolBar.Parent := nil;
+  try
+    btnAddNote := AddButton(ToolBar, 'table_add', 'New Note', AnyClick);
+    btnEditNote := AddButton(ToolBar, 'table_edit', 'Edit Note', AnyClick);
+    btnDeleteNote := AddButton(ToolBar, 'table_delete', 'Remove Note', AnyClick);
+    AddSeparator(ToolBar);
+    // btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Note Text', AnyClick);      // No we do NOT use this, we edit Note text in this UI
+    btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Note to Quick View List', AnyClick);
+    AddSeparator(ToolBar);
+    btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
+    btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
+  finally
+    ToolBar.Parent := P;
+  end;
+
+
 end;
 
 procedure TfrNoteList.AnyClick(Sender: TObject);

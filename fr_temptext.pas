@@ -68,7 +68,6 @@ end;
 
 procedure TfrTempText.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
 end;
 
 procedure TfrTempText.ReLoad();

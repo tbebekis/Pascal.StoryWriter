@@ -114,7 +114,6 @@ end;
 
 procedure TfrTagList.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
   lboTagList.Width := (pnlTop.ClientWidth - Splitter2.Width) div 2;
 end;
@@ -292,14 +291,24 @@ begin
 end;
 
 procedure TfrTagList.PrepareToolBar();
+var
+  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnDeleteTag := AddButton(ToolBar, 'table_delete', 'Remove Tag', AnyClick);
-  btnEditComponentText := AddButton(ToolBar, 'page_edit', 'Edit Component Text', AnyClick);
-  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
+  P := ToolBar.Parent;
+  ToolBar.Parent := nil;
+  try
+    btnDeleteTag := AddButton(ToolBar, 'table_delete', 'Remove Tag', AnyClick);
+    btnEditComponentText := AddButton(ToolBar, 'page_edit', 'Edit Component Text', AnyClick);
+    btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
+  finally
+    ToolBar.Parent := P;
+  end;
+
+
 end;
 
 procedure TfrTagList.DeleteTag();
@@ -330,7 +339,7 @@ begin
 
     App.CurrentProject.SaveJson;
     ReLoad();
-    Broadcaster.Broadcast(STagListChanged, Self);
+    App.PerformTagListChanged(Self);
     LogBox.AppendLine(Format('Tag ''%s'' deleted.', [sTag]));
   end;
 

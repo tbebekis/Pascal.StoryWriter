@@ -75,7 +75,6 @@ end;
 
 procedure TfrNote.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
 end;
 
 procedure TfrNote.OnBroadcasterEvent(Args: TBroadcasterArgs);

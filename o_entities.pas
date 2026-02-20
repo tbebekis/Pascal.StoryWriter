@@ -1178,7 +1178,7 @@ var
   S: TStory;
 begin
   if DirectoryExists(FolderPath) then
-    SysUtils.RemoveDir(FolderPath);
+    Sys.FolderDelete(FolderPath);
 
   if (Project <> nil) and Assigned(Project.StoryList) then
   begin
@@ -1401,7 +1401,7 @@ var
   C: TChapter;
 begin
   if DirectoryExists(FolderPath) then
-    SysUtils.RemoveDir(FolderPath);
+    Sys.FolderDelete(FolderPath);
 
   if (Story <> nil) and (Story.Project <> nil) and Assigned(Story.ChapterList) then
   begin
@@ -1656,7 +1656,7 @@ var
   S: TScene;
 begin
   if DirectoryExists(FolderPath) then
-    SysUtils.RemoveDir(FolderPath);
+    Sys.FolderDelete(FolderPath);
 
   if (Chapter <> nil) and (Chapter.Story <> nil) and (Chapter.Story.Project <> nil) then
   begin

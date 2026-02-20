@@ -152,7 +152,6 @@ end;
 
 procedure TfrStoryList.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
   tv.Width :=  (pnlTop.ClientWidth - Splitter2.Width) div 2;
 end;
@@ -236,27 +235,35 @@ begin
 end;
 
 procedure TfrStoryList.PrepareToolBar();
+var
+  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnAddItem := AddButton(ToolBar, 'table_add', 'Add Chapter or Scene', nil);
-  btnAddItem.Style := tbsDropDown;
-  btnAddItem.DropdownMenu := mnuAddItem;
-  mnuAddStory.OnClick := AnyClick;
-  mnuAddChapter.OnClick := AnyClick;
-  mnuAddScene.OnClick := AnyClick;
-  btnEditItem := AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
-  btnDeleteItem := AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
-  AddSeparator(ToolBar);
-  btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
-  btnExportStory := AddButton(ToolBar, 'table_export', 'Export Story', AnyClick);
-  btnChangeParent := AddButton(ToolBar, 'scroll_pane_tree', 'Change Parent', AnyClick);
-  btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Collapse All', AnyClick);
-  btnExpandAll := AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
-  btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
-  btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
+  P := ToolBar.Parent;
+  ToolBar.Parent := nil;
+  try
+    btnAddItem := AddButton(ToolBar, 'table_add', 'Add Chapter or Scene', nil);
+    btnAddItem.Style := tbsDropDown;
+    btnAddItem.DropdownMenu := mnuAddItem;
+    mnuAddStory.OnClick := AnyClick;
+    mnuAddChapter.OnClick := AnyClick;
+    mnuAddScene.OnClick := AnyClick;
+    btnEditItem := AddButton(ToolBar, 'table_edit', 'Edit', AnyClick);
+    btnDeleteItem := AddButton(ToolBar, 'table_delete', 'Remove', AnyClick);
+    AddSeparator(ToolBar);
+    btnEditText := AddButton(ToolBar, 'page_edit', 'Edit Text', AnyClick);
+    btnExportStory := AddButton(ToolBar, 'table_export', 'Export Story', AnyClick);
+    btnChangeParent := AddButton(ToolBar, 'scroll_pane_tree', 'Change Parent', AnyClick);
+    btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Collapse All', AnyClick);
+    btnExpandAll := AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
+    btnUp := AddButton(ToolBar, 'arrow_up', 'Move Up', AnyClick);
+    btnDown := AddButton(ToolBar, 'arrow_down', 'Move Down', AnyClick);
+  finally
+    ToolBar.Parent := P;
+  end;
 end;
 
 procedure TfrStoryList.ReLoad;

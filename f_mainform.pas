@@ -181,6 +181,7 @@ begin
   App.Initialize(Self);
 
   pagerSideBar.Width:= 560;
+
 end;
 
 procedure TMainForm.FormFinalize();

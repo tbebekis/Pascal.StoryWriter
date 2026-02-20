@@ -75,7 +75,7 @@ begin
   FLastProjectFolderPath := '___';
   FAutoSave := True;
   FAutoSaveSecondsInterval := 30;
-  FFontFamily := 'Times New Roman';
+  FFontFamily := 'DejaVu Sans Mono';
   FFontSize := 13;
   FZoomFactor := 1.0;
   FMarkdownWebViewVisible := False;

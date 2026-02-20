@@ -78,7 +78,6 @@ end;
 
 procedure TfrChapter.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
 end;
 
 procedure TfrChapter.OnBroadcasterEvent(Args: TBroadcasterArgs);

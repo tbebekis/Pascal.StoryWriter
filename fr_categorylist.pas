@@ -114,7 +114,6 @@ end;
 
 procedure TfrCategoryList.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
   lboCategoryList.Width := (pnlTop.ClientWidth - Splitter2.Width) div 2;
 end;
@@ -292,14 +291,24 @@ end;
 
 
 procedure TfrCategoryList.PrepareToolBar();
+var
+  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnDeleteCategory := AddButton(ToolBar, 'table_delete', 'Remove Category', AnyClick);
-  btnEditComponentText := AddButton(ToolBar, 'page_edit', 'Edit Component Text', AnyClick);
-  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
+  P := ToolBar.Parent;
+  ToolBar.Parent := nil;
+  try
+    btnDeleteCategory := AddButton(ToolBar, 'table_delete', 'Remove Category', AnyClick);
+    btnEditComponentText := AddButton(ToolBar, 'page_edit', 'Edit Component Text', AnyClick);
+    btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected Component to Quick View List', AnyClick);
+  finally
+    ToolBar.Parent := P;
+  end;
+
+
 end;
 
 procedure TfrCategoryList.DeleteCategory();
@@ -336,7 +345,7 @@ begin
     begin
       App.CurrentProject.SaveJson;
       ReLoad();
-      Broadcaster.Broadcast(SCategoryListChanged, Self);
+      App.PerformCategoryListChanged(Self);
       LogBox.AppendLine(Format('Category ''%s'' deleted.', [Category]));
     end;
 

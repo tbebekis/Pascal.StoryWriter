@@ -19,21 +19,18 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_MainForm"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="154"/>
-        <CursorPos X="32" Y="170"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="163"/>
+        <CursorPos X="43" Y="172"/>
         <UsageCount Value="204"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="../Pascal.Tripous/tripous.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Tripous"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="1209"/>
-        <CursorPos X="102" Y="1222"/>
+        <TopLine Value="5975"/>
+        <CursorPos X="60" Y="5983"/>
         <UsageCount Value="204"/>
       </Unit>
       <Unit>
@@ -41,16 +38,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Entities"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="1157"/>
-        <CursorPos X="3" Y="1162"/>
+        <TopLine Value="1632"/>
+        <CursorPos X="23" Y="1641"/>
         <UsageCount Value="204"/>
       </Unit>
       <Unit>
         <Filename Value="o_app.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_App"/>
-        <TopLine Value="752"/>
-        <CursorPos X="11" Y="770"/>
+        <TopLine Value="546"/>
+        <CursorPos X="44" Y="557"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
       </Unit>
@@ -58,10 +55,11 @@
         <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Tripous.IconList"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="180"/>
-        <CursorPos X="40" Y="191"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="188"/>
+        <CursorPos X="31" Y="208"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="fr_framepage.pas"/>
@@ -70,9 +68,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_FramePage"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="76"/>
-        <CursorPos Y="86"/>
+        <EditorIndex Value="10"/>
+        <CursorPos X="34" Y="4"/>
         <UsageCount Value="206"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -81,18 +78,19 @@
         <Filename Value="o_pagehandler.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_PageHandler"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="224"/>
-        <CursorPos X="75" Y="242"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="256"/>
+        <CursorPos X="26" Y="284"/>
         <UsageCount Value="204"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_appsettings.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_AppSettings"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="10"/>
-        <CursorPos X="54" Y="25"/>
+        <TopLine Value="58"/>
+        <CursorPos X="35" Y="78"/>
         <UsageCount Value="203"/>
       </Unit>
       <Unit>
@@ -102,10 +100,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_StoryList"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="312"/>
-        <CursorPos X="35" Y="326"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="234"/>
+        <CursorPos X="24" Y="237"/>
         <UsageCount Value="200"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="fr_scene.pas"/>
@@ -115,8 +115,8 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_Scene"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="3"/>
-        <CursorPos Y="14"/>
+        <TopLine Value="100"/>
+        <CursorPos Y="106"/>
         <UsageCount Value="204"/>
       </Unit>
       <Unit>
@@ -126,10 +126,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_TextEditor"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="106"/>
-        <CursorPos X="12" Y="117"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="409"/>
+        <CursorPos X="8" Y="419"/>
         <UsageCount Value="201"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_findandreplacedialog.pas"/>
@@ -149,7 +151,7 @@
         <UnitName Value="o_SearchAndReplace"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="12"/>
-        <UsageCount Value="176"/>
+        <UsageCount Value="184"/>
       </Unit>
       <Unit>
         <Filename Value="fr_markdownpreview.pas"/>
@@ -161,7 +163,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="28"/>
         <CursorPos X="30" Y="39"/>
-        <UsageCount Value="159"/>
+        <UsageCount Value="167"/>
       </Unit>
       <Unit>
         <Filename Value="fr_categorylist.pas"/>
@@ -170,10 +172,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_CategoryList"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="337"/>
-        <CursorPos X="7" Y="340"/>
-        <UsageCount Value="158"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="291"/>
+        <CursorPos X="117" Y="306"/>
+        <UsageCount Value="166"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="../Pascal.Tripous/tripous.memtable.pas"/>
@@ -182,7 +186,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="361"/>
         <CursorPos X="15" Y="376"/>
-        <UsageCount Value="144"/>
+        <UsageCount Value="152"/>
       </Unit>
       <Unit>
         <Filename Value="fr_taglist.pas"/>
@@ -191,10 +195,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_TagList"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="80"/>
-        <CursorPos X="23" Y="87"/>
-        <UsageCount Value="139"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="295"/>
+        <CursorPos X="119" Y="306"/>
+        <UsageCount Value="147"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="fr_componentlist.pas"/>
@@ -203,10 +209,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_ComponentList"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="393"/>
-        <CursorPos X="2" Y="395"/>
-        <UsageCount Value="136"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="294"/>
+        <CursorPos X="118" Y="308"/>
+        <UsageCount Value="144"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="fr_search.pas"/>
@@ -215,10 +223,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_Search"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="11"/>
-        <CursorPos Y="20"/>
-        <UsageCount Value="133"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="321"/>
+        <CursorPos X="88" Y="334"/>
+        <UsageCount Value="141"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_projectglobalsearch.pas"/>
@@ -227,7 +237,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="295"/>
         <CursorPos X="3" Y="348"/>
-        <UsageCount Value="132"/>
+        <UsageCount Value="140"/>
       </Unit>
       <Unit>
         <Filename Value="fr_quickview.pas"/>
@@ -236,10 +246,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_QuickView"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="7"/>
-        <CursorPos Y="16"/>
-        <UsageCount Value="117"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="497"/>
+        <CursorPos X="73" Y="504"/>
+        <UsageCount Value="125"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="fr_notelist.pas"/>
@@ -248,10 +260,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_NoteList"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="8"/>
-        <CursorPos Y="17"/>
-        <UsageCount Value="107"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="381"/>
+        <CursorPos X="34" Y="388"/>
+        <UsageCount Value="115"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="fr_temptext.pas"/>
@@ -261,29 +276,27 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_TempText"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="87"/>
-        <CursorPos Y="66"/>
-        <UsageCount Value="105"/>
+        <TopLine Value="65"/>
+        <CursorPos Y="71"/>
+        <UsageCount Value="113"/>
       </Unit>
       <Unit>
         <Filename Value="../Pascal.Tripous/tripous.broadcaster.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Tripous.Broadcaster"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="37"/>
         <CursorPos X="27" Y="68"/>
-        <UsageCount Value="91"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="99"/>
       </Unit>
       <Unit>
         <Filename Value="o_consts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Consts"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="4"/>
-        <CursorPos X="57" Y="13"/>
-        <UsageCount Value="91"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="33"/>
+        <CursorPos X="21" Y="52"/>
+        <UsageCount Value="99"/>
       </Unit>
       <Unit>
         <Filename Value="fr_chapter.pas"/>
@@ -293,9 +306,9 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_Chapter"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="3"/>
-        <CursorPos Y="14"/>
-        <UsageCount Value="87"/>
+        <TopLine Value="75"/>
+        <CursorPos Y="81"/>
+        <UsageCount Value="95"/>
       </Unit>
       <Unit>
         <Filename Value="fr_component.pas"/>
@@ -305,9 +318,9 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_Component"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="123"/>
-        <CursorPos X="34" Y="149"/>
-        <UsageCount Value="87"/>
+        <TopLine Value="81"/>
+        <CursorPos Y="87"/>
+        <UsageCount Value="95"/>
       </Unit>
       <Unit>
         <Filename Value="fr_note.pas"/>
@@ -317,9 +330,9 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_Note"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="43"/>
-        <CursorPos X="15" Y="52"/>
-        <UsageCount Value="87"/>
+        <TopLine Value="72"/>
+        <CursorPos Y="78"/>
+        <UsageCount Value="95"/>
       </Unit>
       <Unit>
         <Filename Value="fr_story.pas"/>
@@ -329,9 +342,9 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="fr_Story"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="3"/>
-        <CursorPos Y="14"/>
-        <UsageCount Value="87"/>
+        <TopLine Value="76"/>
+        <CursorPos Y="82"/>
+        <UsageCount Value="95"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_editcomponentdialog.pas"/>
@@ -343,7 +356,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="423"/>
         <CursorPos X="98" Y="429"/>
-        <UsageCount Value="80"/>
+        <UsageCount Value="88"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_edititemdialog.pas"/>
@@ -353,10 +366,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_EditItemDialog"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="73"/>
+        <TopLine Value="78"/>
         <CursorPos Y="105"/>
-        <UsageCount Value="58"/>
-        <LoadedDesigner Value="True"/>
+        <UsageCount Value="66"/>
       </Unit>
       <Unit>
         <Filename Value="../Pascal.Tripous/tripous.list.helpers.pas"/>
@@ -364,7 +376,43 @@
         <UnitName Value="Tripous.List.Helpers"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="4"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="53"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_selectparentdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SelectParentDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_SelectParentDialog"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="39"/>
+        <CursorPos X="2" Y="49"/>
+        <UsageCount Value="31"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_projecteditdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectEditDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_ProjectEditDialog"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="76"/>
+        <CursorPos X="67" Y="87"/>
+        <UsageCount Value="26"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_appsettingsdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AppSettingsDialog"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_AppSettingsDialog"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="119"/>
+        <CursorPos X="49" Y="129"/>
+        <UsageCount Value="25"/>
       </Unit>
       <Unit>
         <Filename Value="o_events.pas"/>
@@ -374,19 +422,12 @@
         <UsageCount Value="15"/>
       </Unit>
       <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-json/src/fpjsonrtti.pp"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="231"/>
-        <CursorPos X="49" Y="250"/>
-        <UsageCount Value="0"/>
-      </Unit>
-      <Unit>
         <Filename Value="../Pascal.Tripous/tripous.logs.pas"/>
         <UnitName Value="Tripous.Logs"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="2146"/>
-        <CursorPos X="83" Y="2153"/>
-        <UsageCount Value="8"/>
+        <TopLine Value="455"/>
+        <CursorPos X="59" Y="483"/>
+        <UsageCount Value="10"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/lazarus/4.4.0/lcl/dialogs.pp"/>
@@ -415,18 +456,20 @@
       <Unit>
         <Filename Value="/usr/share/lazarus/4.4.0/lcl/comctrls.pp"/>
         <UnitName Value="ComCtrls"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="581"/>
-        <CursorPos X="15" Y="597"/>
-        <UsageCount Value="1"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="2085"/>
+        <CursorPos X="3" Y="2103"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/lazarus/4.4.0/lcl/controls.pp"/>
         <UnitName Value="Controls"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2072"/>
-        <CursorPos X="15" Y="2407"/>
-        <UsageCount Value="3"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="1236"/>
+        <CursorPos X="3" Y="1188"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="../../Stories/The_Corpers/Project.json"/>
@@ -448,17 +491,9 @@
         <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synedit.pp"/>
         <UnitName Value="SynEdit"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="6768"/>
-        <CursorPos X="58" Y="6786"/>
+        <TopLine Value="10639"/>
+        <CursorPos X="26" Y="10654"/>
         <UsageCount Value="14"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditsearch.pp"/>
-        <UnitName Value="SynEditSearch"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="51"/>
-        <CursorPos X="31" Y="65"/>
-        <UsageCount Value="0"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/lazarus/4.4.0/lcl/stdctrls.pp"/>
@@ -493,13 +528,6 @@
         <UsageCount Value="3"/>
       </Unit>
       <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/lcl/extctrls.pp"/>
-        <UnitName Value="ExtCtrls"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="14" Y="17"/>
-        <UsageCount Value="0"/>
-      </Unit>
-      <Unit>
         <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/sysutilh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="314"/>
@@ -512,14 +540,6 @@
         <TopLine Value="154"/>
         <CursorPos X="9" Y="158"/>
         <UsageCount Value="7"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditmarkuphighall.pp"/>
-        <UnitName Value="SynEditMarkupHighAll"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="197"/>
-        <CursorPos X="17" Y="213"/>
-        <UsageCount Value="0"/>
       </Unit>
       <Unit>
         <Filename Value="../SynEditExamples/SearchAndReplace/uFrameSearch.pas"/>
@@ -546,7 +566,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="479"/>
         <CursorPos X="56" Y="490"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="18"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synedithighlighter.pp"/>
@@ -683,94 +703,173 @@
         <UsageCount Value="6"/>
       </Unit>
       <Unit>
-        <Filename Value="Dialogs/f_selectparentdialog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="SelectParentDialog"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_SelectParentDialog"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="39"/>
-        <CursorPos X="2" Y="49"/>
-        <UsageCount Value="24"/>
-      </Unit>
-      <Unit>
         <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-base/src/contnrs.pp"/>
         <UnitName Value="Contnrs"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="59"/>
         <CursorPos X="49" Y="74"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/lazutils/fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="46"/>
+        <CursorPos X="32" Y="53"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/components/lazutils/fileutil.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="104"/>
+        <CursorPos X="3" Y="113"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="AppSettings.json"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="35" Y="5"/>
         <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/include/wincontrol.inc"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="6384"/>
+        <CursorPos X="3" Y="6389"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/toolwin.pp"/>
+        <UnitName Value="Toolwin"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="44"/>
+        <CursorPos X="26" Y="67"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="16">
+    <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="494" TopLine="484"/>
+        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
+        <Caret Line="196" Column="41" TopLine="183"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="15" Column="13" TopLine="4"/>
+        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
+        <Caret Line="187" Column="10" TopLine="175"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="44" Column="11" TopLine="58"/>
+        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
+        <Caret Line="192" Column="48" TopLine="175"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="145" TopLine="135"/>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/comctrls.pp"/>
+        <Caret Line="2361" Column="21" TopLine="2253"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="159" Column="27" TopLine="196"/>
+        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
+        <Caret Line="182" Column="39" TopLine="175"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="350" Column="36" TopLine="139"/>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/comctrls.pp"/>
+        <Caret Line="2103" Column="3" TopLine="2085"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="360" Column="48" TopLine="344"/>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/controls.pp"/>
+        <Caret Line="2446" Column="3" TopLine="2435"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="418" TopLine="400"/>
+        <Filename Value="fr_storylist.pas"/>
+        <Caret Line="239" Column="47" TopLine="236"/>
       </Position>
       <Position>
-        <Filename Value="o_app.pas"/>
-        <Caret Line="770" Column="11" TopLine="752"/>
+        <Filename Value="fr_storylist.pas"/>
+        <Caret Line="237" Column="24" TopLine="234"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="80" Column="29" TopLine="69"/>
+        <Filename Value="fr_texteditor.pas"/>
+        <Caret Line="414" Column="8" TopLine="401"/>
       </Position>
       <Position>
-        <Filename Value="fr_framepage.pas"/>
-        <Caret Line="128" Column="68" TopLine="74"/>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="305" Column="8" TopLine="288"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="73" Column="59" TopLine="51"/>
+        <Filename Value="fr_taglist.pas"/>
+        <Caret Line="305" Column="8" TopLine="288"/>
       </Position>
       <Position>
-        <Filename Value="fr_framepage.pas"/>
-        <Caret Line="32" Column="24" TopLine="29"/>
+        <Filename Value="fr_componentlist.pas"/>
+        <Caret Line="304" Column="8" TopLine="287"/>
       </Position>
       <Position>
-        <Filename Value="fr_framepage.pas"/>
-        <Caret Line="45" Column="23" TopLine="25"/>
+        <Filename Value="fr_search.pas"/>
+        <Caret Line="331" Column="8" TopLine="314"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="121" Column="55" TopLine="107"/>
+        <Filename Value="fr_quickview.pas"/>
+        <Caret Line="498" Column="8" TopLine="481"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="276" Column="36" TopLine="262"/>
+        <Filename Value="fr_storylist.pas"/>
+        <Caret Line="238" TopLine="234"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="271" TopLine="248"/>
+        <Filename Value="fr_storylist.pas"/>
+        <Caret Line="237" Column="24" TopLine="234"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_texteditor.pas"/>
+        <Caret Line="404" Column="21" TopLine="399"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="295" Column="21" TopLine="288"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_taglist.pas"/>
+        <Caret Line="295" Column="21" TopLine="288"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_componentlist.pas"/>
+        <Caret Line="294" Column="21" TopLine="287"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_search.pas"/>
+        <Caret Line="321" Column="21" TopLine="314"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_quickview.pas"/>
+        <Caret Line="488" Column="21" TopLine="481"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_notelist.pas"/>
+        <Caret Line="375" Column="21" TopLine="368"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_texteditor.pas"/>
+        <Caret Line="419" Column="8" TopLine="409"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_categorylist.pas"/>
+        <Caret Line="306" Column="117" TopLine="291"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_taglist.pas"/>
+        <Caret Line="306" Column="119" TopLine="295"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_componentlist.pas"/>
+        <Caret Line="308" Column="118" TopLine="294"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_search.pas"/>
+        <Caret Line="334" Column="88" TopLine="321"/>
+      </Position>
+      <Position>
+        <Filename Value="fr_quickview.pas"/>
+        <Caret Line="504" Column="73" TopLine="497"/>
       </Position>
     </JumpHistory>
     <RunParams>

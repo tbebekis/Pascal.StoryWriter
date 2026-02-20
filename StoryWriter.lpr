@@ -40,7 +40,8 @@ uses
   , fr_Component
   , fr_TempText
   , f_EditComponentDialog
-  , f_EditItemDialog, f_SelectParentDialog
+  , f_EditItemDialog, f_SelectParentDialog, f_ProjectEditDialog, 
+f_AppSettingsDialog
   ;
 
 {$R *.res}

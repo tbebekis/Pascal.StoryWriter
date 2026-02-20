@@ -14,7 +14,7 @@ inherited frScene: TfrScene
     TabOrder = 0
     object tabText: TTabSheet
       Caption = 'Text'
-      ClientHeight = 551
+      ClientHeight = 548
       ClientWidth = 828
       inline frText: TfrTextEditor
         Width = 384
@@ -55,7 +55,7 @@ inherited frScene: TfrScene
     end
     object tabSynopsis: TTabSheet
       Caption = 'Synopsis'
-      ClientHeight = 551
+      ClientHeight = 548
       ClientWidth = 828
       inline frSynopsis: TfrTextEditor
         Width = 828
@@ -74,7 +74,7 @@ inherited frScene: TfrScene
     end
     object tabTimeline: TTabSheet
       Caption = 'Timeline'
-      ClientHeight = 551
+      ClientHeight = 548
       ClientWidth = 828
       inline frTimeline: TfrTextEditor
         Width = 828

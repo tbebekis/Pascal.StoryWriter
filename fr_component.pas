@@ -84,7 +84,6 @@ end;
 
 procedure TfrComponent.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
   frText.Width := (Self.ClientWidth - Splitter.Width) div 2;
 end;
 

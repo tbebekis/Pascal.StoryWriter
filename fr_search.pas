@@ -111,7 +111,6 @@ end;
 
 procedure TfrSearch.ControlInitializeAfter();
 begin
-  inherited ControlInitializeAfter();
   pnlTop.Height := (Self.ClientHeight - Splitter.Height) div 2;
 end;
 
@@ -318,17 +317,26 @@ begin
 end;
 
 procedure TfrSearch.PrepareToolBar();
+var
+  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
-
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected item to Quick View List', AnyClick);
-  btnShowItemInListPage := AddButton(ToolBar, 'table_select_row', 'Show item in its List Page', AnyClick);
-  AddSeparator(ToolBar);
-  btnExpandAll := AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
-  btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Collapse All', AnyClick);
+  P := ToolBar.Parent;
+  ToolBar.Parent := nil;
+  try
+    btnAddToQuickView := AddButton(ToolBar, 'wishlist_add', 'Add selected item to Quick View List', AnyClick);
+    btnShowItemInListPage := AddButton(ToolBar, 'table_select_row', 'Show item in its List Page', AnyClick);
+    AddSeparator(ToolBar);
+    btnExpandAll := AddButton(ToolBar, 'Tree_Expand', 'Expand All', AnyClick);
+    btnCollapseAll := AddButton(ToolBar, 'Tree_Collapse', 'Collapse All', AnyClick);
+  finally
+    ToolBar.Parent := P;
+  end;
+
+
 end;
 
 procedure TfrSearch.AnyClick(Sender: TObject);

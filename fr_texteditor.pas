@@ -131,7 +131,6 @@ begin
 
     FindReplaceOptions := TSearchAndReplace.Create(Editor);
 
-
     FAutoSaveIdleMs := 1000 * 3;
     FAutoSaveDirty := False;
     FLastEditTick := GetTickCount64;
@@ -145,6 +144,9 @@ begin
     Editor.OnKeyDown := EditorKeyDown;
     Editor.OnChange := EditorChange;
     Editor.OnStatusChange := EditorOnStatusChaned;
+
+    Editor.Font.Name := App.Settings.FontFamily;
+    Editor.Font.Size := App.Settings.FontSize;
 
     { auto-save }
     if (App.Settings.AutoSave) then
@@ -398,15 +400,23 @@ begin
 end;
 
 procedure TfrTextEditor.PrepareToolBar();
+var
+  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  btnFind := AddButton('page_find', 'Find and Replace (Ctrl + F)', AnyClick);
-  btnSearchForTerm := AddButton('table_tab_search', 'Search for Term (Ctrl + T or Ctrl + LeftClick)', AnyClick);
-  btnSave := AddButton('disk', 'Save (Ctrl + S)', AnyClick);
-  AddSeparator();
+  P := ToolBar.Parent;
+  ToolBar.Parent := nil;
+  try
+    btnFind := AddButton('page_find', 'Find and Replace (Ctrl + F)', AnyClick);
+    btnSearchForTerm := AddButton('table_tab_search', 'Search for Term (Ctrl + T or Ctrl + LeftClick)', AnyClick);
+    btnSave := AddButton('disk', 'Save (Ctrl + S)', AnyClick);
+    AddSeparator();
+  finally
+    ToolBar.Parent := P;
+  end;
 
   lblTitle := TLabel.Create(ToolBar);
   lblTitle.AutoSize:= True;

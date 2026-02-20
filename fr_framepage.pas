@@ -102,7 +102,6 @@ end;
 
 procedure TFramePage.ControlInitializeAfter();
 begin
-
 end;
 
 function TFramePage.GetParentTabPage: TTabSheet;
@@ -142,8 +141,7 @@ end;
 
 procedure TFramePage.Close();
 begin
-  //if Assigned(ParentTabPage) and Assigned(ParentTabPage.PageControl) then
-  //   ParentTabPage.PageControl := nil;
+  // nothing
 end;
 
 procedure TFramePage.EditorModifiedChanged(TextEditor: TfrTextEditor);
@@ -178,47 +176,38 @@ end;
 
 procedure TFramePage.AppOnProjectOpened(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnProjectClosed(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnItemListChanged(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnItemChanged(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnSearchTermIsSet(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnCategoryListChanged(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnTagListChanged(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnComponentListChanged(Args: TBroadcasterArgs);
 begin
-
 end;
 
 procedure TFramePage.AppOnProjectMetricsChanged(Args: TBroadcasterArgs);
 begin
-
 end;
 
 end.

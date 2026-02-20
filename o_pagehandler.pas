@@ -230,6 +230,7 @@ begin
   Result := Tab;
 
   Frame.ControlInitialize();
+
   Sys.RunOnce(300 * 8, Frame.ControlInitializeAfter);
 end;
 
@@ -279,8 +280,11 @@ begin
     Tab := FPager.Pages[0];
     Frame := GetPageFrame(Tab);
     if Assigned(Frame) then
+    begin
       Frame.Close;
-    //Tab.Free;
+      Frame.Free();
+    end;
+    Tab.Free;
   end;
 
   FPager.Clear;
