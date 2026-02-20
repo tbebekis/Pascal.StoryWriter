@@ -21,12 +21,14 @@ uses
   , SynEditMarkupHighAll
   , LCLProc
 
+  ,Tripous.Broadcaster
+  ,o_TextStats
   ,o_SearchAndReplace
+  ,o_GlobalSearchTerm
   ;
 
 type
   TfrTextEditor = class;
-
 
   { TfrTextEditor }
   TfrTextEditor = class(TFrame)
@@ -34,12 +36,15 @@ type
     Editor: TSynEdit;
     ToolBar: TToolBar;
   private
+    fBroadcasterToken: TBroadcastToken;
+
     btnFind: TToolButton;
     btnSearchForTerm: TToolButton;
     btnSave : TToolButton;
 
     fSearchAndReplace: TSearchAndReplace;
     fFramePage: TFrame;
+    fStats: TTextStats;
     lblTitle: TLabel;
 
     FWrapPlugin: TLazSynEditLineWrapPlugin;
@@ -70,15 +75,19 @@ type
     procedure AnyClick(Sender: TObject);
     procedure EditorOnStatusChaned(Sender: TObject; Changes: TSynStatusChanges);
     procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure EditorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 
     procedure PrepareToolBar();
+    procedure UpdateStatusBar();
+    procedure UpdateTextMetrics();
+
+    procedure OnBroadcasterEvent(Args: TBroadcasterArgs);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
 
     procedure SaveText();
     procedure GlobalSearchForTerm();
-
 
     procedure SetHighlightTerm(const Term: string; WholeWord, MatchCase: Boolean);
     procedure JumpToCharPos(ACharPos: Integer);
@@ -87,14 +96,7 @@ type
     function AddButton(const AIconName: string; const AHint: string; AOnClick: TNotifyEvent): TToolButton;
     function AddSeparator(): TToolButton;
 
-(*
-TextToFind: string;
-ReplaceWith: string;
-MatchCase: Boolean;
-WholeWord: Boolean;
-*)
     // ● find
-
     property Title: string read GetTitle write SetTitle;
     property EditorText : string read GetEditorText write SetEditorText;        // setting does not trigger Modified
     property Modified: Boolean read GetModified write SetModified;              // setting does not trigger Modified
@@ -103,6 +105,8 @@ WholeWord: Boolean;
     property IgnoreModified: Boolean read GetIgnoreModified write SetIgnoreModified;
     property FramePage: TFrame read fFramePage write fFramePage;
     property FindReplaceOptions : TSearchAndReplace read fSearchAndReplace write fSearchAndReplace;
+
+    property Stats: TTextStats read fStats;
   end;
 
 
@@ -112,8 +116,12 @@ implementation
 {$R *.lfm}
 
 uses
-   Tripous.IconList
+    LazUTF8
+  , UnicodeData
+  , Tripous.IconList
   , fr_FramePage
+  , o_Consts
+
   , o_App
   ;
 
@@ -124,6 +132,9 @@ uses
 constructor TfrTextEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  fStats := TTextStats.Create();
+  fBroadcasterToken := Broadcaster.Register(OnBroadcasterEvent);
 
   IgnoreModified := True;
   try
@@ -142,6 +153,7 @@ begin
     Editor.RightEdge := 0;
 
     Editor.OnKeyDown := EditorKeyDown;
+    Editor.OnMouseDown := EditorMouseDown;
     Editor.OnChange := EditorChange;
     Editor.OnStatusChange := EditorOnStatusChaned;
 
@@ -165,10 +177,13 @@ begin
     IgnoreModified := False;
   end;
 
+  UpdateStatusBar();
 end;
 
 destructor TfrTextEditor.Destroy();
 begin
+  Broadcaster.Unregister(fBroadcasterToken);
+  fStats.Free();
   FreeAndNil(FAutoSaveTimer);
   inherited Destroy();
 end;
@@ -179,8 +194,14 @@ begin
 end;
 
 procedure TfrTextEditor.GlobalSearchForTerm();
+var
+  Term : string;
 begin
-  // TODO: TfrTextEditor.GlobalSearchForTerm(
+  Term := GetSelectedTerm(Editor);
+  if Length(Term) > 2 then
+  begin
+    App.SetGlobalSearchTerm(Term);
+  end;
 end;
 
 procedure TfrTextEditor.SetHighlightTerm(const Term: string; WholeWord, MatchCase: Boolean);
@@ -386,7 +407,7 @@ end;
 procedure TfrTextEditor.AnyClick(Sender: TObject);
 begin
   if btnFind = Sender then
-     fSearchAndReplace.ShowFindDialog()
+     fSearchAndReplace.ShowFindDialog(GetSelectedTerm(Editor))
   else if btnSave = Sender then
     SaveText()
   else if btnSearchForTerm = Sender then
@@ -425,12 +446,41 @@ begin
   lblTitle.Font.Size := 14;
   lblTitle.Caption:= 'Here goes the title of the item';
 end;
+
+procedure TfrTextEditor.UpdateStatusBar();
+begin
+  StatusBar.Panels[0].Text := Format('Words: %d', [Stats.WordCount]);
+  StatusBar.Panels[1].Text := Format('Pages: %.2f', [Stats.EstimatedPages]);
+  StatusBar.Panels[2].Text := Format('ReadOnly: %s', [BoolToStr(Editor.ReadOnly, True)]);
+end;
+
+procedure TfrTextEditor.UpdateTextMetrics();
+begin
+  Stats.Reset();
+  TextMetrics.AccumulateStats(Stats, Editor.Text);
+  TextMetrics.FinalizeStats(Stats);
+  UpdateStatusBar();
+end;
+
+procedure TfrTextEditor.OnBroadcasterEvent(Args: TBroadcasterArgs);
+var
+  EventKind : TAppEventKind;
+begin
+  EventKind := AppEventKindOf(Args.Name);
+  case EventKind of
+    aekProjectMetricsChanged:
+    begin
+      UpdateTextMetrics();
+    end;
+  end;
+end;
+
 procedure TfrTextEditor.EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Shift = [ssCtrl]) and (Key = VK_F) then
   begin
     Key := 0;
-    fSearchAndReplace.ShowFindDialog();
+    fSearchAndReplace.ShowFindDialog(GetSelectedTerm(Editor));
   end
   else
   if (Shift = [ssCtrl]) and (Key = VK_S) then
@@ -448,7 +498,19 @@ begin
        fSearchAndReplace.FindPrevious()
     else
         fSearchAndReplace.FindNext();
-  end;
+  end
+  else
+  if (Shift = [ssCtrl]) and (Key = VK_T) then
+  begin
+    Key := 0;
+    GlobalSearchForTerm();
+  end
+end;
+
+procedure TfrTextEditor.EditorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if (Button = mbLeft) and (ssCtrl in Shift) then
+    GlobalSearchForTerm();
 end;
 
 

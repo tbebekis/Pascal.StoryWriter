@@ -100,6 +100,7 @@ type
     procedure CollapseAll();
     procedure ExpandAll();
 
+    procedure UpdateTextMetrics();
 
     function GetStoryNode: TTreeNode;
     function GetChapterNode: TTreeNode;
@@ -1149,6 +1150,45 @@ begin
   end;
 end;
 
+procedure TfrStoryList.UpdateTextMetrics();
+var
+  List: TStringList;
+  Item: TCollectionItem;
+  Story: TStory;
+begin
+  mmoTextMetrics.Clear();
+
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  List := TStringList.Create;
+  try
+
+    for Item in App.CurrentProject.StoryList do
+    begin
+      Story := TStory(Item);
+      if Story.Index > 0 then
+        List.Add('=========================');
+      List.Add(Story.DisplayTitle);
+      List.Add('-------------------------');
+      List.Add(Format('Words: %d', [Story.Stats.WordCount]));
+      List.Add(Format('Pages: %.2f', [Story.Stats.EstimatedPages]));
+      List.Add(' ');
+      List.Add(Format('Words En: %d', [Story.StatsEn.WordCount]));
+      List.Add(Format('Pages En: %.2f', [Story.StatsEn.EstimatedPages]));
+    end;
+
+    List.Add('=========================');
+    List.Add(Format('Components: %d', [App.CurrentProject.ComponentList.Count]));
+
+    mmoTextMetrics.Text := List.Text;
+
+  finally
+    List.Free();
+  end;
+
+end;
+
 procedure TfrStoryList.OnBroadcasterEvent(Args: TBroadcasterArgs);
 var
   EventKind : TAppEventKind;
@@ -1167,7 +1207,7 @@ begin
     end;
     aekProjectMetricsChanged:
     begin
-      // TODO: Update Text Metrics
+      UpdateTextMetrics();
     end;
   end;
 end;

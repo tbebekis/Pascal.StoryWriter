@@ -44,7 +44,6 @@ type
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
-    procedure GlobalSearchForTerm(const Term: string); override;
   end;
 
 implementation
@@ -54,7 +53,6 @@ implementation
 uses
    Tripous.Logs
   ,o_Consts
-  ,o_App
   ;
 
 { TfrChapter }
@@ -147,10 +145,6 @@ begin
   AdjustTabTitle();
 end;
 
-procedure TfrChapter.GlobalSearchForTerm(const Term: string);
-begin
-  App.SetGlobalSearchTerm(Term);
-end;
 
 
 

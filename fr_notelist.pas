@@ -97,7 +97,6 @@ type
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
-    procedure GlobalSearchForTerm(const Term: string); override;
 
     procedure AdjustTabTitle(); override;
     function ShowItemInList(Item: TNote): Boolean;
@@ -656,10 +655,7 @@ begin
 
 end;
 
-procedure TfrNoteList.GlobalSearchForTerm(const Term: string);
-begin
-  App.SetGlobalSearchTerm(Term);
-end;
+
 
 end.
 

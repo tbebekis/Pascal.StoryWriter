@@ -154,6 +154,7 @@ uses
   ,Tripous.Broadcaster
 
   ,o_Consts
+  ,o_TextStats
 
   ,f_AppSettingsDialog
   ,f_ProjectEditDialog
@@ -212,16 +213,6 @@ begin
     App.fMainForm := AMainForm;
 
     LoadLastProject();
-
-{ TODO:
-ZoomFactor = Settings.ZoomFactor;
-LoadLastProject();
-
-AutoSaveService = new AutoSaveService(AutoSaveProc);
-AutoSaveService.Enabled = Settings.AutoSave;
-
-UpdateRichTextEditorGlobals();
-}
   end;
 end;
 
@@ -473,12 +464,12 @@ end;
 
 class procedure App.StartProjectStatsTimer();
 begin
-  // TODO: App.StartProjectStatsTimer()
+  TextMetrics.Active := True;
 end;
 
 class procedure App.StopProjectStatsTimer();
 begin
-  // TODO: App.StopProjectStatsTimer()
+  TextMetrics.Active := False;
 end;
 
 class procedure App.DisplayFileExplorer(const FileOrFolderPath: string);

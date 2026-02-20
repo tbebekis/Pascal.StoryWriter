@@ -50,7 +50,6 @@ type
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
-    procedure GlobalSearchForTerm(const Term: string); override;
   end;
 
 implementation
@@ -210,11 +209,6 @@ begin
   LogBox.AppendLine(Message);
 
   AdjustTabTitle();
-end;
-
-procedure TfrScene.GlobalSearchForTerm(const Term: string);
-begin
-  App.SetGlobalSearchTerm(Term);
 end;
 
 procedure TfrScene.ShowTabPage(Place: TLinkPlace);

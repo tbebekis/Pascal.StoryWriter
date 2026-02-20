@@ -1,0 +1,46 @@
+object GitCommitMessageDialog: TGitCommitMessageDialog
+  Left = 342
+  Height = 95
+  Top = 370
+  Width = 494
+  BorderStyle = bsDialog
+  Caption = 'GitCommitMessageDialog'
+  ClientHeight = 95
+  ClientWidth = 494
+  Position = poDesktopCenter
+  LCLVersion = '4.4.0.0'
+  object btnOK: TButton
+    Left = 338
+    Height = 25
+    Top = 67
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    TabOrder = 0
+  end
+  object btnCancel: TButton
+    Left = 414
+    Height = 25
+    Top = 67
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 10
+    Height = 16
+    Top = 14
+    Width = 53
+    Caption = 'Message'
+  end
+  object edtMessage: TEdit
+    Left = 72
+    Height = 28
+    Top = 8
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
+  end
+end

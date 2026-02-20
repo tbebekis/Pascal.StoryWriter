@@ -25,7 +25,17 @@ object frTextEditor: TfrTextEditor
     Top = 525
     Width = 708
     AutoSize = False
-    Panels = <>
+    Panels = <    
+      item
+        Width = 100
+      end    
+      item
+        Width = 100
+      end    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
   end
   inline Editor: TSynEdit
     Left = 0

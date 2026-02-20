@@ -40,7 +40,6 @@ type
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TfrTextEditor); override;
-    procedure GlobalSearchForTerm(const Term: string); override;
   end;
 
 implementation
@@ -110,10 +109,7 @@ begin
   AdjustTabTitle();
 end;
 
-procedure TfrTempText.GlobalSearchForTerm(const Term: string);
-begin
-  App.SetGlobalSearchTerm(Term);
-end;
+
 
 end.
 

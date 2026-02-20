@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="el" data-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{TITLE}}</title>
+    {{META_TAGS}}
+    <link rel="stylesheet" href="/assets/css/wiki.css">
+    <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+</head>
+<body>
+    {{HEADER}}
+    <div class="container">
+        <aside class="sidebar">{{SIDEBAR}}</aside>
+        <main class="content">{{CONTENT}}</main>
+    </div>
+    {{FOOTER}}
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- Fuse.js για client-side search -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
+
+    <!-- Κύριο wiki script (search, theme, burger, κτλ) -->
+    <script src="/assets/js/wiki.js"></script>
+</body>
+</html>

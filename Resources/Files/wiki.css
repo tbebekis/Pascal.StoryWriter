@@ -1,0 +1,117 @@
+
+:root{--bg:#ffffff;--text:#1f2937;--muted:#6b7280;--border:#e5e7eb;--accent:#2563eb;--accent-contrast:#ffffff;--surface:#f9fafb;--code-bg:#0f172a;--code-text:#e5e7eb;--kbd-bg:#f3f4f6;--kbd-border:#d1d5db}
+html[data-theme='dark']{--bg:#0b1020;--text:#e5e7eb;--muted:#9ca3af;--border:#1f2937;--accent:#60a5fa;--accent-contrast:#0b1020;--surface:#0f172a;--code-bg:#0b1220;--code-text:#e5e7eb;--kbd-bg:#111827;--kbd-border:#374151}
+@media (prefers-color-scheme:dark){html[data-theme='auto']{--bg:#0b1020;--text:#e5e7eb;--muted:#9ca3af;--border:#1f2937;--accent:#60a5fa;--accent-contrast:#0b1020;--surface:#0f172a;--code-bg:#0b1220;--code-text:#e5e7eb;--kbd-bg:#111827;--kbd-border:#374151}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans","Helvetica Neue",Arial,"Apple Color Emoji","Segoe UI Emoji";-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+img{max-width:100%;height:auto}
+code,pre{font-family:Consolas,Menlo,Monaco,"Liberation Mono","Courier New",monospace}
+pre{background:var(--code-bg);color:var(--code-text);padding:12px;border-radius:10px;overflow:auto}
+code{background:rgba(127,127,127,.12);padding:.15em .35em;border-radius:.35em}
+table{border-collapse:collapse;width:100%;margin:16px 0;background:transparent}
+th,td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+th{background:var(--surface)}
+blockquote{border-left:4px solid var(--accent);margin:12px 0;padding:6px 12px;background:var(--surface)}
+/* Layout */
+.container{display:grid;grid-template-columns:300px 1fr;gap:20px;max-width:1300px;margin:0 auto;padding:18px}
+.site-header{position:sticky;top:0;z-index:1000;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px}
+.home-link{font-weight:700;color:var(--text)}
+.header-right{display:flex;align-items:center;gap:10px}
+.theme-toggle{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.theme-btn{background:var(--surface);border:0;padding:6px 10px;cursor:pointer;color:var(--text)}.theme-btn:hover{filter:brightness(1.05)}.theme-btn.active{background:var(--accent);color:var(--accent-contrast)}
+.sidebar{position:sticky;top:58px;height:calc(100vh - 74px);overflow:auto;border-right:1px solid var(--border);padding-right:12px}
+.accordion .acc{margin-bottom:12px}
+.acc-h{width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);padding:10px;border-radius:10px;cursor:pointer;font-weight:600;color:var(--text)}
+.acc-b{padding:10px 6px}
+.quick-filter{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);margin:8px 0}
+.sidebar a{color:var(--text)}.sidebar a:hover{color:var(--accent)}
+.content{min-width:0}.content article{max-width:900px}
+.site-footer{margin:32px auto;max-width:1300px;padding:16px;color:var(--muted);border-top:1px solid var(--border)}
+h1,h2,h3,h4{line-height:1.25}h1{font-size:1.9rem;margin:0 0 12px}h2{font-size:1.4rem;margin:24px 0 10px}h3{font-size:1.15rem;margin:18px 0 8px}
+.toc{border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:10px}
+.kbd{display:inline-block;background:var(--kbd-bg);border:1px solid var(--kbd-border);border-bottom-width:2px;border-radius:6px;padding:0 6px;font-size:.9em}
+/* Search box */
+.search-box{position:relative;min-width:260px}
+#search-input{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text)}
+.search-results{position:absolute;top:110%;left:0;right:0;background:var(--bg);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.08);max-height:60vh;overflow:auto;display:none;z-index:2000}
+.search-results.open{display:block}
+.search-results .hit{padding:10px 12px;border-bottom:1px solid var(--border)}
+.search-results .hit:last-child{border-bottom:0}
+.search-results .hit a{font-weight:600;display:block;margin-bottom:6px}
+.search-results .snip{font-size:.92em;color:var(--muted)}
+@media (max-width:520px){.search-box{min-width:160px}}
+/* Burger default hidden on desktop */
+.burger{display:none;background:none;border:0;font-size:1.4rem;cursor:pointer;color:var(--text)}
+/* Responsive drawer and header tweaks */
+@media (max-width:768px){
+  .container{grid-template-columns:1fr;padding:0}
+  .sidebar{
+    position:fixed;top:0;left:0;height:100vh;width:260px;
+    background:var(--bg);border-right:1px solid var(--border);
+    transform:translateX(-100%);transition:transform .25s ease-in-out;
+    z-index:2500;padding:16px;overflow:auto;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .drawer-overlay{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,.4);backdrop-filter:blur(2px);
+    opacity:0;pointer-events:none;transition:opacity .25s ease-in-out;
+    z-index:2000;
+  }
+  .drawer-overlay.visible{opacity:1;pointer-events:auto}
+  .site-header{position:fixed;top:0;left:0;right:0;height:56px;padding:8px 14px}
+  body{padding-top:56px}
+  .header-left{display:flex;align-items:center;gap:8px}
+  .burger{display:inline-block}
+}
+
+.buy-btn {
+    margin-left: 15px;
+    padding: 6px 12px;
+    background: #2b8f6d;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.buy-btn:hover {
+    background: #207054;
+}
+
+.buy-block {
+    margin: 20px 0;
+    padding: 20px;
+    text-align: center;
+    background: #f4f4f4;
+    border-radius: 8px;
+}
+.buy-block a {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #1a6fb3;
+}
+
+.buy-footer {
+    color: #ffffff;
+    background: #2363a4;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+.buy-footer:hover {
+    background: #194c7e;
+}
+
+
+.about-link {
+    margin-left: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #1a6fb3;
+}
+
+.about-link:hover {
+    color: #0f4f8b;
+}

@@ -55,7 +55,7 @@ type
     // ● editor handler
     procedure EditorModifiedChanged(TextEditor: TfrTextEditor); virtual;
     procedure SaveEditorText(TextEditor: TfrTextEditor); virtual;
-    procedure GlobalSearchForTerm(const Term: string); virtual;
+    //procedure GlobalSearchForTerm(const Term: string); virtual;
 
     procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); virtual;
 
@@ -153,11 +153,13 @@ procedure TFramePage.SaveEditorText(TextEditor: TfrTextEditor);
 begin
 end;
 
+(*
 procedure TFramePage.GlobalSearchForTerm(const Term: string);
 begin
   // search all text documents in the application for the term
   App.SetGlobalSearchTerm(Term);
 end;
+*)
 
 procedure TFramePage.HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
 begin

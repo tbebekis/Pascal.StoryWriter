@@ -27,9 +27,6 @@ type
     Splitter: TSplitter;
   private
     Comp: TSWComponent;
-
-    // ● event handler
-    procedure AnyClick(Sender: TObject);
   public
     procedure ControlInitialize; override;
     procedure ControlInitializeAfter(); override;
@@ -151,10 +148,7 @@ begin
   AdjustTabTitle();
 end;
 
-procedure TfrComponent.AnyClick(Sender: TObject);
-begin
-  // TODO:  TfrComponent.AnyClick
-end;
+
 
 end.
 

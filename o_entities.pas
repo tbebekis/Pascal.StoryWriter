@@ -7,11 +7,13 @@ unit o_Entities;
 interface
 
 uses
-  Classes,
-  SysUtils,
-  Types,
-  Contnrs,
-  Tripous;
+   Classes
+  ,SysUtils
+  ,Types
+  ,Contnrs
+  ,Tripous
+  ,o_TextStats
+  ;
 
 type
   { Forward declarations }
@@ -154,9 +156,14 @@ type
     property AliasList: TStrings read fAliasList write fAliasList;
   end;
 
+
+
   { TStory }
   TStory = class(TBaseItem)
   private
+    fStats: TTextStats;
+    fStatsEn: TTextStats;
+
     fTitle: string;
     fLastFolderPath: string;
 
@@ -205,6 +212,9 @@ type
 
     function ChapterCount: Integer;
     function ChapterAt(Index: Integer): TChapter;
+
+    property Stats: TTextStats read fStats;
+    property StatsEn: TTextStats read fStatsEn;
   published
     property ChapterList: TChapterCollection read fChapterList;
   end;
@@ -1065,10 +1075,14 @@ begin
   inherited Create(ACollection);
   fSynopsis := '';
   fChapterList := TChapterCollection.Create;
+  fStats := TTextStats.Create;
+  fStatsEn := TTextStats.Create;
 end;
 
 destructor TStory.Destroy;
 begin
+  fStats.Free();
+  fStatsEn.Free();
   fChapterList.Free;
   inherited Destroy;
 end;

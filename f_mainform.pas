@@ -109,6 +109,11 @@ uses
   ,o_Consts
   ,o_App
   ,o_Entities
+  ,o_Cli
+  ,o_GitCli
+  ,o_WikiInfo
+  ,o_Wiki
+  ,f_GitCommitMessageDialog
   ;
 
 { TMainForm }
@@ -117,6 +122,7 @@ constructor TMainForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fBroadcasterToken := Broadcaster.Register(OnBroadcasterEvent);
+  IconList.SetResourceNames(IconResourceNames);
 end;
 
 destructor TMainForm.Destroy;
@@ -248,8 +254,31 @@ begin
 end;
 
 procedure TMainForm.BuildWiki(InEnglish: Boolean);
+var
+  WikiBuildInfo: TWikiBuildInfo;
+  BuildResult: TWikiBuildResult;
 begin
-  // TODO: TMainForm.BuildWiki
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  Screen.Cursor := crHourGlass;
+  Application.ProcessMessages;
+  try
+    WikiBuildInfo := TWikiBuildInfo.Create(InEnglish);
+    try
+      BuildResult := Wiki.Build(WikiBuildInfo);
+      if Assigned(BuildResult) then
+      begin
+        LogBox.AppendLine('Build result follows:');
+        LogBox.AppendLine(BuildResult.Log.Text);
+      end;
+    finally
+      WikiBuildInfo.Free();
+    end;
+  finally
+    Screen.Cursor := crDefault;
+    Application.ProcessMessages;
+  end;
 end;
 
 procedure TMainForm.ShowWiki();
@@ -257,14 +286,120 @@ begin
   // TODO: TMainForm.ShowWiki
 end;
 
-procedure TMainForm.Commit();
+procedure TMainForm.Commit;
+var
+  ProjectFolderPath: string;
+  DT: string;
+  CommitMessage: string;
+  GitIgnoreText: string;
 begin
-  // TODO: TMainForm.Commit
+  if (App.CurrentProject = nil) then
+    Exit;
+
+  Screen.Cursor := crHourGlass;
+  Application.ProcessMessages;
+  try
+    ProjectFolderPath := App.CurrentProject.FolderPath;
+
+    if not GitCli.IsGitRepo(ProjectFolderPath) then
+    begin
+      LogBox.AppendLine('Initializing git repo.');
+      Application.ProcessMessages;
+
+      GitCli.EnsureIsRepo(ProjectFolderPath);
+
+      GitIgnoreText :=
+        '**/bin' + LineEnding +
+        '**/obj' + LineEnding +
+        '**/.vs' + LineEnding +
+        '**/Wiki' + LineEnding +
+        '**/Export';
+
+      with TStringList.Create do
+      try
+        Text := GitIgnoreText;
+        SaveToFile(IncludeTrailingPathDelimiter(ProjectFolderPath) + '.gitignore');
+      finally
+        Free;
+      end;
+
+      LogBox.AppendLine('Initialized git repo, added files and done the initial commit.');
+    end
+    else
+    begin
+      if not GitCli.HasUncommittedChanges(ProjectFolderPath) then
+      begin
+        LogBox.AppendLine('There are no uncommitted changes.');
+        App.InfoBox('There are no uncommitted changes.');
+        Exit;
+      end;
+
+      DT := FormatDateTime('yyyy"-"mm"-"dd hh":"nn":"ss', Now);
+      CommitMessage := 'Auto-commit ' + DT;
+
+      if not TGitCommitMessageDialog.ShowDialog(CommitMessage) then
+        Exit;
+
+      LogBox.AppendLine(Format('Commiting to git with message: "%s"... Please wait...', [CommitMessage]));
+
+      if not GitCli.CommitIfNeeded(ProjectFolderPath, CommitMessage) then
+        LogBox.AppendLine('Nothing to commit.')
+      else
+        LogBox.AppendLine('COMMITTED.');
+    end;
+  finally
+    Screen.Cursor := crDefault;
+    Application.ProcessMessages;
+  end;
 end;
 
-procedure TMainForm.Push();
+procedure TMainForm.Push;
+var
+  Message: string;
+  ProjectFolderPath: string;
+  GitResult: TCliResult;
 begin
-  // TODO: TMainForm.Push
+  if (App.CurrentProject = nil) then
+    Exit;
+
+  Screen.Cursor := crHourGlass;
+  Application.ProcessMessages;
+  try
+    ProjectFolderPath := App.CurrentProject.FolderPath;
+
+    if not GitCli.IsGitRepo(ProjectFolderPath) then
+    begin
+      Message := Format('There is no git repo in folder: %s.', [ProjectFolderPath]);
+      LogBox.AppendLine(Message);
+      App.WarningBox(Message);
+      Exit;
+    end;
+
+    LogBox.AppendLine('Checking for uncommitted changes...');
+    if GitCli.HasUncommittedChanges(ProjectFolderPath) then
+    begin
+      Message := 'There are uncommitted changes.' + LineEnding + 'Please commit them first.';
+      LogBox.AppendLine(Message);
+      App.WarningBox(Message);
+      Exit;
+    end;
+
+    LogBox.AppendLine('Pushing to remote git repository... Please wait...');
+    LogBox.AppendLine('Starting push operation...');
+
+    GitResult := GitCli.Push(ProjectFolderPath);
+
+    if GitResult.Succeeded then
+      LogBox.AppendLine('Pushing to remote git repository SUCCEEDED.')
+    else
+      LogBox.AppendLine('Pushing to remote git repository FAILED.');
+
+    LogBox.AppendLine('Git output follows:');
+    LogBox.AppendLine(GitResult.ToText);
+  finally
+    Screen.Cursor := crDefault;
+    Application.ProcessMessages;
+  end;
 end;
 
 procedure TMainForm.AnyClick(Sender: TObject);
@@ -297,10 +432,6 @@ begin
     Close();
 end;
 
-
-
-initialization
-{$I Images.lrs}
 
 end.
 

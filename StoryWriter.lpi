@@ -13,6 +13,87 @@
         <DpiAware Value="True"/>
       </XPManifest>
       <Icon Value="0"/>
+      <Resources Count="79">
+        <Resource_0 FileName="Resources/PNG/application_add.png" Type="RCDATA" ResourceName="APPLICATION_ADD"/>
+        <Resource_1 FileName="Resources/PNG/application_delete.png" Type="RCDATA" ResourceName="APPLICATION_DELETE"/>
+        <Resource_2 FileName="Resources/PNG/application_edit.png" Type="RCDATA" ResourceName="APPLICATION_EDIT"/>
+        <Resource_3 FileName="Resources/PNG/application_go.png" Type="RCDATA" ResourceName="APPLICATION_GO"/>
+        <Resource_4 FileName="Resources/PNG/arrow_down.png" Type="RCDATA" ResourceName="ARROW_DOWN"/>
+        <Resource_5 FileName="Resources/PNG/arrow_up.png" Type="RCDATA" ResourceName="ARROW_UP"/>
+        <Resource_6 FileName="Resources/PNG/book.png" Type="RCDATA" ResourceName="BOOK"/>
+        <Resource_7 FileName="Resources/PNG/book_add.png" Type="RCDATA" ResourceName="BOOK_ADD"/>
+        <Resource_8 FileName="Resources/PNG/book_edit.png" Type="RCDATA" ResourceName="BOOK_EDIT"/>
+        <Resource_9 FileName="Resources/PNG/book_go.png" Type="RCDATA" ResourceName="BOOK_GO"/>
+        <Resource_10 FileName="Resources/PNG/book_link.png" Type="RCDATA" ResourceName="BOOK_LINK"/>
+        <Resource_11 FileName="Resources/PNG/book_open.png" Type="RCDATA" ResourceName="BOOK_OPEN"/>
+        <Resource_12 FileName="Resources/PNG/bookshelf.png" Type="RCDATA" ResourceName="BOOKSHELF"/>
+        <Resource_13 FileName="Resources/PNG/bullet_edit.png" Type="RCDATA" ResourceName="BULLET_EDIT"/>
+        <Resource_14 FileName="Resources/PNG/button_default.png" Type="RCDATA" ResourceName="BUTTON_DEFAULT"/>
+        <Resource_15 FileName="Resources/PNG/check_box_list.png" Type="RCDATA" ResourceName="CHECK_BOX_LIST"/>
+        <Resource_16 FileName="Resources/PNG/color_picker_default.png" Type="RCDATA" ResourceName="COLOR_PICKER_DEFAULT"/>
+        <Resource_17 FileName="Resources/PNG/color_wheel.png" Type="RCDATA" ResourceName="COLOR_WHEEL"/>
+        <Resource_18 FileName="Resources/PNG/compile.png" Type="RCDATA" ResourceName="COMPILE"/>
+        <Resource_19 FileName="Resources/PNG/disk.png" Type="RCDATA" ResourceName="DISK"/>
+        <Resource_20 FileName="Resources/PNG/document_export.png" Type="RCDATA" ResourceName="DOCUMENT_EXPORT"/>
+        <Resource_21 FileName="Resources/PNG/door_out.png" Type="RCDATA" ResourceName="DOOR_OUT"/>
+        <Resource_22 FileName="Resources/PNG/error_log.png" Type="RCDATA" ResourceName="ERROR_LOG"/>
+        <Resource_23 FileName="Resources/PNG/file_extension_doc.png" Type="RCDATA" ResourceName="FILE_EXTENSION_DOC"/>
+        <Resource_24 FileName="Resources/PNG/file_extension_log.png" Type="RCDATA" ResourceName="FILE_EXTENSION_LOG"/>
+        <Resource_25 FileName="Resources/PNG/file_extension_pdf.png" Type="RCDATA" ResourceName="FILE_EXTENSION_PDF"/>
+        <Resource_26 FileName="Resources/PNG/file_extension_rtf.png" Type="RCDATA" ResourceName="FILE_EXTENSION_RTF"/>
+        <Resource_27 FileName="Resources/PNG/file_extension_txt.png" Type="RCDATA" ResourceName="FILE_EXTENSION_TXT"/>
+        <Resource_28 FileName="Resources/PNG/folder_edit.png" Type="RCDATA" ResourceName="FOLDER_EDIT"/>
+        <Resource_29 FileName="Resources/PNG/folder_go.png" Type="RCDATA" ResourceName="FOLDER_GO"/>
+        <Resource_30 FileName="Resources/PNG/folder_vertical_document.png" Type="RCDATA" ResourceName="FOLDER_VERTICAL_DOCUMENT"/>
+        <Resource_31 FileName="Resources/PNG/folder_vertical_open.png" Type="RCDATA" ResourceName="FOLDER_VERTICAL_OPEN"/>
+        <Resource_32 FileName="Resources/PNG/font_colors.png" Type="RCDATA" ResourceName="FONT_COLORS"/>
+        <Resource_33 FileName="Resources/PNG/html.png" Type="RCDATA" ResourceName="HTML"/>
+        <Resource_34 FileName="Resources/PNG/inbox_document_text.png" Type="RCDATA" ResourceName="INBOX_DOCUMENT_TEXT"/>
+        <Resource_35 FileName="Resources/PNG/language.png" Type="RCDATA" ResourceName="LANGUAGE"/>
+        <Resource_36 FileName="Resources/PNG/layer_edit.png" Type="RCDATA" ResourceName="LAYER_EDIT"/>
+        <Resource_37 FileName="Resources/PNG/layout_sidebar.png" Type="RCDATA" ResourceName="LAYOUT_SIDEBAR"/>
+        <Resource_38 FileName="Resources/PNG/link.png" Type="RCDATA" ResourceName="LINK"/>
+        <Resource_39 FileName="Resources/PNG/menu_item.png" Type="RCDATA" ResourceName="MENU_ITEM"/>
+        <Resource_40 FileName="Resources/PNG/open_folder.png" Type="RCDATA" ResourceName="OPEN_FOLDER"/>
+        <Resource_41 FileName="Resources/PNG/page_delete.png" Type="RCDATA" ResourceName="PAGE_DELETE"/>
+        <Resource_42 FileName="Resources/PNG/page_edit.png" Type="RCDATA" ResourceName="PAGE_EDIT"/>
+        <Resource_43 FileName="Resources/PNG/page_find.png" Type="RCDATA" ResourceName="PAGE_FIND"/>
+        <Resource_44 FileName="Resources/PNG/page_white_edit.png" Type="RCDATA" ResourceName="PAGE_WHITE_EDIT"/>
+        <Resource_45 FileName="Resources/PNG/page_white_stack.png" Type="RCDATA" ResourceName="PAGE_WHITE_STACK"/>
+        <Resource_46 FileName="Resources/PNG/scroll_pane_tree.png" Type="RCDATA" ResourceName="SCROLL_PANE_TREE"/>
+        <Resource_47 FileName="Resources/PNG/server_components.png" Type="RCDATA" ResourceName="SERVER_COMPONENTS"/>
+        <Resource_48 FileName="Resources/PNG/setting_tools.png" Type="RCDATA" ResourceName="SETTING_TOOLS"/>
+        <Resource_49 FileName="Resources/PNG/shape_square_delete.png" Type="RCDATA" ResourceName="SHAPE_SQUARE_DELETE"/>
+        <Resource_50 FileName="Resources/PNG/shape_square_edit.png" Type="RCDATA" ResourceName="SHAPE_SQUARE_EDIT"/>
+        <Resource_51 FileName="Resources/PNG/source_code.png" Type="RCDATA" ResourceName="SOURCE_CODE"/>
+        <Resource_52 FileName="Resources/PNG/table_add.png" Type="RCDATA" ResourceName="TABLE_ADD"/>
+        <Resource_53 FileName="Resources/PNG/table_delete.png" Type="RCDATA" ResourceName="TABLE_DELETE"/>
+        <Resource_54 FileName="Resources/PNG/table_edit.png" Type="RCDATA" ResourceName="TABLE_EDIT"/>
+        <Resource_55 FileName="Resources/PNG/table_export.png" Type="RCDATA" ResourceName="TABLE_EXPORT"/>
+        <Resource_56 FileName="Resources/PNG/table_import.png" Type="RCDATA" ResourceName="TABLE_IMPORT"/>
+        <Resource_57 FileName="Resources/PNG/table_insert.png" Type="RCDATA" ResourceName="TABLE_INSERT"/>
+        <Resource_58 FileName="Resources/PNG/table_replace.png" Type="RCDATA" ResourceName="TABLE_REPLACE"/>
+        <Resource_59 FileName="Resources/PNG/table_row_delete.png" Type="RCDATA" ResourceName="TABLE_ROW_DELETE"/>
+        <Resource_60 FileName="Resources/PNG/table_row_insert.png" Type="RCDATA" ResourceName="TABLE_ROW_INSERT"/>
+        <Resource_61 FileName="Resources/PNG/table_select_row.png" Type="RCDATA" ResourceName="TABLE_SELECT_ROW"/>
+        <Resource_62 FileName="Resources/PNG/table_tab_search.png" Type="RCDATA" ResourceName="TABLE_TAB_SEARCH"/>
+        <Resource_63 FileName="Resources/PNG/text_bold.png" Type="RCDATA" ResourceName="TEXT_BOLD"/>
+        <Resource_64 FileName="Resources/PNG/textfield_add.png" Type="RCDATA" ResourceName="TEXTFIELD_ADD"/>
+        <Resource_65 FileName="Resources/PNG/text_italic.png" Type="RCDATA" ResourceName="TEXT_ITALIC"/>
+        <Resource_66 FileName="Resources/PNG/text_linespacing.png" Type="RCDATA" ResourceName="TEXT_LINESPACING"/>
+        <Resource_67 FileName="Resources/PNG/text_list_bullets.png" Type="RCDATA" ResourceName="TEXT_LIST_BULLETS"/>
+        <Resource_68 FileName="Resources/PNG/text_list_numbers.png" Type="RCDATA" ResourceName="TEXT_LIST_NUMBERS"/>
+        <Resource_69 FileName="Resources/PNG/text_padding_top.png" Type="RCDATA" ResourceName="TEXT_PADDING_TOP"/>
+        <Resource_70 FileName="Resources/PNG/text_replace.png" Type="RCDATA" ResourceName="TEXT_REPLACE"/>
+        <Resource_71 FileName="Resources/PNG/text_underline.png" Type="RCDATA" ResourceName="TEXT_UNDERLINE"/>
+        <Resource_72 FileName="Resources/PNG/to_do_list_cheked_1.png" Type="RCDATA" ResourceName="TO_DO_LIST_CHEKED_1"/>
+        <Resource_73 FileName="Resources/PNG/Tree_Collapse.png" Type="RCDATA" ResourceName="TREE_COLLAPSE"/>
+        <Resource_74 FileName="Resources/PNG/Tree_Expand.png" Type="RCDATA" ResourceName="TREE_EXPAND"/>
+        <Resource_75 FileName="Resources/PNG/wishlist_add.png" Type="RCDATA" ResourceName="WISHLIST_ADD"/>
+        <Resource_76 FileName="Resources/Files/wiki.css" Type="RCDATA" ResourceName="WIKI_CSS"/>
+        <Resource_77 FileName="Resources/Files/wiki.html" Type="RCDATA" ResourceName="WIKI_HTML"/>
+        <Resource_78 FileName="Resources/Files/wiki.js" Type="RCDATA" ResourceName="WIKI_JS"/>
+      </Resources>
     </General>
     <BuildModes>
       <Item Name="Default" Default="True"/>
@@ -290,6 +371,43 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_AppSettingsDialog"/>
       </Unit>
+      <Unit>
+        <Filename Value="o_textstats.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_TextStats"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_globalsearchterm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_GlobalSearchTerm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_cli.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Cli"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_gitcli.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_GitCli"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_gitcommitmessagedialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GitCommitMessageDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_GitCommitMessageDialog"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_wikiinfo.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_WikiInfo"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_wiki.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Wiki"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -314,7 +432,7 @@
     </Linking>
     <Other>
       <CompilerMessages>
-        <IgnoredMessages idx6058="True" idx5079="True" idx5024="True"/>
+        <IgnoredMessages idx6058="True" idx5079="True" idx5071="True" idx5024="True"/>
       </CompilerMessages>
     </Other>
   </CompilerOptions>

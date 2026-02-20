@@ -42,7 +42,7 @@ type
   public
     constructor Create(AEditor: TSynEdit); overload;
 
-    procedure ShowFindDialog();
+    procedure ShowFindDialog(const ATextToFind: string);
 
     procedure Highlight();
     procedure ClearHighlights();
@@ -79,8 +79,9 @@ begin
 
 end;
 
-procedure TSearchAndReplace.ShowFindDialog();
+procedure TSearchAndReplace.ShowFindDialog(const ATextToFind: string);
 begin
+  Self.TextToFind := ATextToFind;
   if TFindAndReplaceDialog.ShowDialog(Self) then
   begin
     if ReplaceFlag or ReplaceAllFlag then

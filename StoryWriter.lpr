@@ -41,8 +41,8 @@ uses
   , fr_TempText
   , f_EditComponentDialog
   , f_EditItemDialog, f_SelectParentDialog, f_ProjectEditDialog, 
-f_AppSettingsDialog
-  ;
+f_AppSettingsDialog, o_TextStats, o_GlobalSearchTerm, o_Cli, o_GitCli, 
+f_GitCommitMessageDialog, o_Wiki;
 
 {$R *.res}
 
