@@ -46,6 +46,8 @@ type
   TBaseItem = class(TCollectionItem)
   private
     fId: string;
+    function GetIsFirst: Boolean;
+    function GetIsLast: Boolean;
   protected
     function GetItemType: TItemType; virtual;
     function GetId: string; virtual;
@@ -70,6 +72,9 @@ type
     function TitleToFileName(const ATitle: string; RemoveSpaces: Boolean = False): string; virtual;
 
     property ItemType: TItemType read GetItemType;
+
+    property IsFirst: Boolean read GetIsFirst;
+    property IsLast: Boolean read GetIsLast;
   published
     property Id: string read GetId write fId;
     property Title: string read GetTitle write SetTitle;
@@ -398,11 +403,17 @@ type
   { TCollectionBase }
 
   TCollectionBase = class(TCollection)
+  private
+    function GetFirst: TCollectionItem;
+    function GetLast: TCollectionItem;
   public
     function IndexOf(Item: TCollectionItem): Integer;
     function Remove(Item: TCollectionItem): Boolean;
     function FindItem(Func: TCollectionFindMethod): TCollectionItem; overload;
     function FindItem(Func: TCollectionFindFunc): TCollectionItem; overload;
+
+    property First: TCollectionItem read GetFirst;
+    property Last: TCollectionItem read GetLast;
   end;
 
   TSWComponentCollection = class(TCollection)
@@ -720,6 +731,20 @@ begin
   if Sys.IsEmpty(fId) then
     fId := Sys.GenId(False);
   Result := fId;
+end;
+
+function TBaseItem.GetIsFirst: Boolean;
+begin
+  Result := False;
+  if Assigned(Collection) then
+    Result := TCollectionBase(Collection).First = Self;
+end;
+
+function TBaseItem.GetIsLast: Boolean;
+begin
+  Result := False;
+  if Assigned(Collection) then
+    Result := TCollectionBase(Collection).Last = Self;
 end;
 
 function TBaseItem.GetItemType: TItemType;
@@ -1962,6 +1987,20 @@ begin
 end;
 
 { TCollectionBase }
+
+function TCollectionBase.GetFirst: TCollectionItem;
+begin
+  Result := nil;
+  if Self.Count > 0 then
+    Result := Items[0];
+end;
+
+function TCollectionBase.GetLast: TCollectionItem;
+begin
+  Result := nil;
+  if Self.Count > 0 then
+    Result := Items[Self.Count - 1];
+end;
 
 function TCollectionBase.IndexOf(Item: TCollectionItem): Integer;
 var

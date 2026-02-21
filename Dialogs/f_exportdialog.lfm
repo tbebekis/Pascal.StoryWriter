@@ -1,0 +1,234 @@
+object ExportDialog: TExportDialog
+  Left = 342
+  Height = 433
+  Top = 370
+  Width = 612
+  BorderStyle = bsDialog
+  Caption = 'Export Options'
+  ClientHeight = 433
+  ClientWidth = 612
+  Position = poDesktopCenter
+  LCLVersion = '4.4.0.0'
+  object btnOK: TButton
+    Left = 461
+    Height = 25
+    Top = 405
+    Width = 73
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    TabOrder = 0
+  end
+  object btnCancel: TButton
+    Left = 534
+    Height = 25
+    Top = 405
+    Width = 73
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object gboLanguage: TGroupBox
+    Left = 8
+    Height = 85
+    Top = 8
+    Width = 185
+    Caption = 'Language'
+    ClientHeight = 68
+    ClientWidth = 183
+    TabOrder = 2
+    object chGreek: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 8
+      Width = 61
+      Caption = 'Greek'
+      TabOrder = 0
+    end
+    object chEnglish: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 32
+      Width = 71
+      Caption = 'English'
+      TabOrder = 1
+    end
+  end
+  object gboChapterTitles: TGroupBox
+    Left = 8
+    Height = 133
+    Top = 109
+    Width = 185
+    Caption = 'Chapter Titles'
+    ClientHeight = 116
+    ClientWidth = 183
+    TabOrder = 3
+    object chChapterBullet: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 8
+      Width = 63
+      Caption = 'Bullet'
+      TabOrder = 0
+    end
+    object chChapterNumber: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 32
+      Width = 75
+      Caption = 'Number'
+      TabOrder = 1
+    end
+    object chChapterWord: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 56
+      Width = 59
+      Caption = 'Word'
+      TabOrder = 2
+    end
+    object chChapterTitle: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 80
+      Width = 53
+      Caption = 'Title'
+      TabOrder = 3
+    end
+  end
+  object gboText: TGroupBox
+    Left = 216
+    Height = 85
+    Top = 8
+    Width = 185
+    Caption = 'Text'
+    ClientHeight = 68
+    ClientWidth = 183
+    TabOrder = 4
+    object chText: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 8
+      Width = 94
+      Caption = 'CheckBox1'
+      TabOrder = 0
+    end
+    object chSynopsis: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 32
+      Width = 79
+      Caption = 'Synopsis'
+      TabOrder = 1
+    end
+  end
+  object gboFormat: TGroupBox
+    Left = 416
+    Height = 85
+    Top = 8
+    Width = 185
+    Caption = 'Format'
+    ClientHeight = 68
+    ClientWidth = 183
+    TabOrder = 5
+    object chTXT: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 8
+      Width = 51
+      Caption = 'TXT'
+      TabOrder = 0
+    end
+    object chODT: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 32
+      Width = 53
+      Caption = 'ODT'
+      TabOrder = 1
+    end
+  end
+  object gboSceneTitles: TGroupBox
+    Left = 216
+    Height = 133
+    Top = 109
+    Width = 185
+    Caption = 'Scene Titles'
+    ClientHeight = 116
+    ClientWidth = 183
+    TabOrder = 6
+    object chSceneBullet: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 8
+      Width = 63
+      Caption = 'Bullet'
+      TabOrder = 0
+    end
+    object chSceneNumber: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 32
+      Width = 75
+      Caption = 'Number'
+      TabOrder = 1
+    end
+    object chSceneWord: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 56
+      Width = 59
+      Caption = 'Word'
+      TabOrder = 2
+    end
+    object chSceneTitle: TCheckBox
+      Left = 11
+      Height = 23
+      Top = 80
+      Width = 53
+      Caption = 'Title'
+      TabOrder = 3
+    end
+  end
+  object gboSpecialExports: TGroupBox
+    Left = 8
+    Height = 120
+    Top = 261
+    Width = 593
+    Caption = 'Special Exports'
+    ClientHeight = 103
+    ClientWidth = 591
+    TabOrder = 7
+    object chSingleComponentText: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 8
+      Width = 216
+      Caption = 'Components text in a single file'
+      TabOrder = 0
+    end
+    object chPreEditScenes: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 32
+      Width = 435
+      Caption = 'PreEdit Scenes. A separate pre-edit file will be created for each scene'
+      TabOrder = 1
+    end
+    object chPreEditChapters: TCheckBox
+      Left = 8
+      Height = 23
+      Top = 56
+      Width = 463
+      Caption = 'PreEdit Chapters. A  separate pre-edit file will be created for each chapter'
+      TabOrder = 2
+    end
+  end
+  object Label1: TLabel
+    Left = 10
+    Height = 32
+    Top = 395
+    Width = 246
+    Caption = 'Export in ODT is done, using Libre Office.'#10'Libre Office must already be installed.'
+  end
+end

@@ -42,7 +42,8 @@ uses
   , f_EditComponentDialog
   , f_EditItemDialog, f_SelectParentDialog, f_ProjectEditDialog, 
 f_AppSettingsDialog, o_TextStats, o_GlobalSearchTerm, o_Cli, o_GitCli, 
-f_GitCommitMessageDialog, o_Wiki;
+f_GitCommitMessageDialog, o_Wiki, o_ExportOptions, o_StoryExporter, 
+f_ExportDialog;
 
 {$R *.res}
 

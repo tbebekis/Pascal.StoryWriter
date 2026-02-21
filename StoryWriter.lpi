@@ -408,6 +408,23 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Wiki"/>
       </Unit>
+      <Unit>
+        <Filename Value="Export/o_exportoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_ExportOptions"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Export/o_storyexporter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_StoryExporter"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_exportdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ExportDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_ExportDialog"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -417,7 +434,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../Pascal.Tripous;Dialogs"/>
+      <OtherUnitFiles Value="../Pascal.Tripous;Dialogs;Export"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

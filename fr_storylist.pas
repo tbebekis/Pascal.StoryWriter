@@ -121,6 +121,7 @@ uses
    Tripous.Logs
   ,o_Consts
   ,o_App
+  ,o_StoryExporter
   ,fr_Story
   ,fr_Chapter
   ,fr_Scene
@@ -801,8 +802,26 @@ begin
 end;
 
 procedure TfrStoryList.ExportStory();
+var
+  Message: string;
+  StoryNode: TTreeNode;
+  Story: TStory;
 begin
-  // TODO: TfrStoryList.ExportStory
+
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  StoryNode := GetStoryNode();
+  if not Assigned(StoryNode) then
+  begin
+    Message := 'Please, select a Story first.';
+    LogBox.AppendLine(Message);
+    App.ErrorBox(Message);
+    Exit;
+  end;
+
+  Story := TStory(StoryNode.Data);
+  TStoryExporter.Export(Story);
 end;
 
 procedure TfrStoryList.MoveStory(Story: TStory; Node: TTreeNode; Up: Boolean);
