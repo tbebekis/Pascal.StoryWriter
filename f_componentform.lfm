@@ -1,0 +1,33 @@
+inherited ComponentForm: TComponentForm
+  Height = 434
+  Width = 934
+  ClientHeight = 434
+  ClientWidth = 934
+  object pnlLeft: TPanel[0]
+    Left = 0
+    Height = 434
+    Top = 0
+    Width = 455
+    Align = alClient
+    Caption = 'pnlLeft'
+    TabOrder = 0
+  end
+  object Splitter: TSplitter[1]
+    Left = 455
+    Height = 434
+    Top = 0
+    Width = 6
+    Align = alRight
+    Beveled = True
+    ResizeAnchor = akRight
+  end
+  object pnlRight: TPanel[2]
+    Left = 461
+    Height = 434
+    Top = 0
+    Width = 473
+    Align = alRight
+    Caption = 'pnlRight'
+    TabOrder = 2
+  end
+end

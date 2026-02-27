@@ -1,0 +1,4 @@
+inherited StoryForm: TStoryForm
+  Height = 390
+  Width = 539
+end

@@ -13,19 +13,16 @@ uses
   , Dialogs
   , StdCtrls
 
-  , o_SearchAndReplace
+  ,o_FindAndReplace
   ;
 
 type
-
   { TFindAndReplaceDialog }
-
   TFindAndReplaceDialog = class(TForm)
     btnOK: TButton;
     btnCancel: TButton;
     chReplace: TCheckBox;
     chSelectionOnly: TCheckBox;
-    chPromptOnReplace: TCheckBox;
     chReplaceAll: TCheckBox;
     chMatchCase: TCheckBox;
     chWholeWord: TCheckBox;
@@ -34,7 +31,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
   private
-    Options: TSearchAndReplace;
+    Options: TFindAndReplaceOptions;
   protected
     procedure AnyClick(Sender: TObject);
     procedure FormInitialize();
@@ -42,7 +39,7 @@ type
     procedure ControlsToItem();
     procedure DoShow; override;
   public
-    class function ShowDialog(AOptions: TSearchAndReplace): Boolean;
+    class function ShowDialog(AOptions: TFindAndReplaceOptions): Boolean;
   end;
 
 
@@ -50,7 +47,7 @@ implementation
 
 {$R *.lfm}
 
-class function TFindAndReplaceDialog.ShowDialog(AOptions: TSearchAndReplace): Boolean;
+class function TFindAndReplaceDialog.ShowDialog(AOptions: TFindAndReplaceOptions): Boolean;
 var
   Dlg: TFindAndReplaceDialog;
 begin
@@ -89,7 +86,6 @@ begin
 
   chReplace.Checked := Options.ReplaceFlag;
   chReplaceAll.Checked := Options.ReplaceAllFlag;
-  chPromptOnReplace.Checked := Options.PromptOnReplace;
 end;
 
 procedure TFindAndReplaceDialog.ControlsToItem();
@@ -107,7 +103,6 @@ begin
   Options.SelectionOnly := chSelectionOnly.Checked;
   Options.ReplaceFlag := chReplace.Checked;
   Options.ReplaceAllFlag := chReplaceAll.Checked;
-  Options.PromptOnReplace := chPromptOnReplace.Checked;
 
   Self.ModalResult := mrOK;
 end;

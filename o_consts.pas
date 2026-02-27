@@ -8,7 +8,7 @@ uses
   Classes, SysUtils;
 
 const
-  IconResourceNames: array[0..75] of string = (
+  IconResourceNames: array[0..77] of string = (
     'APPLICATION_ADD',
     'APPLICATION_DELETE',
     'APPLICATION_EDIT',
@@ -29,6 +29,7 @@ const
     'COLOR_WHEEL',
     'COMPILE',
     'DISK',
+    'DISK_MULTIPLE',
     'DOCUMENT_EXPORT',
     'DOOR_OUT',
     'ERROR_LOG',
@@ -73,6 +74,7 @@ const
     'TABLE_SELECT_ROW',
     'TABLE_TAB_SEARCH',
     'TEXT_BOLD',
+    'TEXT_DOCUMENT_WRAP',
     'TEXTFIELD_ADD',
     'TEXT_ITALIC',
     'TEXT_LINESPACING',

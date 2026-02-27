@@ -1,4 +1,4 @@
-unit f_MainForm;
+unit MainForm;
 
 {$MODE DELPHI}{$H+}
 
@@ -61,11 +61,11 @@ type
     btnPush: TToolButton;
     btnExit: TToolButton;
 
-    IsInitialized: Boolean;
     fBroadcasterToken: TBroadcastToken;
 
     SideBarPagerHandler: TPagerHandler;
     ContentPagerHandler: TPagerHandler;
+
 
     procedure FormInitialize();
     procedure FormFinalize();
@@ -79,8 +79,6 @@ type
     procedure ShowWiki();
     procedure Commit();
     procedure Push();
-
-    procedure InitializeHighlighters();
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
@@ -115,8 +113,6 @@ uses
   ,o_GitCli
   ,o_WikiInfo
   ,o_Wiki
-   ,o_Highlighters
-   ,Zipper
   ,f_GitCommitMessageDialog
   ;
 
@@ -127,7 +123,6 @@ begin
   inherited Create(AOwner);
   fBroadcasterToken := Broadcaster.Register(OnBroadcasterEvent);
   IconList.SetResourceNames(IconResourceNames);
-  InitializeHighlighters();
 end;
 
 destructor TMainForm.Destroy;
@@ -139,6 +134,7 @@ end;
 procedure TMainForm.DoCreate;
 begin
   inherited DoCreate;
+  FormInitialize();
 end;
 
 procedure TMainForm.DoDestroy;
@@ -150,11 +146,6 @@ end;
 procedure TMainForm.DoShow;
 begin
   inherited DoShow;
-  if not IsInitialized then
-  begin
-    FormInitialize();
-    IsInitialized := True;
-  end;
 end;
 
 procedure TMainForm.DoClose(var CloseAction: TCloseAction);
@@ -197,7 +188,6 @@ begin
 
   pagerSideBar.Width:= 560;
 
-  App.InfoBox('TODO: HighlightAll');
 end;
 
 procedure TMainForm.FormFinalize();
@@ -214,7 +204,7 @@ begin
   case EventKind of
     aekProjectOpened :
     begin
-      Self.Caption := Format('%s - [%s]', [STitle, App.CurrentProject.Title]);
+      Self.Caption := Format('%s - [none]', [App.CurrentProject.Title]);
       StatusBar.Panels[0].Text := Self.Caption;
     end;
     aekProjectClosed :
@@ -226,38 +216,29 @@ begin
 end;
 
 procedure TMainForm.PrepareToolBar();
-var
-  P: TWinControl;
 begin
   ToolBar.AutoSize := True;
   ToolBar.ButtonHeight := 32;
   ToolBar.ButtonWidth := 32;
 
-  P := ToolBar.Parent;
-  ToolBar.Parent := nil;
-  try
-    btnNewProject := IconList.AddButton(ToolBar, 'application_add', 'New Project', AnyClick);
-    btnOpenProject := IconList.AddButton(ToolBar, 'application_go', 'Open Project', AnyClick);
-    btnShowProjectFolder := IconList.AddButton(ToolBar, 'folder_go', 'Show Project Folder', AnyClick);
-    IconList.AddSeparator(ToolBar);
-    btnSettings := IconList.AddButton(ToolBar, 'setting_tools', 'Settings', AnyClick);
-    IconList.AddSeparator(ToolBar);
-    btnTranslator := IconList.AddButton(ToolBar, 'language', 'Translator', AnyClick);
-    btnBuildWiki := IconList.AddButton(ToolBar, 'compile', 'Build Wiki', AnyClick);
-    btnBuildWikiEn := IconList.AddButton(ToolBar, 'compile', 'Build Wiki in English', AnyClick);
-    btnShowWiki := IconList.AddButton(ToolBar, 'bookshelf', 'Show Wiki', AnyClick);
-    IconList.AddSeparator(ToolBar);
-    btnToggleSideBar := IconList.AddButton(ToolBar, 'layout_sidebar', 'Toggle SideBar', AnyClick);
-    btnToggleLog := IconList.AddButton(ToolBar, 'error_log', 'Toggle Log', AnyClick);
-    IconList.AddSeparator(ToolBar);
-    btnCommit := IconList.AddButton(ToolBar, 'book', 'Commit to git', AnyClick);
-    btnPush := IconList.AddButton(ToolBar, 'book_go', 'Push to Remote git repository', AnyClick);
-    IconList.AddSeparator(ToolBar);
-    btnExit := IconList.AddButton(ToolBar, 'door_out', 'Exit', AnyClick);
-  finally
-    ToolBar.Parent := P;
-  end;
-
+  btnNewProject := IconList.AddButton(ToolBar, 'application_add', 'New Project', AnyClick);
+  btnOpenProject := IconList.AddButton(ToolBar, 'application_go', 'Open Project', AnyClick);
+  btnShowProjectFolder := IconList.AddButton(ToolBar, 'folder_go', 'Show Project Folder', AnyClick);
+  IconList.AddSeparator(ToolBar);
+  btnSettings := IconList.AddButton(ToolBar, 'setting_tools', 'Settings', AnyClick);
+  IconList.AddSeparator(ToolBar);
+  btnTranslator := IconList.AddButton(ToolBar, 'language', 'Translator', AnyClick);
+  btnBuildWiki := IconList.AddButton(ToolBar, 'compile', 'Build Wiki', AnyClick);
+  btnBuildWikiEn := IconList.AddButton(ToolBar, 'compile', 'Build Wiki in English', AnyClick);
+  btnShowWiki := IconList.AddButton(ToolBar, 'bookshelf', 'Show Wiki', AnyClick);
+  IconList.AddSeparator(ToolBar);
+  btnToggleSideBar := IconList.AddButton(ToolBar, 'layout_sidebar', 'Toggle SideBar', AnyClick);
+  btnToggleLog := IconList.AddButton(ToolBar, 'error_log', 'Toggle Log', AnyClick);
+  IconList.AddSeparator(ToolBar);
+  btnCommit := IconList.AddButton(ToolBar, 'book', 'Commit to git', AnyClick);
+  btnPush := IconList.AddButton(ToolBar, 'book_go', 'Push to Remote git repository', AnyClick);
+  IconList.AddSeparator(ToolBar);
+  btnExit := IconList.AddButton(ToolBar, 'door_out', 'Exit', AnyClick);
 end;
 
 procedure TMainForm.ToggleSideBar();
@@ -449,46 +430,6 @@ begin
     Push()
   else if btnExit = Sender  then
     Close();
-end;
-
-procedure TMainForm.InitializeHighlighters();
-var
-  FolderPath: string;
-  ZipFilePath: string;
-  ResName : string;
-  RS : TResourceStream;
-  UnZ: TUnZipper;
-begin
-
-  FolderPath := Sys.CombinePath(App.ExeFolderPath, 'Highlighters');
-  if not DirectoryExists(FolderPath) then
-  begin
-    ResName := 'HIGHLIGHTERS';
-    ZipFilePath := Sys.CombinePath(App.ExeFolderPath, 'Highlighters.zip');
-
-    RS := TResourceStream.Create(HInstance, ResName, RT_RCDATA);
-    try
-      RS.SaveToFile(ZipFilePath);
-    finally
-      RS.Free;
-    end;
-
-    UnZ := TUnZipper.Create;
-    try
-      UnZ.FileName := ZipFilePath;
-      UnZ.OutputPath := IncludeTrailingPathDelimiter(App.ExeFolderPath);
-      UnZ.Examine;
-      UnZ.UnZipAllFiles;
-    finally
-      UnZ.Free;
-    end;
-  end;
-
-  if DirectoryExists(FolderPath) then
-  begin
-    THighlighters.Initialize(FolderPath);
-    THighlighters.RegisterDefaults;
-  end;
 end;
 
 

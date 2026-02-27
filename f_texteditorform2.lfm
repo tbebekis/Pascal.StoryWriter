@@ -1,0 +1,41 @@
+object TextEditorForm2: TTextEditorForm2
+  Left = 1520
+  Height = 459
+  Top = 370
+  Width = 654
+  Caption = 'TextEditorForm2'
+  ClientHeight = 459
+  ClientWidth = 654
+  LCLVersion = '4.4.0.0'
+  object ToolBar: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 654
+    Caption = 'ToolBar'
+    TabOrder = 0
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 18
+    Top = 441
+    Width = 654
+    Panels = <    
+      item
+        Width = 140
+      end    
+      item
+        Width = 120
+      end    
+      item
+        Width = 120
+      end    
+      item
+        Width = 100
+      end    
+      item
+        Width = 1024
+      end>
+    SimplePanel = False
+  end
+end

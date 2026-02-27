@@ -11,15 +11,20 @@ type
   { TAppSettings }
   TAppSettings = class
   private
+    fGutterVisible: Boolean;
     FLoadLastProjectOnStartup: Boolean;
     FLastProjectFolderPath: string;
     FAutoSave: Boolean;
     FAutoSaveSecondsInterval: Integer;
-    FFontFamily: string;
+    fFontName: string;
     FFontSize: Integer;
-    FZoomFactor: Currency;
-    FMarkdownWebViewVisible: Boolean;
+
     FEnglishVisible: Boolean;
+    fMinimapTooltipVisible: Boolean;
+    fMinimapVisible: Boolean;
+    fRulerVisible: Boolean;
+    fShowCurLine: Boolean;
+    fUseHighlighters: Boolean;
 
     function GetFilePath: string;
   protected
@@ -33,15 +38,22 @@ type
 
     property FilePath: string read GetFilePath;
   published
-    property LoadLastProjectOnStartup: Boolean read FLoadLastProjectOnStartup write FLoadLastProjectOnStartup;
-    property LastProjectFolderPath: string read FLastProjectFolderPath write FLastProjectFolderPath;
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property AutoSaveSecondsInterval: Integer read FAutoSaveSecondsInterval write FAutoSaveSecondsInterval;
-    property FontFamily: string read FFontFamily write FFontFamily;
-    property FontSize: Integer read FFontSize write FFontSize;
-    property ZoomFactor: Currency read FZoomFactor write FZoomFactor;
-    property MarkdownWebViewVisible: Boolean read FMarkdownWebViewVisible write FMarkdownWebViewVisible;
+
+    property LoadLastProjectOnStartup: Boolean read FLoadLastProjectOnStartup write FLoadLastProjectOnStartup;
+    property LastProjectFolderPath: string read FLastProjectFolderPath write FLastProjectFolderPath;
     property EnglishVisible: Boolean read FEnglishVisible write FEnglishVisible;
+
+    property UseHighlighters: Boolean read fUseHighlighters write fUseHighlighters;
+    property GutterVisible: Boolean read fGutterVisible write fGutterVisible;
+    property RulerVisible: Boolean read fRulerVisible write fRulerVisible;
+    property ShowCurLine: Boolean read fShowCurLine write fShowCurLine;
+    property MinimapVisible: Boolean read fMinimapVisible write fMinimapVisible;
+    property MinimapTooltipVisible: Boolean read fMinimapTooltipVisible write fMinimapTooltipVisible;
+
+    property FontName: string read fFontName write fFontName;
+    property FontSize: Integer read FFontSize write FFontSize;
   end;
 
 implementation
@@ -73,13 +85,16 @@ begin
 
   FLoadLastProjectOnStartup := True;
   FLastProjectFolderPath := '___';
+
   FAutoSave := True;
-  FAutoSaveSecondsInterval := 30;
-  FFontFamily := 'DejaVu Sans Mono';
-  FFontSize := 13;
-  FZoomFactor := 1.0;
-  FMarkdownWebViewVisible := False;
+  FAutoSaveSecondsInterval := 15;
+  fFontName := 'DejaVu Sans Mono';
+  FFontSize := 10;
+
   FEnglishVisible := False;
+
+  UseHighlighters := True;
+  ShowCurLine := True;
 end;
 
 procedure TAppSettings.Load;

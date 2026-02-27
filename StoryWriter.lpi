@@ -13,86 +13,89 @@
         <DpiAware Value="True"/>
       </XPManifest>
       <Icon Value="0"/>
-      <Resources Count="79">
-        <Resource_0 FileName="Resources/PNG/application_add.png" Type="RCDATA" ResourceName="APPLICATION_ADD"/>
-        <Resource_1 FileName="Resources/PNG/application_delete.png" Type="RCDATA" ResourceName="APPLICATION_DELETE"/>
-        <Resource_2 FileName="Resources/PNG/application_edit.png" Type="RCDATA" ResourceName="APPLICATION_EDIT"/>
-        <Resource_3 FileName="Resources/PNG/application_go.png" Type="RCDATA" ResourceName="APPLICATION_GO"/>
-        <Resource_4 FileName="Resources/PNG/arrow_down.png" Type="RCDATA" ResourceName="ARROW_DOWN"/>
-        <Resource_5 FileName="Resources/PNG/arrow_up.png" Type="RCDATA" ResourceName="ARROW_UP"/>
-        <Resource_6 FileName="Resources/PNG/book.png" Type="RCDATA" ResourceName="BOOK"/>
-        <Resource_7 FileName="Resources/PNG/book_add.png" Type="RCDATA" ResourceName="BOOK_ADD"/>
-        <Resource_8 FileName="Resources/PNG/book_edit.png" Type="RCDATA" ResourceName="BOOK_EDIT"/>
-        <Resource_9 FileName="Resources/PNG/book_go.png" Type="RCDATA" ResourceName="BOOK_GO"/>
-        <Resource_10 FileName="Resources/PNG/book_link.png" Type="RCDATA" ResourceName="BOOK_LINK"/>
-        <Resource_11 FileName="Resources/PNG/book_open.png" Type="RCDATA" ResourceName="BOOK_OPEN"/>
-        <Resource_12 FileName="Resources/PNG/bookshelf.png" Type="RCDATA" ResourceName="BOOKSHELF"/>
-        <Resource_13 FileName="Resources/PNG/bullet_edit.png" Type="RCDATA" ResourceName="BULLET_EDIT"/>
-        <Resource_14 FileName="Resources/PNG/button_default.png" Type="RCDATA" ResourceName="BUTTON_DEFAULT"/>
-        <Resource_15 FileName="Resources/PNG/check_box_list.png" Type="RCDATA" ResourceName="CHECK_BOX_LIST"/>
-        <Resource_16 FileName="Resources/PNG/color_picker_default.png" Type="RCDATA" ResourceName="COLOR_PICKER_DEFAULT"/>
-        <Resource_17 FileName="Resources/PNG/color_wheel.png" Type="RCDATA" ResourceName="COLOR_WHEEL"/>
-        <Resource_18 FileName="Resources/PNG/compile.png" Type="RCDATA" ResourceName="COMPILE"/>
-        <Resource_19 FileName="Resources/PNG/disk.png" Type="RCDATA" ResourceName="DISK"/>
-        <Resource_20 FileName="Resources/PNG/document_export.png" Type="RCDATA" ResourceName="DOCUMENT_EXPORT"/>
-        <Resource_21 FileName="Resources/PNG/door_out.png" Type="RCDATA" ResourceName="DOOR_OUT"/>
-        <Resource_22 FileName="Resources/PNG/error_log.png" Type="RCDATA" ResourceName="ERROR_LOG"/>
-        <Resource_23 FileName="Resources/PNG/file_extension_doc.png" Type="RCDATA" ResourceName="FILE_EXTENSION_DOC"/>
-        <Resource_24 FileName="Resources/PNG/file_extension_log.png" Type="RCDATA" ResourceName="FILE_EXTENSION_LOG"/>
-        <Resource_25 FileName="Resources/PNG/file_extension_pdf.png" Type="RCDATA" ResourceName="FILE_EXTENSION_PDF"/>
-        <Resource_26 FileName="Resources/PNG/file_extension_rtf.png" Type="RCDATA" ResourceName="FILE_EXTENSION_RTF"/>
-        <Resource_27 FileName="Resources/PNG/file_extension_txt.png" Type="RCDATA" ResourceName="FILE_EXTENSION_TXT"/>
-        <Resource_28 FileName="Resources/PNG/folder_edit.png" Type="RCDATA" ResourceName="FOLDER_EDIT"/>
-        <Resource_29 FileName="Resources/PNG/folder_go.png" Type="RCDATA" ResourceName="FOLDER_GO"/>
-        <Resource_30 FileName="Resources/PNG/folder_vertical_document.png" Type="RCDATA" ResourceName="FOLDER_VERTICAL_DOCUMENT"/>
-        <Resource_31 FileName="Resources/PNG/folder_vertical_open.png" Type="RCDATA" ResourceName="FOLDER_VERTICAL_OPEN"/>
-        <Resource_32 FileName="Resources/PNG/font_colors.png" Type="RCDATA" ResourceName="FONT_COLORS"/>
-        <Resource_33 FileName="Resources/PNG/html.png" Type="RCDATA" ResourceName="HTML"/>
-        <Resource_34 FileName="Resources/PNG/inbox_document_text.png" Type="RCDATA" ResourceName="INBOX_DOCUMENT_TEXT"/>
-        <Resource_35 FileName="Resources/PNG/language.png" Type="RCDATA" ResourceName="LANGUAGE"/>
-        <Resource_36 FileName="Resources/PNG/layer_edit.png" Type="RCDATA" ResourceName="LAYER_EDIT"/>
-        <Resource_37 FileName="Resources/PNG/layout_sidebar.png" Type="RCDATA" ResourceName="LAYOUT_SIDEBAR"/>
-        <Resource_38 FileName="Resources/PNG/link.png" Type="RCDATA" ResourceName="LINK"/>
-        <Resource_39 FileName="Resources/PNG/menu_item.png" Type="RCDATA" ResourceName="MENU_ITEM"/>
-        <Resource_40 FileName="Resources/PNG/open_folder.png" Type="RCDATA" ResourceName="OPEN_FOLDER"/>
-        <Resource_41 FileName="Resources/PNG/page_delete.png" Type="RCDATA" ResourceName="PAGE_DELETE"/>
-        <Resource_42 FileName="Resources/PNG/page_edit.png" Type="RCDATA" ResourceName="PAGE_EDIT"/>
-        <Resource_43 FileName="Resources/PNG/page_find.png" Type="RCDATA" ResourceName="PAGE_FIND"/>
-        <Resource_44 FileName="Resources/PNG/page_white_edit.png" Type="RCDATA" ResourceName="PAGE_WHITE_EDIT"/>
-        <Resource_45 FileName="Resources/PNG/page_white_stack.png" Type="RCDATA" ResourceName="PAGE_WHITE_STACK"/>
-        <Resource_46 FileName="Resources/PNG/scroll_pane_tree.png" Type="RCDATA" ResourceName="SCROLL_PANE_TREE"/>
-        <Resource_47 FileName="Resources/PNG/server_components.png" Type="RCDATA" ResourceName="SERVER_COMPONENTS"/>
-        <Resource_48 FileName="Resources/PNG/setting_tools.png" Type="RCDATA" ResourceName="SETTING_TOOLS"/>
-        <Resource_49 FileName="Resources/PNG/shape_square_delete.png" Type="RCDATA" ResourceName="SHAPE_SQUARE_DELETE"/>
-        <Resource_50 FileName="Resources/PNG/shape_square_edit.png" Type="RCDATA" ResourceName="SHAPE_SQUARE_EDIT"/>
-        <Resource_51 FileName="Resources/PNG/source_code.png" Type="RCDATA" ResourceName="SOURCE_CODE"/>
-        <Resource_52 FileName="Resources/PNG/table_add.png" Type="RCDATA" ResourceName="TABLE_ADD"/>
-        <Resource_53 FileName="Resources/PNG/table_delete.png" Type="RCDATA" ResourceName="TABLE_DELETE"/>
-        <Resource_54 FileName="Resources/PNG/table_edit.png" Type="RCDATA" ResourceName="TABLE_EDIT"/>
-        <Resource_55 FileName="Resources/PNG/table_export.png" Type="RCDATA" ResourceName="TABLE_EXPORT"/>
-        <Resource_56 FileName="Resources/PNG/table_import.png" Type="RCDATA" ResourceName="TABLE_IMPORT"/>
-        <Resource_57 FileName="Resources/PNG/table_insert.png" Type="RCDATA" ResourceName="TABLE_INSERT"/>
-        <Resource_58 FileName="Resources/PNG/table_replace.png" Type="RCDATA" ResourceName="TABLE_REPLACE"/>
-        <Resource_59 FileName="Resources/PNG/table_row_delete.png" Type="RCDATA" ResourceName="TABLE_ROW_DELETE"/>
-        <Resource_60 FileName="Resources/PNG/table_row_insert.png" Type="RCDATA" ResourceName="TABLE_ROW_INSERT"/>
-        <Resource_61 FileName="Resources/PNG/table_select_row.png" Type="RCDATA" ResourceName="TABLE_SELECT_ROW"/>
-        <Resource_62 FileName="Resources/PNG/table_tab_search.png" Type="RCDATA" ResourceName="TABLE_TAB_SEARCH"/>
-        <Resource_63 FileName="Resources/PNG/text_bold.png" Type="RCDATA" ResourceName="TEXT_BOLD"/>
-        <Resource_64 FileName="Resources/PNG/textfield_add.png" Type="RCDATA" ResourceName="TEXTFIELD_ADD"/>
-        <Resource_65 FileName="Resources/PNG/text_italic.png" Type="RCDATA" ResourceName="TEXT_ITALIC"/>
-        <Resource_66 FileName="Resources/PNG/text_linespacing.png" Type="RCDATA" ResourceName="TEXT_LINESPACING"/>
-        <Resource_67 FileName="Resources/PNG/text_list_bullets.png" Type="RCDATA" ResourceName="TEXT_LIST_BULLETS"/>
-        <Resource_68 FileName="Resources/PNG/text_list_numbers.png" Type="RCDATA" ResourceName="TEXT_LIST_NUMBERS"/>
-        <Resource_69 FileName="Resources/PNG/text_padding_top.png" Type="RCDATA" ResourceName="TEXT_PADDING_TOP"/>
-        <Resource_70 FileName="Resources/PNG/text_replace.png" Type="RCDATA" ResourceName="TEXT_REPLACE"/>
-        <Resource_71 FileName="Resources/PNG/text_underline.png" Type="RCDATA" ResourceName="TEXT_UNDERLINE"/>
-        <Resource_72 FileName="Resources/PNG/to_do_list_cheked_1.png" Type="RCDATA" ResourceName="TO_DO_LIST_CHEKED_1"/>
-        <Resource_73 FileName="Resources/PNG/Tree_Collapse.png" Type="RCDATA" ResourceName="TREE_COLLAPSE"/>
-        <Resource_74 FileName="Resources/PNG/Tree_Expand.png" Type="RCDATA" ResourceName="TREE_EXPAND"/>
-        <Resource_75 FileName="Resources/PNG/wishlist_add.png" Type="RCDATA" ResourceName="WISHLIST_ADD"/>
-        <Resource_76 FileName="Resources/Files/wiki.css" Type="RCDATA" ResourceName="WIKI_CSS"/>
-        <Resource_77 FileName="Resources/Files/wiki.html" Type="RCDATA" ResourceName="WIKI_HTML"/>
-        <Resource_78 FileName="Resources/Files/wiki.js" Type="RCDATA" ResourceName="WIKI_JS"/>
+      <Resources Count="82">
+        <Resource_0 FileName="Resources/Files/Highlighters.zip" Type="RCDATA" ResourceName="HIGHLIGHTERS"/>
+        <Resource_1 FileName="Resources/Files/wiki.css" Type="RCDATA" ResourceName="WIKI_CSS"/>
+        <Resource_2 FileName="Resources/Files/wiki.html" Type="RCDATA" ResourceName="WIKI_HTML"/>
+        <Resource_3 FileName="Resources/Files/wiki.js" Type="RCDATA" ResourceName="WIKI_JS"/>
+        <Resource_4 FileName="Resources/PNG/application_add.png" Type="RCDATA" ResourceName="APPLICATION_ADD"/>
+        <Resource_5 FileName="Resources/PNG/application_delete.png" Type="RCDATA" ResourceName="APPLICATION_DELETE"/>
+        <Resource_6 FileName="Resources/PNG/application_edit.png" Type="RCDATA" ResourceName="APPLICATION_EDIT"/>
+        <Resource_7 FileName="Resources/PNG/application_go.png" Type="RCDATA" ResourceName="APPLICATION_GO"/>
+        <Resource_8 FileName="Resources/PNG/arrow_down.png" Type="RCDATA" ResourceName="ARROW_DOWN"/>
+        <Resource_9 FileName="Resources/PNG/arrow_up.png" Type="RCDATA" ResourceName="ARROW_UP"/>
+        <Resource_10 FileName="Resources/PNG/book.png" Type="RCDATA" ResourceName="BOOK"/>
+        <Resource_11 FileName="Resources/PNG/book_add.png" Type="RCDATA" ResourceName="BOOK_ADD"/>
+        <Resource_12 FileName="Resources/PNG/book_edit.png" Type="RCDATA" ResourceName="BOOK_EDIT"/>
+        <Resource_13 FileName="Resources/PNG/book_go.png" Type="RCDATA" ResourceName="BOOK_GO"/>
+        <Resource_14 FileName="Resources/PNG/book_link.png" Type="RCDATA" ResourceName="BOOK_LINK"/>
+        <Resource_15 FileName="Resources/PNG/book_open.png" Type="RCDATA" ResourceName="BOOK_OPEN"/>
+        <Resource_16 FileName="Resources/PNG/bookshelf.png" Type="RCDATA" ResourceName="BOOKSHELF"/>
+        <Resource_17 FileName="Resources/PNG/bullet_edit.png" Type="RCDATA" ResourceName="BULLET_EDIT"/>
+        <Resource_18 FileName="Resources/PNG/button_default.png" Type="RCDATA" ResourceName="BUTTON_DEFAULT"/>
+        <Resource_19 FileName="Resources/PNG/check_box_list.png" Type="RCDATA" ResourceName="CHECK_BOX_LIST"/>
+        <Resource_20 FileName="Resources/PNG/color_picker_default.png" Type="RCDATA" ResourceName="COLOR_PICKER_DEFAULT"/>
+        <Resource_21 FileName="Resources/PNG/color_wheel.png" Type="RCDATA" ResourceName="COLOR_WHEEL"/>
+        <Resource_22 FileName="Resources/PNG/compile.png" Type="RCDATA" ResourceName="COMPILE"/>
+        <Resource_23 FileName="Resources/PNG/disk.png" Type="RCDATA" ResourceName="DISK"/>
+        <Resource_24 FileName="Resources/PNG/disk_multiple.png" Type="RCDATA" ResourceName="DISK_MULTIPLE"/>
+        <Resource_25 FileName="Resources/PNG/document_export.png" Type="RCDATA" ResourceName="DOCUMENT_EXPORT"/>
+        <Resource_26 FileName="Resources/PNG/door_out.png" Type="RCDATA" ResourceName="DOOR_OUT"/>
+        <Resource_27 FileName="Resources/PNG/error_log.png" Type="RCDATA" ResourceName="ERROR_LOG"/>
+        <Resource_28 FileName="Resources/PNG/file_extension_doc.png" Type="RCDATA" ResourceName="FILE_EXTENSION_DOC"/>
+        <Resource_29 FileName="Resources/PNG/file_extension_log.png" Type="RCDATA" ResourceName="FILE_EXTENSION_LOG"/>
+        <Resource_30 FileName="Resources/PNG/file_extension_pdf.png" Type="RCDATA" ResourceName="FILE_EXTENSION_PDF"/>
+        <Resource_31 FileName="Resources/PNG/file_extension_rtf.png" Type="RCDATA" ResourceName="FILE_EXTENSION_RTF"/>
+        <Resource_32 FileName="Resources/PNG/file_extension_txt.png" Type="RCDATA" ResourceName="FILE_EXTENSION_TXT"/>
+        <Resource_33 FileName="Resources/PNG/folder_edit.png" Type="RCDATA" ResourceName="FOLDER_EDIT"/>
+        <Resource_34 FileName="Resources/PNG/folder_go.png" Type="RCDATA" ResourceName="FOLDER_GO"/>
+        <Resource_35 FileName="Resources/PNG/folder_vertical_document.png" Type="RCDATA" ResourceName="FOLDER_VERTICAL_DOCUMENT"/>
+        <Resource_36 FileName="Resources/PNG/folder_vertical_open.png" Type="RCDATA" ResourceName="FOLDER_VERTICAL_OPEN"/>
+        <Resource_37 FileName="Resources/PNG/font_colors.png" Type="RCDATA" ResourceName="FONT_COLORS"/>
+        <Resource_38 FileName="Resources/PNG/html.png" Type="RCDATA" ResourceName="HTML"/>
+        <Resource_39 FileName="Resources/PNG/inbox_document_text.png" Type="RCDATA" ResourceName="INBOX_DOCUMENT_TEXT"/>
+        <Resource_40 FileName="Resources/PNG/language.png" Type="RCDATA" ResourceName="LANGUAGE"/>
+        <Resource_41 FileName="Resources/PNG/layer_edit.png" Type="RCDATA" ResourceName="LAYER_EDIT"/>
+        <Resource_42 FileName="Resources/PNG/layout_sidebar.png" Type="RCDATA" ResourceName="LAYOUT_SIDEBAR"/>
+        <Resource_43 FileName="Resources/PNG/link.png" Type="RCDATA" ResourceName="LINK"/>
+        <Resource_44 FileName="Resources/PNG/menu_item.png" Type="RCDATA" ResourceName="MENU_ITEM"/>
+        <Resource_45 FileName="Resources/PNG/open_folder.png" Type="RCDATA" ResourceName="OPEN_FOLDER"/>
+        <Resource_46 FileName="Resources/PNG/page_delete.png" Type="RCDATA" ResourceName="PAGE_DELETE"/>
+        <Resource_47 FileName="Resources/PNG/page_edit.png" Type="RCDATA" ResourceName="PAGE_EDIT"/>
+        <Resource_48 FileName="Resources/PNG/page_find.png" Type="RCDATA" ResourceName="PAGE_FIND"/>
+        <Resource_49 FileName="Resources/PNG/page_white_edit.png" Type="RCDATA" ResourceName="PAGE_WHITE_EDIT"/>
+        <Resource_50 FileName="Resources/PNG/page_white_stack.png" Type="RCDATA" ResourceName="PAGE_WHITE_STACK"/>
+        <Resource_51 FileName="Resources/PNG/scroll_pane_tree.png" Type="RCDATA" ResourceName="SCROLL_PANE_TREE"/>
+        <Resource_52 FileName="Resources/PNG/server_components.png" Type="RCDATA" ResourceName="SERVER_COMPONENTS"/>
+        <Resource_53 FileName="Resources/PNG/setting_tools.png" Type="RCDATA" ResourceName="SETTING_TOOLS"/>
+        <Resource_54 FileName="Resources/PNG/shape_square_delete.png" Type="RCDATA" ResourceName="SHAPE_SQUARE_DELETE"/>
+        <Resource_55 FileName="Resources/PNG/shape_square_edit.png" Type="RCDATA" ResourceName="SHAPE_SQUARE_EDIT"/>
+        <Resource_56 FileName="Resources/PNG/source_code.png" Type="RCDATA" ResourceName="SOURCE_CODE"/>
+        <Resource_57 FileName="Resources/PNG/table_add.png" Type="RCDATA" ResourceName="TABLE_ADD"/>
+        <Resource_58 FileName="Resources/PNG/table_delete.png" Type="RCDATA" ResourceName="TABLE_DELETE"/>
+        <Resource_59 FileName="Resources/PNG/table_edit.png" Type="RCDATA" ResourceName="TABLE_EDIT"/>
+        <Resource_60 FileName="Resources/PNG/table_export.png" Type="RCDATA" ResourceName="TABLE_EXPORT"/>
+        <Resource_61 FileName="Resources/PNG/table_import.png" Type="RCDATA" ResourceName="TABLE_IMPORT"/>
+        <Resource_62 FileName="Resources/PNG/table_insert.png" Type="RCDATA" ResourceName="TABLE_INSERT"/>
+        <Resource_63 FileName="Resources/PNG/table_replace.png" Type="RCDATA" ResourceName="TABLE_REPLACE"/>
+        <Resource_64 FileName="Resources/PNG/table_row_delete.png" Type="RCDATA" ResourceName="TABLE_ROW_DELETE"/>
+        <Resource_65 FileName="Resources/PNG/table_row_insert.png" Type="RCDATA" ResourceName="TABLE_ROW_INSERT"/>
+        <Resource_66 FileName="Resources/PNG/table_select_row.png" Type="RCDATA" ResourceName="TABLE_SELECT_ROW"/>
+        <Resource_67 FileName="Resources/PNG/table_tab_search.png" Type="RCDATA" ResourceName="TABLE_TAB_SEARCH"/>
+        <Resource_68 FileName="Resources/PNG/text_bold.png" Type="RCDATA" ResourceName="TEXT_BOLD"/>
+        <Resource_69 FileName="Resources/PNG/text_document_wrap.png" Type="RCDATA" ResourceName="TEXT_DOCUMENT_WRAP"/>
+        <Resource_70 FileName="Resources/PNG/textfield_add.png" Type="RCDATA" ResourceName="TEXTFIELD_ADD"/>
+        <Resource_71 FileName="Resources/PNG/text_italic.png" Type="RCDATA" ResourceName="TEXT_ITALIC"/>
+        <Resource_72 FileName="Resources/PNG/text_linespacing.png" Type="RCDATA" ResourceName="TEXT_LINESPACING"/>
+        <Resource_73 FileName="Resources/PNG/text_list_bullets.png" Type="RCDATA" ResourceName="TEXT_LIST_BULLETS"/>
+        <Resource_74 FileName="Resources/PNG/text_list_numbers.png" Type="RCDATA" ResourceName="TEXT_LIST_NUMBERS"/>
+        <Resource_75 FileName="Resources/PNG/text_padding_top.png" Type="RCDATA" ResourceName="TEXT_PADDING_TOP"/>
+        <Resource_76 FileName="Resources/PNG/text_replace.png" Type="RCDATA" ResourceName="TEXT_REPLACE"/>
+        <Resource_77 FileName="Resources/PNG/text_underline.png" Type="RCDATA" ResourceName="TEXT_UNDERLINE"/>
+        <Resource_78 FileName="Resources/PNG/to_do_list_cheked_1.png" Type="RCDATA" ResourceName="TO_DO_LIST_CHEKED_1"/>
+        <Resource_79 FileName="Resources/PNG/Tree_Collapse.png" Type="RCDATA" ResourceName="TREE_COLLAPSE"/>
+        <Resource_80 FileName="Resources/PNG/Tree_Expand.png" Type="RCDATA" ResourceName="TREE_EXPAND"/>
+        <Resource_81 FileName="Resources/PNG/wishlist_add.png" Type="RCDATA" ResourceName="WISHLIST_ADD"/>
       </Resources>
     </General>
     <BuildModes>
@@ -107,16 +110,10 @@
     </RunParams>
     <RequiredPackages>
       <Item>
-        <PackageName Value="fpc_markdown"/>
-      </Item>
-      <Item>
         <PackageName Value="TurboPowerIPro"/>
       </Item>
       <Item>
-        <PackageName Value="SynEditDsgn"/>
-      </Item>
-      <Item>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="fpc_markdown"/>
       </Item>
       <Item>
         <PackageName Value="LCL"/>
@@ -136,32 +133,26 @@
         <UnitName Value="f_MainForm"/>
       </Unit>
       <Unit>
-        <Filename Value="../Pascal.Tripous/tripous.pas"/>
+        <Filename Value="f_pageform.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Tripous"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_entities.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_Entities"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_app.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_App"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Tripous.IconList"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_framepage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FramePage"/>
+        <ComponentName Value="PageForm"/>
         <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_FramePage"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_PageForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_filer.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_findandreplace.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_FindAndReplace"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_highlighters.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Highlighters"/>
       </Unit>
       <Unit>
         <Filename Value="o_pagehandler.pas"/>
@@ -169,125 +160,18 @@
         <UnitName Value="o_PageHandler"/>
       </Unit>
       <Unit>
-        <Filename Value="o_appsettings.pas"/>
+        <Filename Value="o_texteditor.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="o_AppSettings"/>
+        <UnitName Value="o_TextEditor"/>
       </Unit>
       <Unit>
-        <Filename Value="fr_storylist.pas"/>
+        <Filename Value="o_app.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frStoryList"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_StoryList"/>
+        <UnitName Value="o_App"/>
       </Unit>
       <Unit>
-        <Filename Value="fr_scene.pas"/>
+        <Filename Value="o_cli.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frScene"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_Scene"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_texteditor.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frTextEditor"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_TextEditor"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Dialogs/f_findandreplacedialog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FindAndReplaceDialog"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_FindAndReplaceDialog"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_searchandreplace.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_SearchAndReplace"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_markdownpreview.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="MarkdownPreview"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_MarkdownPreview"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_categorylist.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frCategoryList"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_CategoryList"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Pascal.Tripous/tripous.memtable.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Tripous.MemTable"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_taglist.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frTagList"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_TagList"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_componentlist.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frComponentList"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_ComponentList"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_search.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frSearch"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_Search"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_projectglobalsearch.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_ProjectGlobalSearch"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_quickview.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frQuickView"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_QuickView"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_notelist.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frNoteList"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_NoteList"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_temptext.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frTempText"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_TempText"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Pascal.Tripous/tripous.broadcaster.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Tripous.Broadcaster"/>
       </Unit>
       <Unit>
         <Filename Value="o_consts.pas"/>
@@ -295,73 +179,31 @@
         <UnitName Value="o_Consts"/>
       </Unit>
       <Unit>
-        <Filename Value="fr_chapter.pas"/>
+        <Filename Value="o_entities.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frChapter"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_Chapter"/>
+        <UnitName Value="o_Entities"/>
       </Unit>
       <Unit>
-        <Filename Value="fr_component.pas"/>
+        <Filename Value="o_gitcli.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frComponent"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_Component"/>
       </Unit>
       <Unit>
-        <Filename Value="fr_note.pas"/>
+        <Filename Value="o_projectglobalsearch.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frNote"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_Note"/>
+        <UnitName Value="o_ProjectGlobalSearch"/>
       </Unit>
       <Unit>
-        <Filename Value="fr_story.pas"/>
+        <Filename Value="o_textstats.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frStory"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_Story"/>
       </Unit>
       <Unit>
-        <Filename Value="Dialogs/f_editcomponentdialog.pas"/>
+        <Filename Value="o_wiki.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditComponentDialog"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_EditComponentDialog"/>
+        <UnitName Value="o_Wiki"/>
       </Unit>
       <Unit>
-        <Filename Value="Dialogs/f_edititemdialog.pas"/>
+        <Filename Value="o_wikiinfo.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditItemDialog"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_EditItemDialog"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Pascal.Tripous/tripous.list.helpers.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Tripous.List.Helpers"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Dialogs/f_selectparentdialog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="SelectParentDialog"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_SelectParentDialog"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Dialogs/f_projecteditdialog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="ProjectEditDialog"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_ProjectEditDialog"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_appsettingsdialog.pas"/>
@@ -372,69 +214,207 @@
         <UnitName Value="f_AppSettingsDialog"/>
       </Unit>
       <Unit>
-        <Filename Value="o_textstats.pas"/>
+        <Filename Value="Dialogs/f_editcomponentdialog.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="o_TextStats"/>
+        <HasResources Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="o_globalsearchterm.pas"/>
+        <Filename Value="Dialogs/f_edititemdialog.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="o_GlobalSearchTerm"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_cli.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_Cli"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_gitcli.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_GitCli"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Dialogs/f_gitcommitmessagedialog.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="GitCommitMessageDialog"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_GitCommitMessageDialog"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_wikiinfo.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_WikiInfo"/>
-      </Unit>
-      <Unit>
-        <Filename Value="o_wiki.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_Wiki"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Export/o_exportoptions.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_ExportOptions"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Export/o_storyexporter.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="o_StoryExporter"/>
+        <HasResources Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_exportdialog.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="ExportDialog"/>
+        <HasResources Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_findandreplacedialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_gitcommitmessagedialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_projecteditdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_selectparentdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Export/o_exportoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Export/o_storyexporter.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_appsettings.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_AppSettings"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_categorylistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="CategoryListForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_ExportDialog"/>
+        <UnitName Value="f_CategoryListForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_taglistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TagListForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_TagListForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_componentlistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ComponentListForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_ComponentListForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_searchform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SearchForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_SearchForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_quickviewform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="QuickViewForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_QuickViewForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_notelistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="NoteListForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_NoteListForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_temptextform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TempTextForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_TempTextForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_storylistform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StoryListForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_StoryListForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_componentform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ComponentForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_ComponentForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_noteform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="NoteForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_NoteForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_storyform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="StoryForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_StoryForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_chapterform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ChapterForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_ChapterForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_sceneform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SceneForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_SceneForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.broadcaster.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.iconlist.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.list.helpers.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.logs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.Logs"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.memtable.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.MemTable"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_markdownpreview.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_MarkDownPreview"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_texteditorform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TextEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_TextEditorForm"/>
       </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="StoryWriter"/>
+      <Filename Value="Bin/Default/$NameOnly($(ProjFile)) "/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../Pascal.Tripous;Dialogs;Export"/>
+      <OtherUnitFiles Value="../../../.lazarus/onlinepackagemanager/packages/BGRABitmap/bgrabitmap;../Packages/EncConv-2024.12.15/encconv;../Packages/ATFlatControls-2026.02.06/atflatcontrols;../Packages/ATSynEdit-2026.02.21/atsynedit;../Packages/EControl-2026.01.19/econtrol;../Packages/ATSynEdit_Ex-2026.01.19/atsynedit_ex;../Pascal.Tripous;Dialogs;Export"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
@@ -449,8 +429,12 @@
     </Linking>
     <Other>
       <CompilerMessages>
-        <IgnoredMessages idx6058="True" idx5079="True" idx5071="True" idx5024="True"/>
+        <IgnoredMessages idx6058="True" idx5024="True"/>
       </CompilerMessages>
+      <CustomOptions Value="-dDEBUG"/>
+      <OtherDefines Count="1">
+        <Define0 Value="RELEASE"/>
+      </OtherDefines>
     </Other>
   </CompilerOptions>
   <Debugging>

@@ -1,0 +1,128 @@
+inherited TagListForm: TTagListForm
+  Height = 568
+  Width = 349
+  ClientHeight = 568
+  ClientWidth = 349
+  object pnlTop: TPanel[0]
+    Left = 0
+    Height = 307
+    Top = 0
+    Width = 349
+    Align = alTop
+    Caption = 'pnlTop'
+    ClientHeight = 307
+    ClientWidth = 349
+    TabOrder = 0
+    object ToolBar: TToolBar
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 347
+      Caption = 'ToolBar'
+      TabOrder = 0
+    end
+    object lboTagList: TListBox
+      Left = 1
+      Height = 279
+      Top = 27
+      Width = 167
+      Align = alLeft
+      ItemHeight = 0
+      TabOrder = 1
+      TopIndex = -1
+    end
+    object Splitter2: TSplitter
+      Left = 168
+      Height = 279
+      Top = 27
+      Width = 5
+    end
+    object Grid: TDBGrid
+      Left = 173
+      Height = 279
+      Top = 27
+      Width = 175
+      Align = alClient
+      Color = clWindow
+      Columns = <>
+      TabOrder = 3
+    end
+  end
+  object Splitter: TSplitter[1]
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 307
+    Width = 349
+    Align = alTop
+    Beveled = True
+    ResizeAnchor = akTop
+  end
+  object pnlBottom: TPanel[2]
+    Left = 0
+    Height = 256
+    Top = 312
+    Width = 349
+    Align = alClient
+    Caption = 'pnlBottom'
+    ClientHeight = 256
+    ClientWidth = 349
+    TabOrder = 2
+    object pnlTitle: TPanel
+      Left = 1
+      Height = 32
+      Top = 1
+      Width = 347
+      Align = alTop
+      Alignment = taLeftJustify
+      Caption = 'No Selection'
+      Font.Height = -15
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+    end
+    object Pager: TPageControl
+      Left = 1
+      Height = 222
+      Top = 33
+      Width = 347
+      ActivePage = tabText
+      Align = alClient
+      TabIndex = 0
+      TabOrder = 1
+      object tabText: TTabSheet
+        Caption = 'Text'
+      end
+      object tabTags: TTabSheet
+        Caption = 'Tags'
+        ClientHeight = 189
+        ClientWidth = 337
+        object lboTags: TListBox
+          Left = 0
+          Height = 192
+          Top = 0
+          Width = 337
+          Align = alClient
+          ItemHeight = 0
+          TabOrder = 0
+          TopIndex = -1
+        end
+      end
+      object tabAliases: TTabSheet
+        Caption = 'Aliases'
+        ClientHeight = 189
+        ClientWidth = 337
+        object lboAliases: TListBox
+          Left = 0
+          Height = 192
+          Top = 0
+          Width = 337
+          Align = alClient
+          ItemHeight = 0
+          TabOrder = 0
+          TopIndex = -1
+        end
+      end
+    end
+  end
+end

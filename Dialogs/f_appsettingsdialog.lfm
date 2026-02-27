@@ -1,27 +1,27 @@
 object AppSettingsDialog: TAppSettingsDialog
   Left = 334
-  Height = 305
+  Height = 391
   Top = 370
-  Width = 325
+  Width = 403
   BorderStyle = bsDialog
   Caption = 'Application Settings'
-  ClientHeight = 305
-  ClientWidth = 325
+  ClientHeight = 391
+  ClientWidth = 403
   Position = poDesktopCenter
   LCLVersion = '4.4.0.0'
   object btnOK: TButton
-    Left = 165
+    Left = 243
     Height = 25
-    Top = 272
+    Top = 358
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     TabOrder = 0
   end
   object btnCancel: TButton
-    Left = 241
+    Left = 319
     Height = 25
-    Top = 272
+    Top = 358
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'Cancel'
@@ -29,72 +29,121 @@ object AppSettingsDialog: TAppSettingsDialog
     TabOrder = 1
   end
   object chLoadLast: TCheckBox
-    Left = 19
+    Left = 26
     Height = 23
-    Top = 18
+    Top = 48
     Width = 192
     Caption = 'Load last project on startup'
     TabOrder = 2
   end
-  object chAutoSave: TCheckBox
-    Left = 19
-    Height = 23
-    Top = 40
-    Width = 231
-    Caption = 'Save current project automatically'
-    TabOrder = 3
-  end
   object chEnglishVisible: TCheckBox
-    Left = 19
+    Left = 26
     Height = 23
-    Top = 64
+    Top = 72
     Width = 139
     Caption = 'English text visible'
-    TabOrder = 4
+    TabOrder = 3
   end
   object Label1: TLabel
-    Left = 27
+    Left = 176
     Height = 16
-    Top = 130
-    Width = 177
-    Caption = 'Auto-Save interval in seconds'
+    Top = 17
+    Width = 113
+    Caption = 'Interval in seconds'
   end
   object edtAutoSaveSecondsInterval: TEdit
-    Left = 217
+    Left = 304
     Height = 28
-    Top = 125
+    Top = 12
     Width = 80
-    TabOrder = 5
+    Alignment = taRightJustify
+    TabOrder = 4
   end
   object Label2: TLabel
-    Left = 29
+    Left = 32
     Height = 16
-    Top = 174
+    Top = 289
     Width = 28
     Caption = 'Font'
   end
   object Label3: TLabel
-    Left = 32
+    Left = 35
     Height = 16
-    Top = 208
+    Top = 323
     Width = 23
     Caption = 'Size'
   end
   object edtFontSize: TEdit
-    Left = 63
+    Left = 66
     Height = 28
-    Top = 200
+    Top = 315
     Width = 80
-    TabOrder = 6
+    TabOrder = 5
   end
   object cboFontFamily: TComboBox
-    Left = 64
+    Left = 67
     Height = 30
-    Top = 168
+    Top = 283
     Width = 233
     DropDownCount = 16
     ItemHeight = 0
     Style = csDropDownList
+    TabOrder = 6
+  end
+  object chAutoSave: TCheckBox
+    Left = 26
+    Height = 23
+    Top = 14
+    Width = 88
+    Caption = 'Auto-Save'
     TabOrder = 7
+  end
+  object chGutterVisible: TCheckBox
+    Left = 26
+    Height = 23
+    Top = 140
+    Width = 108
+    Caption = 'Gutter Visible'
+    TabOrder = 8
+  end
+  object chRulerVisible: TCheckBox
+    Left = 26
+    Height = 23
+    Top = 164
+    Width = 101
+    Caption = 'Ruler Visible'
+    TabOrder = 9
+  end
+  object chShowCurLine: TCheckBox
+    Left = 26
+    Height = 23
+    Top = 191
+    Width = 143
+    Caption = 'Current Line Visible'
+    TabOrder = 10
+  end
+  object chMinimapVisible: TCheckBox
+    Left = 26
+    Height = 23
+    Top = 216
+    Width = 121
+    Caption = 'Minimap Visible'
+    TabOrder = 11
+  end
+  object chMinimapTooltipVisible: TCheckBox
+    Left = 26
+    Height = 23
+    Top = 240
+    Width = 167
+    Caption = 'Minimap Tooltip Visible'
+    TabOrder = 12
+  end
+  object chUseHighlighters: TCheckBox
+    Left = 26
+    Height = 23
+    Top = 112
+    Width = 125
+    Caption = 'Use Highlighters'
+    TabOrder = 13
   end
 end

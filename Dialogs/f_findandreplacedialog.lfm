@@ -90,20 +90,12 @@ object FindAndReplaceDialog: TFindAndReplaceDialog
     Caption = 'Selection Only'
     TabOrder = 7
   end
-  object chPromptOnReplace: TCheckBox
-    Left = 152
-    Height = 23
-    Top = 136
-    Width = 140
-    Caption = 'Prompt on Replace'
-    TabOrder = 8
-  end
   object chReplace: TCheckBox
     Left = 153
     Height = 23
     Top = 88
     Width = 73
     Caption = 'Replace'
-    TabOrder = 9
+    TabOrder = 8
   end
 end

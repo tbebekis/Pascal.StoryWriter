@@ -79,8 +79,6 @@ type
     property Id: string read GetId write fId;
     property Title: string read GetTitle write SetTitle;
   public
-    destructor Destroy(); override;
-
     property DisplayTitle: string read GetDisplayTitle;
     property DisplayTitleInStory: string read GetDisplayTitleInStory;
     property DisplayTitleInProject: string read GetDisplayTitleInProject;
@@ -645,6 +643,8 @@ type
     function FindById(const Id: string): TLinkItem;
     procedure Clear();
 
+    procedure ClearAndSave();
+
     procedure Save();
     procedure Load();
   published
@@ -797,10 +797,7 @@ begin
   Result := S;
 end;
 
-destructor TBaseItem.Destroy();
-begin
-  inherited Destroy();
-end;
+
 
 { --- Typed Collections ------------------------------------------------------ }
 
@@ -1906,13 +1903,13 @@ end;
 procedure TNote.Load;
 begin
   if FileExists(TextFilePath) then
-    fText := Sys.LoadFromFile(TextFilePath);
+    fText := Sys.ReadUtf8TextFile(TextFilePath);
 end;
 
 procedure TNote.Save;
 begin
   Sys.CreateFolders(FolderPath);
-  Sys.SaveToFile(TextFilePath, Text);
+  Sys.WriteUtf8TextFile(TextFilePath, Text);
 end;
 
 procedure TNote.Delete;
@@ -2685,6 +2682,12 @@ begin
   FList.Clear;
 end;
 
+procedure TQuickView.ClearAndSave();
+begin
+  Clear();
+  Save();
+end;
+
 procedure TQuickView.Save();
 begin
   if not Assigned(App.CurrentProject) then
@@ -2696,6 +2699,9 @@ end;
 procedure TQuickView.Load();
 var
   FilePath: string;
+  Item: TLinkItem;
+  ListCount, i: Integer;
+  ListToDelete: TObjectList;
 begin
   Clear();
 
@@ -2709,6 +2715,29 @@ begin
 
   Self.Clear();
   Json.LoadFromFile(FilePath, Self);
+
+  // load items
+  ListToDelete := TObjectList.Create(False);
+  try
+    ListCount := List.Count;
+
+    for i := 0 to List.Count - 1 do
+    begin
+      List[i].LoadItem();
+      if not Assigned(List[i].Item) then
+        ListToDelete.Add(List[i]);
+    end;
+
+    for i := 0 to ListToDelete.Count - 1 do
+      List[i].Free();
+
+    // if needs saving, save the list
+    if ListCount <> List.Count then
+      Save();
+  finally
+    ListToDelete.Free();
+  end;
+
 end;
 
 

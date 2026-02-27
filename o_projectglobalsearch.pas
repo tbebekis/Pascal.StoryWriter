@@ -60,13 +60,12 @@ begin
   Result := UTF8CompareText(A, B) = 0;
 end;
 
-function IsWordChar(const C: WideChar): Boolean; inline;
+function IsWordChar(const C: WideChar): Boolean;
 begin
   Result := (C = '_') or TCharacter.IsLetterOrDigit(C);
 end;
 
-function FindAllMatchesU(const TextUtf8, TermUtf8: string;
-  WholeWord, MatchCase: Boolean): TMatchPosList;
+function FindAllMatchesU(const TextUtf8, TermUtf8: string; WholeWord, MatchCase: Boolean): TMatchPosList;
 var
   UText, UTerm: UnicodeString;
   USearchText, USearchTerm: UnicodeString;

@@ -10,6 +10,7 @@ uses
   ,SysUtils
   , Forms
   , Controls
+  , StdCtrls
   ,ComCtrls
   ,ExtCtrls
   ,Dialogs
@@ -18,13 +19,14 @@ uses
   //,Regex
   ,RegExpr
 
-  ,SynEdit
+
 
   ,Tripous
   ,o_PageHandler
 
   ,o_Entities
   ,o_AppSettings
+  ,o_TextEditor
   ;
 
 type
@@ -63,6 +65,7 @@ type
 
 
       class function GetIsInitialized: Boolean; static;
+      class function GetExeFolderPath(): string; static;
   public
     { construction }
     class constructor Create();
@@ -94,10 +97,12 @@ type
     class procedure ClearPageControl(APageControl: TPageControl);
 
     class function  ShowLinkItemPage(LinkItem: TLinkItem): TTabSheet;
-    class procedure UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel; Editor: TSynEdit);
+    class procedure UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel; TextEditor: TTextEditor);
     class procedure ShowItemInListPage(LinkItem: TLinkItem);
 
     class procedure UpdateComponentListNote();
+
+    class function  GetEditBoxIntValue(Box: TEdit; DefaultValue: Integer): Integer;
 
     // ● event triggers
     class procedure SetGlobalSearchTerm(const Term: string);
@@ -137,7 +142,7 @@ type
 
     class property LastGlobalSearchTerm: string read fLastGlobalSearchTerm write fLastGlobalSearchTerm;
     class property LastGlobalSearchTermWholeWord: Boolean read fLastGlobalSearchTermWholeWord write fLastGlobalSearchTermWholeWord;
-
+    class property ExeFolderPath: string read GetExeFolderPath;
   end;
 
 implementation
@@ -160,19 +165,22 @@ uses
   ,f_ProjectEditDialog
 
   //,f_MainForm
-  ,fr_CategoryList
-  ,fr_TagList
-  ,fr_ComponentList
-  ,fr_Search
-  ,fr_QuickView
-  ,fr_NoteList
-  ,fr_TempText
-  ,fr_Component
-  ,fr_Note
-  ,fr_Story
-  ,fr_StoryList
-  ,fr_Chapter
-  ,fr_Scene
+
+  ,f_CategoryListForm
+  ,f_TagListForm
+  ,f_ComponentListForm
+  ,f_SearchForm
+  ,f_QuickViewForm
+  ,f_NoteListForm
+  ,f_TempTextForm
+  ,f_StoryListForm
+
+  ,f_ComponentForm
+  ,f_NoteForm
+  ,f_StoryForm
+  ,f_ChapterForm
+  ,f_SceneForm
+
   ;
 
 
@@ -180,10 +188,7 @@ uses
 { App }
 
 
-class function App.GetIsInitialized: Boolean; static;
-begin
-  Result := Assigned(fMainForm);
-end;
+
 
 class constructor App.Create;
 begin
@@ -255,7 +260,16 @@ begin
     ) = mrYes;
 end;
 
+class function App.GetIsInitialized: Boolean; static;
+begin
+  Result := Assigned(fMainForm);
+end;
 
+class function App.GetExeFolderPath: string;
+begin
+  Result := ExtractFilePath(ParamStr(0));
+  Result := IncludeTrailingPathDelimiter(Result);
+end;
 
 class function App.ContainsWord(const Text: string; const WordToFind: string): Boolean;
 var
@@ -549,15 +563,15 @@ end;
 
 class procedure App.ShowSideBarPages();
 begin
-  SideBarPagerHandler.ShowPage(TfrCategoryList, TfrCategoryList.ClassName, nil);
-  SideBarPagerHandler.ShowPage(TfrTagList, TfrTagList.ClassName, nil);
-  SideBarPagerHandler.ShowPage(TfrComponentList, TfrComponentList.ClassName, nil);
-  SideBarPagerHandler.ShowPage(TfrSearch, TfrSearch.ClassName, nil);
-  SideBarPagerHandler.ShowPage(TfrQuickView, TfrQuickView.ClassName, nil);
-  SideBarPagerHandler.ShowPage(TfrNoteList, TfrNoteList.ClassName, nil);
-  SideBarPagerHandler.ShowPage(TfrTempText, TfrTempText.ClassName, nil);
+  //SideBarPagerHandler.ShowPage(TCategoryListForm, TCategoryListForm.ClassName, nil);
+  //SideBarPagerHandler.ShowPage(TTagListForm, TTagListForm.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TComponentListForm, TComponentListForm.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TSearchForm, TSearchForm.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TQuickViewForm, TQuickViewForm.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TNoteListForm, TNoteListForm.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TTempTextForm, TTempTextForm.ClassName, nil);
 
-  SideBarPagerHandler.ShowPage(TfrStoryList, TfrStoryList.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TStoryListForm, TStoryListForm.ClassName, nil);
 end;
 
 class procedure App.ShowSettingsDialog();
@@ -596,7 +610,7 @@ var
   Story: TStory;
   Chapter: TChapter;
   Scene: TScene;
-  frScene: TfrScene;
+  frScene: TSceneForm;
 begin
   Result := nil;
 
@@ -607,37 +621,37 @@ begin
     itComponent:
       begin
         Comp := LinkItem.Item as TSWComponent;
-        Result := App.ContentPagerHandler.ShowPage(TfrComponent, Comp.Id, Comp);
+        Result := App.ContentPagerHandler.ShowPage(TComponentForm, Comp.Id, Comp);
       end;
     itNote:
       begin
         Note :=  LinkItem.Item as TNote;
-        Result := App.ContentPagerHandler.ShowPage(TfrNote, Note.Id, Note);
+        Result := App.ContentPagerHandler.ShowPage(TNoteForm, Note.Id, Note);
       end;
     itStory:
       begin
         Story := LinkItem.Item as TStory;
-        Result := App.ContentPagerHandler.ShowPage(TfrStory, Story.Id, Story);
+        Result := App.ContentPagerHandler.ShowPage(TStoryForm, Story.Id, Story);
       end;
     itChapter:
       begin
         Chapter := LinkItem.Item as TChapter;
-        Result := App.ContentPagerHandler.ShowPage(TfrChapter, Chapter.Id, Chapter);
+        Result := App.ContentPagerHandler.ShowPage(TChapterForm, Chapter.Id, Chapter);
       end;
     itScene:
       begin
         Scene := LinkItem.Item as TScene;
         if (Assigned(Scene)) then
         begin
-          Result := App.ContentPagerHandler.ShowPage(TfrScene, Scene.Id, Scene);
-          frScene := TfrScene(Result.Tag);
+          Result := App.ContentPagerHandler.ShowPage(TSceneForm, Scene.Id, Scene);
+          frScene := TSceneForm(Result.Tag);
           frScene.ShowTabPage(LinkItem.Place);
         end;
       end;
   end;
 end;
 
-class procedure App.UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel;  Editor: TSynEdit);
+class procedure App.UpdateLinkItemUi(LinkItem: TLinkItem; Panel: TPanel;  TextEditor: TTextEditor);
 var
   Comp: TSWComponent;
   Note: TNote;
@@ -652,13 +666,13 @@ begin
       begin
         Comp := LinkItem.Item as TSWComponent;
         Panel.Caption := Format('Component: %s', [Comp.DisplayTitleInProject]);
-        Editor.Text := Comp.Text;
+        TextEditor.EditorText := Comp.Text;
       end;
     itChapter:
       begin
         Chapter := LinkItem.Item as TChapter;
         Panel.Caption := Format('Chapter: %s', [Chapter.DisplayTitleInProject]);
-        Editor.Text := Chapter.Synopsis;
+        TextEditor.EditorText := Chapter.Synopsis;
       end;
     itScene:
       begin
@@ -667,17 +681,16 @@ begin
           lpSynopsis:
             begin
               Panel.Caption := Format('Scene Synopsis: %s', [Scene.DisplayTitleInProject]);
-              Editor.Text := Scene.Synopsis;
+              TextEditor.EditorText := Scene.Synopsis;
             end;
           lpTimeline:
             begin
               Panel.Caption := Format('Scene Timeline: %s', [Scene.DisplayTitleInProject]);
-              Editor.Text := Scene.Timeline;
+              TextEditor.EditorText := Scene.Timeline;
             end;
-          lpText:
-            begin
+         else begin
               Panel.Caption := Format('Scene: %s', [Scene.DisplayTitleInProject]);
-              Editor.Text := Scene.Text;
+              TextEditor.EditorText := Scene.Text;
             end;
         end;
       end;
@@ -685,7 +698,7 @@ begin
       begin
         Note :=  LinkItem.Item as TNote;
         Panel.Caption := Format('Note: %s', [Note.DisplayTitleInProject]);
-        Editor.Text := Note.Text;
+        TextEditor.EditorText := Note.Text;
       end;
   end;
 
@@ -695,37 +708,37 @@ class procedure App.ShowItemInListPage(LinkItem: TLinkItem);
 var
   Item: TBaseItem;
   TabPage : TTabSheet;
-  frComponentList: TfrComponentList;
-  frNoteList: TfrNoteList;
-  frStoryList: TfrStoryList;
+  frComponentList: TComponentListForm;
+  frNoteList: TNoteListForm;
+  frStoryList: TStoryListForm;
 begin
   Item := LinkItem.Item;
   if Item is TSWComponent then
   begin
-    TabPage := App.SideBarPagerHandler.FindTabPage(TfrComponentList.ClassName);
+    TabPage := App.SideBarPagerHandler.FindTabPage(TComponentListForm.ClassName);
     if Assigned(TabPage) and (TabPage.Tag > 0) then
     begin
-      frComponentList := TfrComponentList(TabPage.Tag);
+      frComponentList := TComponentListForm(TabPage.Tag);
       if frComponentList.ShowItemInList(Item as TSWComponent) then
-        SideBarPagerHandler.ShowPage(TfrComponentList, TfrComponentList.ClassName, nil);
+        SideBarPagerHandler.ShowPage(TComponentListForm, TComponentListForm.ClassName, nil);
     end;
   end else if Item is TNote then
   begin
-    TabPage := App.SideBarPagerHandler.FindTabPage(TfrNoteList.ClassName);
+    TabPage := App.SideBarPagerHandler.FindTabPage(TNoteListForm.ClassName);
     if Assigned(TabPage) and (TabPage.Tag > 0) then
     begin
-      frNoteList := TfrNoteList(TabPage.Tag);
+      frNoteList := TNoteListForm(TabPage.Tag);
       if frNoteList.ShowItemInList(Item as TNote) then
-        SideBarPagerHandler.ShowPage(TfrNoteList, TfrNoteList.ClassName, nil);
+        SideBarPagerHandler.ShowPage(TNoteListForm, TNoteListForm.ClassName, nil);
     end;
   end else if (Item is TStory) or (Item is TChapter) or (Item is TScene) then
   begin
-    TabPage := App.SideBarPagerHandler.FindTabPage(TfrStoryList.ClassName);
+    TabPage := App.SideBarPagerHandler.FindTabPage(TStoryListForm.ClassName);
     if Assigned(TabPage) and (TabPage.Tag > 0) then
     begin
-      frStoryList := TfrStoryList(TabPage.Tag);
+      frStoryList := TStoryListForm(TabPage.Tag);
       if frStoryList.ShowItemInList(Item as TBaseItem) then
-        SideBarPagerHandler.ShowPage(TfrStoryList, TfrStoryList.ClassName, nil);
+        SideBarPagerHandler.ShowPage(TStoryListForm, TStoryListForm.ClassName, nil);
     end;
   end;
 end;
@@ -755,9 +768,20 @@ begin
   Note.Save();
 end;
 
+class function App.GetEditBoxIntValue(Box: TEdit; DefaultValue: Integer): Integer;
+var
+  N: Integer;
+begin
+  Result := DefaultValue;
+  if not TryStrToInt(Trim(Box.Text), N) then
+    App.ErrorBox(Format('Cannot convert this value to integer: %s', [Box.Text]))
+  else
+    Result := N;
+end;
+
 class procedure App.SetGlobalSearchTerm(const Term: string);
 begin
-  SideBarPagerHandler.ShowPage(TfrSearch, TfrSearch.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TSearchForm, TSearchForm.ClassName, nil);
   Broadcaster.Broadcast(TBroadcasterTextArgs.Create(SSearchTermIsSet, Term, nil), True);
 end;
 

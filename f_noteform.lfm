@@ -1,0 +1,4 @@
+inherited NoteForm: TNoteForm
+  Height = 430
+  Width = 553
+end

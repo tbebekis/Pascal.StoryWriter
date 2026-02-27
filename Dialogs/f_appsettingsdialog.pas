@@ -21,10 +21,16 @@ type
   TAppSettingsDialog = class(TForm)
     btnCancel: TButton;
     btnOK: TButton;
-    chLoadLast: TCheckBox;
     chAutoSave: TCheckBox;
+    chGutterVisible: TCheckBox;
+    chLoadLast: TCheckBox;
     chEnglishVisible: TCheckBox;
     cboFontFamily: TComboBox;
+    chMinimapTooltipVisible: TCheckBox;
+    chMinimapVisible: TCheckBox;
+    chRulerVisible: TCheckBox;
+    chShowCurLine: TCheckBox;
+    chUseHighlighters: TCheckBox;
     edtAutoSaveSecondsInterval: TEdit;
     edtFontSize: TEdit;
     Label1: TLabel;
@@ -94,57 +100,45 @@ procedure TAppSettingsDialog.ItemToControls();
 var
   Index: Integer;
 begin
-(*
-Καλές επιλογές που ήδη έχεις (για editor/markdown)
-DejaVu Sans Mono (σίγουρη, καθαρή, παντού)
-Liberation Mono (καλό fallback, ωραίο spacing)
-Noto Sans Mono (καθαρό, σύγχρονο)
-Ubuntu Mono (ωραίο για πολύωρη χρήση)
-Nimbus Mono PS (OK, πιο “παλιό” look)
-Και αν θες non-monospace για UI:
-DejaVu Sans
-Ubuntu
-Open Sans (αν το έχεις πλήρες)
-*)
-
-  chLoadLast.Checked := Settings.LoadLastProjectOnStartup;
   chAutoSave.Checked := Settings.AutoSave;
-  chEnglishVisible.Checked := Settings.EnglishVisible;
-
   edtAutoSaveSecondsInterval.Text := IntToStr(Settings.AutoSaveSecondsInterval);
 
-  Index := cboFontFamily.Items.IndexOf(Settings.FontFamily);
+  chLoadLast.Checked := Settings.LoadLastProjectOnStartup;
+  chEnglishVisible.Checked := Settings.EnglishVisible;
+
+  chUseHighlighters.Checked := Settings.UseHighlighters;
+  chGutterVisible.Checked := Settings.GutterVisible;
+  chRulerVisible.Checked := Settings.RulerVisible;
+  chShowCurLine.Checked := Settings.ShowCurLine;
+  chMinimapVisible.Checked := Settings.MinimapVisible;
+  chMinimapTooltipVisible.Checked := Settings.MinimapTooltipVisible;
+
+  Index := cboFontFamily.Items.IndexOf(Settings.FontName);
   if Index <> -1 then
     cboFontFamily.ItemIndex := Index;
 
   edtFontSize.Text := IntToStr(Settings.FontSize);
-
 end;
 
 procedure TAppSettingsDialog.ControlsToItem();
-var
-  N : Integer;
 begin
-  Settings.LoadLastProjectOnStartup := chLoadLast.Checked;
   Settings.AutoSave := chAutoSave.Checked;
+  Settings.AutoSaveSecondsInterval := App.GetEditBoxIntValue(edtAutoSaveSecondsInterval, Settings.AutoSaveSecondsInterval);
+
+  Settings.LoadLastProjectOnStartup := chLoadLast.Checked;
   Settings.EnglishVisible := chEnglishVisible.Checked;
 
-  if not TryStrToInt(Trim(edtAutoSaveSecondsInterval.Text), N) then
-  begin
-    App.ErrorBox('Wrong Auto-Save Seconds Interval');
-    Exit;
-  end;
-  Settings.AutoSaveSecondsInterval := N;
+  Settings.UseHighlighters := chUseHighlighters.Checked;
+  Settings.GutterVisible := chGutterVisible.Checked;
+  Settings.RulerVisible := chRulerVisible.Checked;
+  Settings.ShowCurLine := chShowCurLine.Checked;
+  Settings.MinimapVisible := chMinimapVisible.Checked;
+  Settings.MinimapTooltipVisible := chMinimapTooltipVisible.Checked;
 
   if cboFontFamily.ItemIndex <> -1 then;
-    Settings.FontFamily := cboFontFamily.Items[cboFontFamily.ItemIndex];
+    Settings.FontName := cboFontFamily.Items[cboFontFamily.ItemIndex];
 
-  if not TryStrToInt(Trim(edtFontSize.Text), N) then
-  begin
-    App.ErrorBox('Wrong Font Size');
-    Exit;
-  end;
-  Settings.FontSize := N;
+  Settings.FontSize := App.GetEditBoxIntValue(edtFontSize, Settings.FontSize);
 
   Settings.Save();
   Self.ModalResult := mrOK;

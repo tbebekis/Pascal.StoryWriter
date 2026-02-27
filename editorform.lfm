@@ -1,0 +1,37 @@
+inherited EditorForm: TEditorForm
+  Height = 396
+  Width = 641
+  ClientHeight = 396
+  ClientWidth = 641
+  object ToolBar: TToolBar[0]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 641
+    Caption = 'ToolBar'
+    TabOrder = 0
+  end
+  object StatusBar: TStatusBar[1]
+    Left = 0
+    Height = 18
+    Top = 378
+    Width = 641
+    Panels = <    
+      item
+        Width = 140
+      end    
+      item
+        Width = 120
+      end    
+      item
+        Width = 120
+      end    
+      item
+        Width = 100
+      end    
+      item
+        Width = 1024
+      end>
+    SimplePanel = False
+  end
+end
