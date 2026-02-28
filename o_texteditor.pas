@@ -723,8 +723,6 @@ begin
 end;
 
 procedure TTextEditor.KeyDown(var Key: Word; Shift: TShiftState);
-var
-  Term: UnicodeString;
 begin
   if (Shift = [ssCtrl]) and (Key = VK_F) then
   begin

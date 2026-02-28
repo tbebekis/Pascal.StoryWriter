@@ -246,11 +246,15 @@
       <Unit>
         <Filename Value="Dialogs/f_selectparentdialog.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="SelectParentDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_SelectParentDialog"/>
       </Unit>
       <Unit>
         <Filename Value="Export/o_exportoptions.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="o_ExportOptions"/>
       </Unit>
       <Unit>
         <Filename Value="Export/o_storyexporter.pas"/>
@@ -431,9 +435,8 @@
       <CompilerMessages>
         <IgnoredMessages idx6058="True" idx5024="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-dDEBUG"/>
       <OtherDefines Count="1">
-        <Define0 Value="RELEASE"/>
+        <Define0 Value="CHECK_MEMORY_LEAKS"/>
       </OtherDefines>
     </Other>
   </CompilerOptions>

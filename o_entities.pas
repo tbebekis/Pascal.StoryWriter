@@ -2699,7 +2699,6 @@ end;
 procedure TQuickView.Load();
 var
   FilePath: string;
-  Item: TLinkItem;
   ListCount, i: Integer;
   ListToDelete: TObjectList;
 begin

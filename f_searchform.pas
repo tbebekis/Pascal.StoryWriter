@@ -14,9 +14,7 @@ uses
   , ExtCtrls
   , ComCtrls
   , StdCtrls
-  , Contnrs
   , Menus
-  , DB
   , DBCtrls
   , DBGrids
   , f_PageForm

@@ -120,13 +120,12 @@ implementation
 {$R *.lfm}
 
 uses
-   Math
-  ,Tripous
+   Tripous
   ,Tripous.IconList
   ,o_Consts
   ,o_App
   ,o_Highlighters
-  ,o_Filer
+
   ;
 
 

@@ -13,10 +13,7 @@ uses
   , Dialogs
   , ExtCtrls
   , ComCtrls
-  , StdCtrls
-  , Contnrs
   , Menus
-  , DB
   , DBCtrls
   , DBGrids
   , f_PageForm
@@ -38,10 +35,11 @@ type
     procedure ReLoad();
   protected
     procedure FormInitialize(); override;
-    procedure TitleChanged(); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
+
+    procedure TitleChanged(); override;
   end;
 
 

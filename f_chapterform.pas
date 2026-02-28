@@ -38,7 +38,7 @@ type
     procedure TitleChanged(); override;
     procedure AdjustTabTitle(); override;
 
-    procedure SaveEditorText(TextEditor: TTextEditor);
+    procedure SaveEditorText(TextEditor: TTextEditor); override;
 
     procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); override;
   end;

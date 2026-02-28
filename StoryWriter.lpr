@@ -19,6 +19,17 @@ uses
 {$R *.res}
 
 begin
+  {$IFDEF CHECK_MEMORY_LEAKS}
+  // Assuming your build mode sets -dDEBUG in Project Options/Other when defining -gh
+  // This avoids interference when running a production/default build without -gh
+
+  // Set up -gh output for the Leakview package:
+  if FileExists('heap.trc') then
+    DeleteFile('heap.trc');
+
+  SetHeapTraceOutput('heap.trc');
+  {$ENDIF CHECK_MEMORY_LEAKS}
+
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
   {$PUSH}{$WARN 5044 OFF}

@@ -563,8 +563,8 @@ end;
 
 class procedure App.ShowSideBarPages();
 begin
-  //SideBarPagerHandler.ShowPage(TCategoryListForm, TCategoryListForm.ClassName, nil);
-  //SideBarPagerHandler.ShowPage(TTagListForm, TTagListForm.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TCategoryListForm, TCategoryListForm.ClassName, nil);
+  SideBarPagerHandler.ShowPage(TTagListForm, TTagListForm.ClassName, nil);
   SideBarPagerHandler.ShowPage(TComponentListForm, TComponentListForm.ClassName, nil);
   SideBarPagerHandler.ShowPage(TSearchForm, TSearchForm.ClassName, nil);
   SideBarPagerHandler.ShowPage(TQuickViewForm, TQuickViewForm.ClassName, nil);

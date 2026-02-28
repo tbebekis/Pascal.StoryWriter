@@ -13,8 +13,6 @@ uses
   , Dialogs
   , ExtCtrls
   , ComCtrls
-  , StdCtrls
-  , Contnrs
   , Menus
   , DB
   , DBCtrls
