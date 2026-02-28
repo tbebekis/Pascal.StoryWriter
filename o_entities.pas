@@ -581,11 +581,14 @@ type
 { TLinkItem }
   TLinkItem = class(TCollectionItem)
   private
+    fColumn: Integer;
     fId: string;
+    fLine: Integer;
+    fLineText: string;
     fTitle: string;
     fItemType: TItemType;
     fPlace: TLinkPlace;
-    fCharPos: Integer;
+    //fCharPos: Integer;
     fIsEnglish: Boolean;
     fItem: TBaseItem;
 
@@ -605,12 +608,15 @@ type
     function Move(Up: Boolean): Boolean;
 
     property Item: TBaseItem read fItem write fItem;
+    property LineText: string read fLineText write fLineText;
+    property Line: Integer read fLine write fLine;
+    property Column: Integer read fColumn write fColumn;
   published
     property Id: string read GetId write SetId;
     property Title: string read GetTitle write SetTitle;
     property ItemType: TItemType read fItemType write fItemType;
     property Place: TLinkPlace read fPlace write fPlace;
-    property CharPos: Integer read fCharPos write fCharPos;
+    //property CharPos: Integer read fCharPos write fCharPos;
     property IsEnglish: Boolean read fIsEnglish write fIsEnglish;
   end;
 
@@ -2535,7 +2541,6 @@ begin
   inherited Create(ACollection);
   fItemType := TItemType.itNone;
   fPlace := lpTitle;
-  fCharPos := 0;
   fIsEnglish := False;
 end;
 

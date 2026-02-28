@@ -39,6 +39,7 @@ type
     procedure AdjustTabTitle(); override;
 
     procedure SaveEditorText(TextEditor: TTextEditor); override;
+    procedure ShowEditorFile(TextEditor: TTextEditor); override;
 
     procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); override;
   end;
@@ -52,6 +53,7 @@ implementation
 uses
    Tripous.Logs
   ,o_Consts
+  ,o_App
   ;
 
 
@@ -123,30 +125,24 @@ begin
 end;
 
 procedure TChapterForm.HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
-begin
-
-end;
-
-(*
 var
-  frEditor: TfrTextEditor;
+  EditorForm: TTextEditorForm;
 begin
   if not Assigned(LinkItem) then
     Exit;
 
-  frEditor := nil;
+  EditorForm := nil;
 
   case LinkItem.Place of
-    lpSynopsis: frEditor := frmSynopsis;
+    lpSynopsis: EditorForm := frmSynopsis;
   end;
 
-  if Assigned(frEditor) then
+  if Assigned(EditorForm) then
   begin
-    frEditor.SetHighlightTerm(Term, IsWholeWord, MatchCase);
-    frEditor.JumpToCharPos(LinkItem.CharPos);
+    EditorForm.SetHighlightTerm(Term, LinkItem.Line, LinkItem.Column, IsWholeWord, MatchCase);
   end;
+
 end;
-*)
 
 procedure TChapterForm.SaveEditorText(TextEditor: TTextEditor);
 var
@@ -164,6 +160,12 @@ begin
   LogBox.AppendLine(Message);
 
   AdjustTabTitle();
+end;
+
+procedure TChapterForm.ShowEditorFile(TextEditor: TTextEditor);
+begin
+  if FileExists(Chapter.SynopsisFilePath) then
+    App.DisplayFileExplorer(Chapter.SynopsisFilePath);
 end;
 
 

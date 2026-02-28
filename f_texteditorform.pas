@@ -96,7 +96,7 @@ type
     procedure GlobalSearchForTerm();
     procedure UpdateStatusBar();
 
-    procedure SetHighlightTerm(const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
+    procedure SetHighlightTerm(const Term: string; Line, Col: Integer; IsWholeWord: Boolean; MatchCase: Boolean);
     procedure RegisterHighlighter(const FilePath: string);
 
     // ● properties
@@ -209,6 +209,7 @@ begin
   TextEditor.OnChange := Editor_Change;
   TextEditor.OnChangeCaretPos := Editor_CaretChangedPos;
   TextEditor.OnChangeZoom := Editor_ChangeZoom;
+  TextEditor.OnChangeModified := Editor_ModifiedChanged;
 
   TextEditor.SetFocus();
 
@@ -254,7 +255,7 @@ begin
     btnFind := IconList.AddButton(ToolBar, 'PAGE_FIND', 'Find and Replace (Ctrl + F)', AnyClick);
     btnSearchForTerm := IconList.AddButton(ToolBar, 'table_tab_search', 'Search for Term (Ctrl + T or Ctrl + LeftClick)', AnyClick);
     btnSave := IconList.AddButton(ToolBar, 'disk', 'Save (Ctrl + S)', AnyClick);
-    //btnShowFolder := IconList.AddButton(ToolBar, 'FOLDER_GO', 'Show in folder', AnyClick);
+    btnShowFolder := IconList.AddButton(ToolBar, 'FOLDER_GO', 'Show in folder', AnyClick);
     //IconList.AddSeparator(ToolBar);
   finally
     ToolBar.Parent := P;
@@ -325,9 +326,8 @@ begin
     SaveText()
   else if btnFind = Sender then
     TextEditor.ShowFindAndReplaceDialog()
-  //else if btnShowFolder = Sender then
-  //  App.DisplayFileExplorer(Doc.RealFilePath)
-
+  else if (btnShowFolder = Sender) and Assigned(FramePage) then
+    FramePage.ShowEditorFile(Self.TextEditor);
 end;
 
 procedure TTextEditorForm.Editor_Change(Sender: TObject);
@@ -338,7 +338,8 @@ end;
 
 procedure TTextEditorForm.Editor_ModifiedChanged(Sender: TObject);
 begin
-
+  if Assigned(FramePage) then
+    FramePage.TitleChanged();
 end;
 
 procedure TTextEditorForm.Editor_KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -359,8 +360,6 @@ procedure TTextEditorForm.Editor_ChangeZoom(Sender: TObject);
 begin
   UpdateStatusBar();
 end;
-
-
 
 procedure TTextEditorForm.AutoSaveTimerTick(Sender: TObject);
 var
@@ -428,7 +427,7 @@ begin
   //StatusBar.Panels[4].Text := Format('      %s', [Doc.RealFilePath]);
 end;
 
-procedure TTextEditorForm.SetHighlightTerm(const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
+procedure TTextEditorForm.SetHighlightTerm(const Term: string; Line, Col: Integer; IsWholeWord: Boolean; MatchCase: Boolean);
 begin
   Self.SetFocus();
   Self.SetFocusedControl(TextEditor);
@@ -440,15 +439,10 @@ begin
   Self.TextEditor.FindAndReplace.Options.MatchCase := MatchCase;
   Self.TextEditor.HighlightAll();
 
-  (*
-  if Assigned(TM) then
-  begin
-    EditorForm.TextEditor.SetCaretPos(TM.Column, TM.Line);
-    EditorForm.UpdateStatusBar();
-    Application.ProcessMessages();
-    EditorForm.TextEditor.HighlightAll();
-  end;
-  *)
+  Self.TextEditor.SetCaretPos(Col, Line);
+  Self.UpdateStatusBar();
+  Application.ProcessMessages();
+  Self.TextEditor.HighlightAll();
 end;
 
 

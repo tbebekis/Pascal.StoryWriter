@@ -52,6 +52,7 @@ type
     // ● event handler
     procedure AnyClick(Sender: TObject);
     procedure tblList_OnAfterScroll(Dataset: TDataset);
+    procedure Grid_OnDoubleClick(Sender: TObject);
 
     procedure PrepareToolBar();
 
@@ -63,7 +64,6 @@ type
     procedure RemoveAllLinkItems();
     procedure ShowItemInListPage();
     procedure MoveRow(Up: Boolean);
-
 
     procedure SelectedLinkItemRowChanged();
 
@@ -114,12 +114,13 @@ begin
   if Assigned(App.CurrentProject) then
     fQuickView := App.CurrentProject.QuickView;
 
+  Grid.OnDblClick := Grid_OnDoubleClick;
+
   CreateTable();
 end;
 
 destructor TQuickViewForm.Destroy();
 begin
-
   inherited Destroy();
 end;
 
@@ -513,6 +514,11 @@ end;
 procedure TQuickViewForm.tblList_OnAfterScroll(Dataset: TDataset);
 begin
   SelectedLinkItemRowChanged();
+end;
+
+procedure TQuickViewForm.Grid_OnDoubleClick(Sender: TObject);
+begin
+  ShowLinkItemPage();
 end;
 
 

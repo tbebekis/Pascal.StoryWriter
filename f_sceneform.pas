@@ -55,6 +55,7 @@ type
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TTextEditor); override;
+    procedure ShowEditorFile(TextEditor: TTextEditor); override;
   end;
 
 
@@ -188,33 +189,30 @@ begin
 end;
 
 procedure TSceneForm.HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
-begin
-
-end;
-
-(*
 var
-  frEditor: TfrmTextEditor;
+  EditorForm: TTextEditorForm;
 begin
   if not Assigned(LinkItem) then
     Exit;
 
-  frEditor := nil;
+  EditorForm := nil;
 
   case LinkItem.Place of
-    lpText: frEditor := frmText;
-    lpTextEn: if App.Settings.EnglishVisible then frEditor := frmTextEn;
-    lpSynopsis: frEditor := frmSynopsis;
-    lpTimeline: frEditor := frmTimeline;
+    lpText: EditorForm := frmText;
+    lpTextEn: if App.Settings.EnglishVisible then EditorForm := frmTextEn;
+    lpSynopsis: EditorForm := frmSynopsis;
+    lpTimeline: EditorForm := frmTimeline;
   end;
 
-  if Assigned(frEditor) then
+  if Assigned(EditorForm) then
   begin
-    frEditor.SetHighlightTerm(Term, IsWholeWord, MatchCase);
-    frEditor.JumpToCharPos(LinkItem.CharPos);
+    EditorForm.SetHighlightTerm(Term, LinkItem.Line, LinkItem.Column, IsWholeWord, MatchCase);
+
   end;
+
 end;
-*)
+
+
 
 procedure TSceneForm.SaveEditorText(TextEditor: TTextEditor);
 var
@@ -247,6 +245,28 @@ begin
   LogBox.AppendLine(Message);
 
   AdjustTabTitle();
+end;
+
+procedure TSceneForm.ShowEditorFile(TextEditor: TTextEditor);
+begin
+  if TextEditor = frmText.TextEditor then
+  begin
+    if FileExists(Scene.TextFilePath) then
+        App.DisplayFileExplorer(Scene.TextFilePath);
+  end else if TextEditor = frmTextEn.TextEditor then
+  begin
+    if FileExists(Scene.TextEnFilePath) then
+        App.DisplayFileExplorer(Scene.TextEnFilePath);
+  end else if TextEditor = frmSynopsis.TextEditor then
+  begin
+    if FileExists(Scene.SynopsisFilePath) then
+        App.DisplayFileExplorer(Scene.SynopsisFilePath);
+  end else
+  begin
+    if FileExists(Scene.TimelineFilePath) then
+        App.DisplayFileExplorer(Scene.TimelineFilePath);
+  end;
+
 end;
 
 procedure TSceneForm.ShowTabPage(Place: TLinkPlace);

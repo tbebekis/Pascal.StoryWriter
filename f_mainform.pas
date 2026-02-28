@@ -197,7 +197,6 @@ begin
 
   pagerSideBar.Width:= 560;
 
-  App.InfoBox('TODO: HighlightAll');
 end;
 
 procedure TMainForm.FormFinalize();

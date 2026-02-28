@@ -14,7 +14,7 @@ inherited SceneForm: TSceneForm
     TabOrder = 0
     object tabText: TTabSheet
       Caption = 'Text'
-      ClientHeight = 435
+      ClientHeight = 432
       ClientWidth = 929
       object pnlLeft: TPanel
         Left = 0

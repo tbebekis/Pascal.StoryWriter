@@ -1295,7 +1295,7 @@ begin
       Result := tv.Selected
     else if Item is TChapter then
       Result := tv.Selected.Parent
-    else if Item is TScene then;
+    else if Item is TScene then
       Result := tv.Selected.Parent.Parent;
   end;
 end;

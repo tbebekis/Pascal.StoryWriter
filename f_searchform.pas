@@ -149,8 +149,8 @@ var
 
   function ChildCaption(AItem: TLinkItem): string;
   begin
-    Result := Format('%s - (%d)',
-      [LinkPlaceToString(AItem.Place), AItem.CharPos]);
+    Result := Format('%s - [%d,%d] - %s',
+      [LinkPlaceToString(AItem.Place), AItem.Line, AItem.Column, AItem.LineText]);
   end;
 
 begin

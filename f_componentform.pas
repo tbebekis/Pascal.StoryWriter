@@ -49,6 +49,7 @@ type
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TTextEditor); override;
+    procedure ShowEditorFile(TextEditor: TTextEditor); override;
   end;
 
 
@@ -154,7 +155,7 @@ begin
 
   if Assigned(EditorForm) then
   begin
-    EditorForm.SetHighlightTerm(Term, IsWholeWord, MatchCase);
+    EditorForm.SetHighlightTerm(Term, LinkItem.Line, LinkItem.Column, IsWholeWord, MatchCase);
   end;
 end;
 
@@ -180,6 +181,20 @@ begin
   LogBox.AppendLine(Message);
 
   AdjustTabTitle();
+end;
+
+procedure TComponentForm.ShowEditorFile(TextEditor: TTextEditor);
+begin
+  if TextEditor = frmText.TextEditor then
+  begin
+    if FileExists(Comp.TextFilePath) then
+        App.DisplayFileExplorer(Comp.TextFilePath);
+  end else if TextEditor = frmTextEn.TextEditor then
+  begin
+    if FileExists(Comp.TextFilePathEn) then
+        App.DisplayFileExplorer(Comp.TextFilePathEn);
+  end;
+
 end;
 
 

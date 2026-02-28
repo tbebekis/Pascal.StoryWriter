@@ -38,6 +38,7 @@ type
 
     { editor handler }
     procedure SaveEditorText(TextEditor: TTextEditor); override;
+    procedure ShowEditorFile(TextEditor: TTextEditor); override;
   end;
 
 
@@ -48,6 +49,7 @@ implementation
 uses
    Tripous.Logs
   ,o_Consts
+  ,o_App
   ;
 
 { TNoteForm }
@@ -96,17 +98,11 @@ end;
 
 procedure TNoteForm.HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);
 begin
-
-end;
-(*
-begin
   if not Assigned(LinkItem) then
     Exit;
 
-  frmText.SetHighlightTerm(Term, IsWholeWord, MatchCase);
-  frmText.JumpToCharPos(LinkItem.CharPos);
+  frmText.SetHighlightTerm(Term, LinkItem.Line, LinkItem.Column, IsWholeWord, MatchCase);
 end;
-*)
 
 procedure TNoteForm.SaveEditorText(TextEditor: TTextEditor);
 var
@@ -120,6 +116,12 @@ begin
   LogBox.AppendLine(Message);
 
   AdjustTabTitle();
+end;
+
+procedure TNoteForm.ShowEditorFile(TextEditor: TTextEditor);
+begin
+  if FileExists(Note.TextFilePath) then
+    App.DisplayFileExplorer(Note.TextFilePath);
 end;
 
 

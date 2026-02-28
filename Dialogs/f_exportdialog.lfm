@@ -109,8 +109,8 @@ object ExportDialog: TExportDialog
       Left = 8
       Height = 23
       Top = 8
-      Width = 94
-      Caption = 'CheckBox1'
+      Width = 52
+      Caption = 'Text'
       TabOrder = 0
     end
     object chSynopsis: TCheckBox

@@ -226,7 +226,10 @@
       <Unit>
         <Filename Value="Dialogs/f_exportdialog.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ExportDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_ExportDialog"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_findandreplacedialog.pas"/>

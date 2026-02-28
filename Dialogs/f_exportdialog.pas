@@ -173,6 +173,8 @@ begin
   Options.SingleComponentText := chSingleComponentText.Checked;
   Options.PreEditScenes       := chPreEditScenes.Checked;
   Options.PreEditChapters     := chPreEditChapters.Checked;
+
+  Self.ModalResult := mrOK;
 end;
 
 procedure TExportDialog.AnyClick(Sender: TObject);

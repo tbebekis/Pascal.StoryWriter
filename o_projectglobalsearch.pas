@@ -18,8 +18,7 @@ type
 implementation
 
 uses
-  o_App
-  ;
+  o_App;
 
 type
   PInt = ^Integer;
@@ -44,7 +43,12 @@ type
   public
     BaseItem: TBaseItem;
     Place: TLinkPlace;
-    CharPos: Integer;       // 0-based (Unicode chars)
+
+    // NEW (SlatePad-style)
+    LineText: string;   // UTF-8 line text (no EOL)
+    Line: Integer;      // 1-based
+    Column: Integer;    // 1-based (Unicode chars)
+
     DisplayTitle: string;   // DisplayTitleInProject
     ItemTypeOrd: Integer;
     IsEnglish: Boolean;
@@ -122,7 +126,7 @@ begin
       end;
 
       if BeforeOk and AfterOk then
-        Result.Add(i - 1); // 0-based
+        Result.Add(i - 1); // 0-based (Unicode chars)
     end
     else
       Result.Add(i - 1);
@@ -131,9 +135,79 @@ begin
   end;
 end;
 
+procedure GetLineInfoFromCharPosUtf8(const TextUtf8: string; MatchCharPos0: Integer;
+  out Line1, Col1: Integer; out LineTextUtf8: string);
+var
+  U: UnicodeString;
+  L, i, idx1: Integer;
+  lineStart: Integer;
+
+  function IsEolChar(const C: WideChar): Boolean;
+  begin
+    Result := (C = #10) or (C = #13);
+  end;
+
+begin
+  Line1 := 1;
+  Col1 := 1;
+  LineTextUtf8 := '';
+
+  if TextUtf8 = '' then
+    Exit;
+
+  U := UTF8Decode(TextUtf8);
+  L := Length(U);
+  if L = 0 then
+    Exit;
+
+  // clamp
+  if MatchCharPos0 < 0 then
+    MatchCharPos0 := 0;
+  if MatchCharPos0 >= L then
+    MatchCharPos0 := L - 1;
+
+  idx1 := MatchCharPos0 + 1; // 1-based index in UnicodeString
+
+  // scan to idx1-1 to find line and lineStart
+  Line1 := 1;
+  lineStart := 1;
+  i := 1;
+  while (i < idx1) and (i <= L) do
+  begin
+    if U[i] = #13 then
+    begin
+      Inc(Line1);
+      Inc(i);
+      if (i <= L) and (U[i] = #10) then
+        Inc(i); // skip LF in CRLF
+      lineStart := i;
+      Continue;
+    end
+    else
+    if U[i] = #10 then
+    begin
+      Inc(Line1);
+      Inc(i);
+      lineStart := i;
+      Continue;
+    end;
+
+    Inc(i);
+  end;
+
+  Col1 := idx1 - lineStart + 1;
+
+  // extract line text (from lineStart to before EOL)
+  i := lineStart;
+  while (i <= L) and (not IsEolChar(U[i])) do
+    Inc(i);
+
+  LineTextUtf8 := UTF8Encode(Copy(U, lineStart, i - lineStart));
+end;
+
 function CompareHits(A, B: TLinkHit): Integer;
 begin
-  // ItemType -> DisplayTitle -> Place -> CharPos
+  // ItemType -> DisplayTitle -> Place -> Line -> Column
   Result := A.ItemTypeOrd - B.ItemTypeOrd;
   if Result <> 0 then Exit;
 
@@ -143,7 +217,10 @@ begin
   Result := Ord(A.Place) - Ord(B.Place);
   if Result <> 0 then Exit;
 
-  Result := A.CharPos - B.CharPos;
+  Result := A.Line - B.Line;
+  if Result <> 0 then Exit;
+
+  Result := A.Column - B.Column;
 end;
 
 procedure SortHitList(L: TObjectList);
@@ -166,7 +243,7 @@ procedure SortHitList(L: TObjectList);
 
       if i <= j then
       begin
-        L.Exchange(i, j);  // <-- πιο safe από tmp pointer
+        L.Exchange(i, j);
         Inc(i);
         Dec(j);
       end;
@@ -180,7 +257,6 @@ begin
   if (L <> nil) and (L.Count > 1) then
     QuickSort(0, L.Count - 1);
 end;
-
 
 { TMatchPosList }
 
@@ -250,22 +326,31 @@ var
     end;
   end;
 
-  procedure AddLinks(BaseItem: TBaseItem; APlace: TLinkPlace; const ADisplayTitle: string);
+  procedure AddLinks(BaseItem: TBaseItem; APlace: TLinkPlace;
+    const ADisplayTitle, ATextUtf8: string);
   var
     k: Integer;
     H: TLinkHit;
+    ln, col: Integer;
+    lineText: string;
   begin
     if (PosList <> nil) and (PosList.Count > 0) then
     begin
       for k := 0 to PosList.Count - 1 do
       begin
+        GetLineInfoFromCharPosUtf8(ATextUtf8, PosList[k], ln, col, lineText);
+
         H := TLinkHit.Create;
         H.BaseItem := BaseItem;
         H.Place := APlace;
         H.DisplayTitle := ADisplayTitle;
         H.ItemTypeOrd := Ord(BaseItem.ItemType);
-        H.CharPos := PosList[k];
         H.IsEnglish := (APlace = lpTextEn);
+
+        H.Line := ln - 1;        // by_teo
+        H.Column := col - 1;     // by_teo
+        H.LineText := lineText;
+
         Hits.Add(H);
       end;
     end;
@@ -275,7 +360,7 @@ var
   begin
     FreeAndNil(PosList);
     PosList := FindAllMatchesU(ATextUtf8, SearchTerm, IsWholeWord, {MatchCase=}IsWholeWord);
-    AddLinks(BaseItem, APlace, ADisplayTitle);
+    AddLinks(BaseItem, APlace, ADisplayTitle, ATextUtf8);
   end;
 
   function FindFirstHit: TLinkHit;
@@ -307,7 +392,7 @@ var
   procedure MoveFirstHitToTop(AFirst: TLinkHit);
   begin
     if AFirst = nil then Exit;
-    Hits.Extract(AFirst);   // remove without free
+    Hits.Extract(AFirst);
     Hits.Insert(0, AFirst);
   end;
 
@@ -328,10 +413,12 @@ var
       LI.Place := H.Place;
       LI.Title := H.DisplayTitle;
       LI.Item := H.BaseItem;
-      LI.CharPos := H.CharPos;
       LI.IsEnglish := H.IsEnglish;
 
-      // LI.Id := H.BaseItem.Id; // αν το θες (έχει published Id)
+      // NEW:
+      LI.Line := H.Line;
+      LI.Column := H.Column;
+      LI.LineText := H.LineText;
     end;
   end;
 
@@ -356,7 +443,6 @@ begin
   if IsNullOrWhiteSpace(SearchTerm) then
     Exit;
 
-  // αυτά τα κρατάς όπως στο C# (App globals)
   App.LastGlobalSearchTerm := SearchTerm;
   App.LastGlobalSearchTermWholeWord := IsWholeWord;
 
@@ -418,16 +504,12 @@ begin
     if Hits.Count = 0 then
       Exit;
 
-    // capture best match BEFORE sort (as object reference)
     FirstHit := FindFirstHit;
 
-    // sort
     SortHitList(Hits);
 
-    // move FirstHit to top AFTER sort
     MoveFirstHitToTop(FirstHit);
 
-    // replace empty result with real result
     FreeAndNil(Result);
     Result := BuildResultList;
 
@@ -438,4 +520,3 @@ begin
 end;
 
 end.
-

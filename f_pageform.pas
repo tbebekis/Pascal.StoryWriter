@@ -50,6 +50,7 @@ type
 
     // ● editor handler
     procedure SaveEditorText(TextEditor: TTextEditor); virtual;
+    procedure ShowEditorFile(TextEditor: TTextEditor); virtual;
     procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); virtual;
 
     // ● toolbar
@@ -160,6 +161,10 @@ begin
 end;
 
 procedure TPageForm.SaveEditorText(TextEditor: TTextEditor);
+begin
+end;
+
+procedure TPageForm.ShowEditorFile(TextEditor: TTextEditor);
 begin
 end;
 
