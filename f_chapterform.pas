@@ -40,6 +40,7 @@ type
 
     procedure SaveEditorText(TextEditor: TTextEditor); override;
     procedure ShowEditorFile(TextEditor: TTextEditor); override;
+    function  GetEditorFilePath(TextEditor: TTextEditor): string; override;
 
     procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); override;
   end;
@@ -166,6 +167,11 @@ procedure TChapterForm.ShowEditorFile(TextEditor: TTextEditor);
 begin
   if FileExists(Chapter.SynopsisFilePath) then
     App.DisplayFileExplorer(Chapter.SynopsisFilePath);
+end;
+
+function TChapterForm.GetEditorFilePath(TextEditor: TTextEditor): string;
+begin
+  Result:=Chapter.SynopsisFilePath;
 end;
 
 

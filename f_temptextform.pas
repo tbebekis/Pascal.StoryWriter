@@ -39,7 +39,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
 
-    procedure TitleChanged(); override;
+    procedure AdjustTabTitle(); override;
+    procedure SaveEditorText(TextEditor: TTextEditor); override;
   end;
 
 
@@ -61,9 +62,7 @@ begin
 
   frmText := TTextEditorForm.Create(Self);
   frmText.Parent := Self;
-
-  //TextEditor := TTextEditor.Create(Self);
-  //TextEditor.Parent := Self;
+  frmText.FramePage := Self;
 end;
 
 destructor TTempTextForm.Destroy();
@@ -78,29 +77,55 @@ begin
   ParentTabPage.Caption := TitleText;
 
   ReLoad();
+
   AdjustTabTitle();
+
 end;
 
-procedure TTempTextForm.TitleChanged();
+procedure TTempTextForm.AdjustTabTitle();
 begin
-  inherited TitleChanged();
-  frmText.Title := TitleText;
+  if frmText.Modified  then
+     frmText.Title := TitleText + '*'
+  else
+     frmText.Title := TitleText;
 end;
 
-procedure TTempTextForm.ReLoad();
+procedure TTempTextForm.SaveEditorText(TextEditor: TTextEditor);
 var
-  S: string;
   Message: string;
 begin
   if not Assigned(App.CurrentProject) then
     Exit;
 
-  frmText.TextEditor.EditorText := '';
+  if TextEditor = frmText.TextEditor then
+  begin
+    App.CurrentProject.TempText := frmText.TextEditor.EditorText;
+    App.CurrentProject.SaveTempText();
+    TextEditor.Modified := False;
+
+    Message := Format('Temp Doc. Text saved: %s.', [App.CurrentProject.TempFilePath]);
+  end;
+
+  LogBox.AppendLine(Message);
+
+  AdjustTabTitle();
+end;
+
+procedure TTempTextForm.ReLoad();
+var
+  //S: string;
+  Message: string;
+begin
+  if not Assigned(App.CurrentProject) then
+    Exit;
+
+  frmText.EditorText := '';
 
   if FileExists(App.CurrentProject.TempFilePath) then
   begin
-    S := Sys.LoadFromFile(App.CurrentProject.TempFilePath);
-    frmText.TextEditor.EditorText := S;
+    App.CurrentProject.LoadTempText();
+    //S := Sys.LoadFromFile(App.CurrentProject.TempFilePath);
+    frmText.EditorText := App.CurrentProject.TempText;
 
     Message := Format('Temp Doc. Text loaded from: %s', [App.CurrentProject.TempFilePath]);
     LogBox.AppendLine(Message);

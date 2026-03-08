@@ -11,6 +11,7 @@ type
   { TAppSettings }
   TAppSettings = class
   private
+    fGithubUserName: string;
     fGutterVisible: Boolean;
     FLoadLastProjectOnStartup: Boolean;
     FLastProjectFolderPath: string;
@@ -54,6 +55,8 @@ type
 
     property FontName: string read fFontName write fFontName;
     property FontSize: Integer read FFontSize write FFontSize;
+
+    property GithubUserName: string read fGithubUserName write fGithubUserName;
   end;
 
 implementation

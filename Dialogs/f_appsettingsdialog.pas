@@ -31,11 +31,13 @@ type
     chRulerVisible: TCheckBox;
     chShowCurLine: TCheckBox;
     chUseHighlighters: TCheckBox;
+    edtGithubUserName: TEdit;
     edtAutoSaveSecondsInterval: TEdit;
     edtFontSize: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
   private
     Settings: TAppSettings;
   protected
@@ -118,6 +120,8 @@ begin
     cboFontFamily.ItemIndex := Index;
 
   edtFontSize.Text := IntToStr(Settings.FontSize);
+
+  edtGithubUserName.Text := Settings.GithubUserName;
 end;
 
 procedure TAppSettingsDialog.ControlsToItem();
@@ -139,6 +143,8 @@ begin
     Settings.FontName := cboFontFamily.Items[cboFontFamily.ItemIndex];
 
   Settings.FontSize := App.GetEditBoxIntValue(edtFontSize, Settings.FontSize);
+
+  Settings.GithubUserName := Trim(edtGithubUserName.Text);
 
   Settings.Save();
   Self.ModalResult := mrOK;

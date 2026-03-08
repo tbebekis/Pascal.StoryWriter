@@ -26,7 +26,7 @@ object TextEditorForm: TTextEditorForm
         Width = 140
       end    
       item
-        Width = 120
+        Width = 200
       end    
       item
         Width = 120

@@ -145,6 +145,8 @@ begin
   fTextEditor := TTextEditor.Create(Self);
   TextEditor.Parent := Self;
 
+  fStats := TTextStats.Create();
+
   lblTitle := TEdit.Create(ToolBar); // TLabel.Create(ToolBar);
   lblTitle.Parent := ToolBar;
   lblTitle.Font.Bold := True;
@@ -157,6 +159,8 @@ end;
 
 destructor TTextEditorForm.Destroy();
 begin
+  fStats.Free;
+
   if IsHighlighterRegistered then
      THighlighters.UnregisterEditor(TextEditor);
 
@@ -212,6 +216,8 @@ begin
   TextEditor.OnChangeModified := Editor_ModifiedChanged;
 
   TextEditor.SetFocus();
+
+  UpdateTextMetrics();
 
   PrepareToolBar();
   UpdateStatusBar();
@@ -271,7 +277,13 @@ end;
 
 procedure TTextEditorForm.SetEditorText(AValue: string);
 begin
-  TextEditor.EditorText := AValue;
+  IgnoreModified := True;
+  try
+    TextEditor.EditorText := AValue;
+    TextEditor.Modified := False;
+  finally
+    IgnoreModified := False;
+  end;
 end;
 
 function TTextEditorForm.GetIgnoreModified: Boolean;
@@ -338,7 +350,7 @@ end;
 
 procedure TTextEditorForm.Editor_ModifiedChanged(Sender: TObject);
 begin
-  if Assigned(FramePage) then
+  if (not IgnoreModified) and Assigned(FramePage) then
     FramePage.TitleChanged();
 end;
 
@@ -383,11 +395,6 @@ begin
 
 end;
 
-procedure TTextEditorForm.UpdateStatusBarLineColumn();
-begin
-  StatusBar.Panels[0].Text := Format(' Ln: %d, Col: %d', [TextEditor.CaretY, TextEditor.CaretX]);
-end;
-
 procedure TTextEditorForm.UpdateTextMetrics();
 begin
   Stats.Reset();
@@ -407,7 +414,11 @@ begin
       UpdateTextMetrics();
     end;
   end;
+end;
 
+procedure TTextEditorForm.UpdateStatusBarLineColumn();
+begin
+  StatusBar.Panels[0].Text := Format(' Ln: %d, Col: %d', [TextEditor.CaretY, TextEditor.CaretX]);
 end;
 
 procedure TTextEditorForm.UpdateStatusBar();
@@ -422,9 +433,12 @@ procedure TTextEditorForm.UpdateStatusBar();
   end;
 
 begin
-  UpdateStatusBarLineColumn();
-  //StatusBar.Panels[3].Text := Format('      %s', [GetZoom()]);
-  //StatusBar.Panels[4].Text := Format('      %s', [Doc.RealFilePath]);
+  StatusBar.Panels[0].Text := Format(' Ln: %d, Col: %d', [TextEditor.CaretY, TextEditor.CaretX]);
+  StatusBar.Panels[1].Text := Format(' Pages: %0.2f, Words: %d', [Stats.EstimatedPages, Stats.WordCount]);
+  StatusBar.Panels[2].Text := Format(' ReadOnly: %s', [BoolToStr(TextEditor.ReadOnly, True)]);
+  StatusBar.Panels[3].Text := Format(' Zoom: %s', [GetZoom()]);
+  if Assigned(FramePage) then
+    StatusBar.Panels[4].Text := FramePage.GetEditorFilePath(TextEditor);
 end;
 
 procedure TTextEditorForm.SetHighlightTerm(const Term: string; Line, Col: Integer; IsWholeWord: Boolean; MatchCase: Boolean);

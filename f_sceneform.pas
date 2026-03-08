@@ -56,6 +56,7 @@ type
     { editor handler }
     procedure SaveEditorText(TextEditor: TTextEditor); override;
     procedure ShowEditorFile(TextEditor: TTextEditor); override;
+    function  GetEditorFilePath(TextEditor: TTextEditor): string; override;
   end;
 
 
@@ -212,8 +213,6 @@ begin
 
 end;
 
-
-
 procedure TSceneForm.SaveEditorText(TextEditor: TTextEditor);
 var
   Message: string;
@@ -267,6 +266,24 @@ begin
         App.DisplayFileExplorer(Scene.TimelineFilePath);
   end;
 
+end;
+
+function TSceneForm.GetEditorFilePath(TextEditor: TTextEditor): string;
+begin
+  Result := '';
+  if TextEditor = frmText.TextEditor then
+  begin
+    Result := Scene.TextFilePath;
+  end else if TextEditor = frmTextEn.TextEditor then
+  begin
+    Result := Scene.TextEnFilePath;
+  end else if TextEditor = frmSynopsis.TextEditor then
+  begin
+    Result := Scene.SynopsisFilePath;
+  end else
+  begin
+    Result := Scene.TimelineFilePath;
+  end;
 end;
 
 procedure TSceneForm.ShowTabPage(Place: TLinkPlace);

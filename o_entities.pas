@@ -510,7 +510,10 @@ type
     procedure Save;
     procedure SaveJson;
 
+    procedure LoadTempText();
     procedure SaveTempText;
+
+    procedure LoadMarkdownTempText();
     procedure SaveMarkdownTempText;
 
     function CountStoryTitle(const StoryTitle: string): Integer;
@@ -2276,11 +2279,9 @@ begin
     for I := 0 to StoryList.Count - 1 do
       StoryList[I].Load;
 
-    if FileExists(TempFilePath) then
-      fTempText := Sys.LoadFromFile(TempFilePath);
+    LoadTempText();
+    LoadMarkdownTempText();
 
-    if FileExists(MarkdownTempFilePath) then
-      fMarkdownTempText := Sys.LoadFromFile(MarkdownTempFilePath);
   finally
     fLoading := False;
   end;
@@ -2314,10 +2315,22 @@ begin
   Json.SaveToFile(ProjectFilePath, Self);
 end;
 
+procedure TProject.LoadTempText();
+begin
+  if FileExists(TempFilePath) then
+    fTempText := Sys.LoadFromFile(TempFilePath);
+end;
+
 procedure TProject.SaveTempText;
 begin
   Sys.CreateFolders(FolderPath);
   Sys.SaveToFile(TempFilePath, TempText);
+end;
+
+procedure TProject.LoadMarkdownTempText();
+begin
+  if FileExists(MarkdownTempFilePath) then
+    fMarkdownTempText := Sys.LoadFromFile(MarkdownTempFilePath);
 end;
 
 procedure TProject.SaveMarkdownTempText;

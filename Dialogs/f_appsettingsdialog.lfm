@@ -1,18 +1,18 @@
 object AppSettingsDialog: TAppSettingsDialog
   Left = 334
-  Height = 391
+  Height = 484
   Top = 370
   Width = 403
   BorderStyle = bsDialog
   Caption = 'Application Settings'
-  ClientHeight = 391
+  ClientHeight = 484
   ClientWidth = 403
   Position = poDesktopCenter
   LCLVersion = '4.4.0.0'
   object btnOK: TButton
     Left = 243
     Height = 25
-    Top = 358
+    Top = 451
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'OK'
@@ -21,7 +21,7 @@ object AppSettingsDialog: TAppSettingsDialog
   object btnCancel: TButton
     Left = 319
     Height = 25
-    Top = 358
+    Top = 451
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'Cancel'
@@ -145,5 +145,19 @@ object AppSettingsDialog: TAppSettingsDialog
     Width = 125
     Caption = 'Use Highlighters'
     TabOrder = 13
+  end
+  object Label4: TLabel
+    Left = 21
+    Height = 16
+    Top = 376
+    Width = 106
+    Caption = 'Github UserName'
+  end
+  object edtGithubUserName: TEdit
+    Left = 136
+    Height = 28
+    Top = 368
+    Width = 232
+    TabOrder = 14
   end
 end

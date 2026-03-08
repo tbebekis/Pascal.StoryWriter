@@ -39,6 +39,7 @@ type
     { editor handler }
     procedure SaveEditorText(TextEditor: TTextEditor); override;
     procedure ShowEditorFile(TextEditor: TTextEditor); override;
+    function  GetEditorFilePath(TextEditor: TTextEditor): string; override;
   end;
 
 
@@ -122,6 +123,11 @@ procedure TNoteForm.ShowEditorFile(TextEditor: TTextEditor);
 begin
   if FileExists(Note.TextFilePath) then
     App.DisplayFileExplorer(Note.TextFilePath);
+end;
+
+function TNoteForm.GetEditorFilePath(TextEditor: TTextEditor): string;
+begin
+  Result := Note.TextFilePath;
 end;
 
 

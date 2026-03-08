@@ -143,6 +143,7 @@
       <Unit>
         <Filename Value="o_filer.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Filer"/>
       </Unit>
       <Unit>
         <Filename Value="o_findandreplace.pas"/>
@@ -170,10 +171,6 @@
         <UnitName Value="o_App"/>
       </Unit>
       <Unit>
-        <Filename Value="o_cli.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="o_consts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Consts"/>
@@ -184,10 +181,6 @@
         <UnitName Value="o_Entities"/>
       </Unit>
       <Unit>
-        <Filename Value="o_gitcli.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="o_projectglobalsearch.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_ProjectGlobalSearch"/>
@@ -195,6 +188,7 @@
       <Unit>
         <Filename Value="o_textstats.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="o_TextStats"/>
       </Unit>
       <Unit>
         <Filename Value="o_wiki.pas"/>
@@ -221,7 +215,10 @@
       <Unit>
         <Filename Value="Dialogs/f_edititemdialog.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditItemDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_EditItemDialog"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_exportdialog.pas"/>
@@ -411,6 +408,22 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_TextEditorForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_githubcredentialsdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GithubCredentialsDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_GithubCredentialsDialog"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.cli.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.gitcli.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Tripous.GitCli"/>
       </Unit>
     </Units>
   </ProjectOptions>

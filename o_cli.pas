@@ -22,7 +22,6 @@ type
 
   TCliResultArray = array of TCliResult;
 
-  { full static class }
   CLI = class
   private
     class function RunProcess(const FileName, Arguments, WorkingDirectory: string;
@@ -30,37 +29,43 @@ type
 
     class function DefaultShellExe: string; static;
     class function DefaultShellArgs(const CommandText: string): string; static;
+
+    class procedure AddParsedArguments(AProcess: TObject; const Arguments: string); static;
+    class function ParseCommandLine(const S: string): TStringArray; static;
   public
-    { Runs executable directly (e.g. git) with arguments. }
     class function RunExe(const FileName, Arguments: string;
       const WorkingDirectory: string = '';
       TimeoutMs: Integer = 120 * 1000;
       Env: TStrings = nil): TCliResult; static;
 
-    { Runs a single command through OS shell (Windows: cmd.exe /C, *nix: /bin/sh -lc). }
     class function RunShell(const CommandText: string;
       const WorkingDirectory: string = '';
       TimeoutMs: Integer = 120 * 1000;
       Env: TStrings = nil): TCliResult; static;
 
-    { Runs multiple shell commands in ONE shell, bound with && (stops if any fails). }
     class function RunShellChain(const Commands: array of string;
       const WorkingDirectory: string = '';
       TimeoutMs: Integer = 120 * 1000;
       Env: TStrings = nil): TCliResult; static;
 
-    { Runs a series of shell commands. Stops on first error unless StopOnError=false. }
     class function RunShellBatch(const Commands: array of string;
       const WorkingDirectory: string = '';
       TimeoutPerCommandMs: Integer = 120 * 1000;
       StopOnError: Boolean = True;
       Env: TStrings = nil): TCliResultArray; static;
+
+    class function RunExeWithInput(const FileName, Arguments, InputText: string;
+      const WorkingDirectory: string = '';
+      TimeoutMs: Integer = 120 * 1000;
+      Env: TStrings = nil): TCliResult; static;
   end;
 
 implementation
 
 uses
-  Process;
+  Process
+  ,Pipes
+  ;
 
 function TCliResult.Succeeded: Boolean;
 begin
@@ -81,21 +86,25 @@ begin
     '--- stderr ---' + LineEnding + StdErr;
 end;
 
-function StreamReadAvailableToString(AStream: TStream): RawByteString;
+function StreamReadAvailableToString(AStream: TInputPipeStream): RawByteString;
 type
   TBuf = array[0..8191] of Byte;
 var
   Buf: TBuf;
+  ToRead: LongInt;
   N: LongInt;
 begin
-  Buf := Default(TBuf);   // σβήνει το hint (ναι, είναι χαζό αλλά δουλεύει)
   Result := '';
   if AStream = nil then
     Exit;
 
-  while True do
+  while AStream.NumBytesAvailable > 0 do
   begin
-    N := AStream.Read(Buf[0], SizeOf(Buf));
+    ToRead := AStream.NumBytesAvailable;
+    if ToRead > SizeOf(Buf) then
+      ToRead := SizeOf(Buf);
+
+    N := AStream.Read(Buf[0], ToRead);
     if N <= 0 then
       Break;
 
@@ -104,7 +113,7 @@ begin
   end;
 end;
 
-procedure AppendStreamToText(AStream: TStream; var Target: RawByteString);
+procedure AppendStreamToText(AStream: TInputPipeStream; var Target: RawByteString);
 var
   Chunk: RawByteString;
 begin
@@ -118,7 +127,6 @@ begin
   {$IFDEF Windows}
   Result := 'cmd.exe';
   {$ELSE}
-  // Use /bin/sh by convention; if unavailable, user can call RunExe('sh', ...)
   Result := '/bin/sh';
   {$ENDIF}
 end;
@@ -128,25 +136,118 @@ begin
   {$IFDEF Windows}
   Result := '/C ' + CommandText;
   {$ELSE}
-  // -l: login shell (optional), -c: run command string
   Result := '-lc ' + CommandText;
   {$ENDIF}
 end;
 
+class function CLI.ParseCommandLine(const S: string): TStringArray;
+var
+  i, LenS, Count: Integer;
+  Ch: Char;
+  Current: string;
+  InQuotes: Boolean;
+  QuoteChar: Char;
+
+  procedure PushCurrent;
+  begin
+    SetLength(Result, Count + 1);
+    Result[Count] := Current;
+    Inc(Count);
+    Current := '';
+  end;
+
+begin
+  Result := nil;
+  Count := 0;
+  Current := '';
+  InQuotes := False;
+  QuoteChar := #0;
+
+  LenS := Length(S);
+  i := 1;
+
+  while i <= LenS do
+  begin
+    Ch := S[i];
+
+    if InQuotes then
+    begin
+      if Ch = QuoteChar then
+      begin
+        InQuotes := False;
+        QuoteChar := #0;
+      end
+      else if (Ch = '\') and (i < LenS) and (S[i + 1] = QuoteChar) then
+      begin
+        Current := Current + S[i + 1];
+        Inc(i);
+      end
+      else
+        Current := Current + Ch;
+    end
+    else
+    begin
+      case Ch of
+        ' ', #9, #10, #13:
+          begin
+            if Current <> '' then
+              PushCurrent;
+          end;
+        '"', '''':
+          begin
+            InQuotes := True;
+            QuoteChar := Ch;
+          end;
+      else
+        Current := Current + Ch;
+      end;
+    end;
+
+    Inc(i);
+  end;
+
+  if InQuotes then
+    raise Exception.CreateFmt('Unclosed quote in command line: %s', [S]);
+
+  if Current <> '' then
+    PushCurrent;
+end;
+
+class procedure CLI.AddParsedArguments(AProcess: TObject; const Arguments: string);
+var
+  P: TProcess;
+  Args: TStringArray;
+  i: Integer;
+begin
+  if Arguments = '' then
+    Exit;
+
+  if not (AProcess is TProcess) then
+    raise Exception.Create('Invalid process object');
+
+  P := TProcess(AProcess);
+  Args := ParseCommandLine(Arguments);
+
+  for i := 0 to High(Args) do
+    P.Parameters.Add(Args[i]);
+end;
+
+// function RunProcess(const FileName, Arguments, WorkingDirectory: string; TimeoutMs: Integer; Env: TStrings): TCliResult; static;
 class function CLI.RunProcess(const FileName, Arguments, WorkingDirectory: string;
   TimeoutMs: Integer; Env: TStrings): TCliResult;
 const
   POLL_MS = 15;
 var
   P: TProcess;
-  StartTick: QWord;
-  NowTick: QWord;
+  StartTick, NowTick: QWord;
   OutBytes, ErrBytes: RawByteString;
   WorkDir: string;
+  Finished: Boolean;
+  Args: TStringArray;
+  i: Integer;
 
   procedure PumpPipes;
   begin
-    // Read what is currently available to avoid pipe deadlocks.
     AppendStreamToText(P.Output, OutBytes);
     AppendStreamToText(P.Stderr, ErrBytes);
   end;
@@ -172,19 +273,16 @@ begin
     P.Executable := FileName;
     P.Parameters.Clear;
 
-    if Arguments <> '' then
-      P.Parameters.Add(Arguments);
+    Args := ParseCommandLine(Arguments);
+    for i := 0 to High(Args) do
+      P.Parameters.Add(Args[i]);
 
-    P.Options := [poUsePipes, poStderrToOutPut]; // we will still read Stderr stream if not redirected
-    // poStderrToOutPut merges streams; remove it if you want strict separation.
-    // We keep it to avoid platform-specific stderr pipe issues, and we still expose StdErr if available.
-
+    P.Options := [poUsePipes];
     P.CurrentDirectory := WorkDir;
 
     if Env <> nil then
     begin
-      P.Environment.Clear;
-      P.Environment.AddStrings(Env);
+      P.Environment.AddStrings(Env);    // όχι Clear, εκτός αν θες να χάσεις PATH/HOME/LANG κλπ
     end;
 
     StartTick := GetTickCount64;
@@ -200,10 +298,13 @@ begin
       end;
     end;
 
-    // Main wait loop (blocking) with timeout + pumping pipes
-    while P.Running do
-    begin
+    Finished := False;
+    repeat
       PumpPipes;
+
+      Finished := P.WaitOnExit(POLL_MS);
+      if Finished then
+        Break;
 
       if TimeoutMs > 0 then
       begin
@@ -214,42 +315,32 @@ begin
           try
             P.Terminate(1);
           except
-            // ignore
           end;
+
+          try
+            P.WaitOnExit(1000);
+          except
+          end;
+
           Break;
         end;
       end;
+    until False;
 
-      Sleep(POLL_MS);
-    end;
-
-    // Ensure process exited (or was terminated)
-    try
-      P.WaitOnExit(1000);
-    except
-      // ignore
-    end;
-
-    // Drain remaining output
     PumpPipes;
 
-    // Exit code
+    Result.DurationMs := Int64(GetTickCount64 - StartTick);
+
     if Result.TimedOut then
       Result.ExitCode := -1
     else
       Result.ExitCode := P.ExitStatus;
 
-    Result.DurationMs := Int64(GetTickCount64 - StartTick);
-
-    // Convert raw bytes (assume UTF-8; Lazarus strings are UTF-8 typically)
     Result.StdOut := string(OutBytes);
+    Result.StdErr := string(ErrBytes);
 
-    // If stderr was merged, keep StdErr empty; otherwise provide captured bytes.
-    if ErrBytes <> '' then
-      Result.StdErr := string(ErrBytes)
-    else if Result.TimedOut then
+    if Result.TimedOut and (Result.StdErr = '') then
       Result.StdErr := 'Timeout';
-
   finally
     P.Free;
   end;
@@ -313,6 +404,123 @@ begin
   end;
 
   Result := Res;
+end;
+
+class function CLI.RunExeWithInput(const FileName, Arguments, InputText: string;
+  const WorkingDirectory: string; TimeoutMs: Integer; Env: TStrings): TCliResult;
+const
+  POLL_MS = 15;
+var
+  P: TProcess;
+  StartTick, NowTick: QWord;
+  OutBytes, ErrBytes: RawByteString;
+  InBytes: RawByteString;
+  WorkDir: string;
+  Finished: Boolean;
+  Args: TStringArray;
+  i: Integer;
+  Written, N: LongInt;
+begin
+  Result.FileName := FileName;
+  Result.Arguments := Arguments;
+  Result.ExitCode := -1;
+  Result.StdOut := '';
+  Result.StdErr := '';
+  Result.DurationMs := 0;
+  Result.TimedOut := False;
+
+  WorkDir := Trim(WorkingDirectory);
+  if WorkDir = '' then
+    WorkDir := GetCurrentDir;
+
+  OutBytes := '';
+  ErrBytes := '';
+  InBytes := UTF8Encode(InputText);
+
+  P := TProcess.Create(nil);
+  try
+    P.Executable := FileName;
+    P.Parameters.Clear;
+
+    Args := ParseCommandLine(Arguments);
+    for i := 0 to High(Args) do
+      P.Parameters.Add(Args[i]);
+
+    P.Options := [poUsePipes];
+    P.CurrentDirectory := WorkDir;
+
+    if Env <> nil then
+      P.Environment.AddStrings(Env);
+
+    StartTick := GetTickCount64;
+
+    try
+      P.Execute;
+    except
+      on E: Exception do
+      begin
+        Result.ExitCode := -1;
+        Result.StdErr := E.Message;
+        Exit;
+      end;
+    end;
+
+    if InBytes <> '' then
+    begin
+      Written := 1;
+      while Written <= Length(InBytes) do
+      begin
+        N := P.Input.Write(InBytes[Written], Length(InBytes) - Written + 1);
+        if N <= 0 then
+          Break;
+        Inc(Written, N);
+      end;
+    end;
+
+    P.CloseInput;
+
+    Finished := False;
+    repeat
+      AppendStreamToText(P.Output, OutBytes);
+      AppendStreamToText(P.Stderr, ErrBytes);
+
+      Finished := P.WaitOnExit(POLL_MS);
+      if Finished then
+        Break;
+
+      if TimeoutMs > 0 then
+      begin
+        NowTick := GetTickCount64;
+        if (NowTick - StartTick) >= QWord(TimeoutMs) then
+        begin
+          Result.TimedOut := True;
+          try
+            P.Terminate(1);
+          except
+          end;
+          Break;
+        end;
+      end;
+    until False;
+
+    AppendStreamToText(P.Output, OutBytes);
+    AppendStreamToText(P.Stderr, ErrBytes);
+
+    Result.DurationMs := Int64(GetTickCount64 - StartTick);
+
+    if Result.TimedOut then
+      Result.ExitCode := -1
+    else
+      Result.ExitCode := P.ExitStatus;
+
+    Result.StdOut := string(OutBytes);
+    Result.StdErr := string(ErrBytes);
+
+    if Result.TimedOut and (Result.StdErr = '') then
+      Result.StdErr := 'Timeout';
+  finally
+    P.Free;
+  end;
 end;
 
 end.

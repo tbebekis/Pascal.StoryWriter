@@ -50,6 +50,7 @@ type
     { editor handler }
     procedure SaveEditorText(TextEditor: TTextEditor); override;
     procedure ShowEditorFile(TextEditor: TTextEditor); override;
+    function  GetEditorFilePath(TextEditor: TTextEditor): string; override;
   end;
 
 
@@ -195,6 +196,19 @@ begin
         App.DisplayFileExplorer(Comp.TextFilePathEn);
   end;
 
+end;
+
+function TComponentForm.GetEditorFilePath(TextEditor: TTextEditor): string;
+begin
+  Result := '';
+
+  if TextEditor = frmText.TextEditor then
+  begin
+    Result := Comp.TextFilePath;
+  end else if TextEditor = frmTextEn.TextEditor then
+  begin
+    Result := Comp.TextFilePathEn;
+  end;
 end;
 
 

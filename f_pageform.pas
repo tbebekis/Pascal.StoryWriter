@@ -51,6 +51,7 @@ type
     // ● editor handler
     procedure SaveEditorText(TextEditor: TTextEditor); virtual;
     procedure ShowEditorFile(TextEditor: TTextEditor); virtual;
+    function  GetEditorFilePath(TextEditor: TTextEditor): string; virtual;
     procedure HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean); virtual;
 
     // ● toolbar
@@ -166,6 +167,11 @@ end;
 
 procedure TPageForm.ShowEditorFile(TextEditor: TTextEditor);
 begin
+end;
+
+function TPageForm.GetEditorFilePath(TextEditor: TTextEditor): string;
+begin
+  Result := '';
 end;
 
 procedure TPageForm.HighlightAll(LinkItem: TLinkItem; const Term: string; IsWholeWord: Boolean; MatchCase: Boolean);

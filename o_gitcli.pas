@@ -31,6 +31,15 @@ type
       const RemoteName: string = 'origin';
       const Branch: string = 'main';
       TimeoutMs: Integer = 120 * 1000): TCliResult; static;
+
+    class function HasGlobalCredentialHelper: Boolean; static;
+    class function GetGlobalCredentialHelper: string; static;
+    class function EnsureGithubCredentials(const UserName, Token: string): Boolean; static;
+
+    class function TryGetGithubStoredCredentials(const UserName: string; out StoredUser, StoredToken: string): Boolean; static;
+    class function HasGithubStoredCredentials(const UserName: string = ''): Boolean; static;
+
+    class function CreateGitEnv: TStringList;
   end;
 
 implementation
@@ -55,6 +64,30 @@ begin
       Line := Trim(SL[i]);
       if SameText(Line, RemoteName) then
         Exit(True);
+    end;
+  finally
+    SL.Free;
+  end;
+end;
+
+function GetCredentialValue(const Text, Key: string): string;
+var
+  SL: TStringList;
+  i: Integer;
+  Prefix, Line: string;
+begin
+  Result := '';
+  Prefix := Key + '=';
+
+  SL := TStringList.Create;
+  try
+    SL.Text := StringReplace(Text, #13, '', [rfReplaceAll]);
+
+    for i := 0 to SL.Count - 1 do
+    begin
+      Line := Trim(SL[i]);
+      if Pos(Prefix, Line) = 1 then
+        Exit(Copy(Line, Length(Prefix) + 1, MaxInt));
     end;
   finally
     SL.Free;
@@ -135,6 +168,7 @@ end;
 class function GitCli.HasUncommittedChanges(const ProjectFolderPath: string): Boolean;
 var
   R: TCliResult;
+  S : string;
 begin
   if (Trim(ProjectFolderPath) = '') or (not DirectoryExists(ProjectFolderPath)) then
     raise Exception.CreateFmt('Folder not exists: %s', [ProjectFolderPath]);
@@ -144,7 +178,10 @@ begin
 
   R := Git('status --porcelain', ProjectFolderPath);
   if not R.Succeeded then
-    raise Exception.CreateFmt('Failed to ''git status'':'#10'%s', [R.StdErr]);
+  begin
+    S := R.ToText();
+    raise Exception.CreateFmt('Failed to ''git status'':'#10'%s', [S]);
+  end;
 
   Result := Trim(R.StdOut) <> '';
 end;
@@ -177,9 +214,10 @@ begin
   Result := True;
 end;
 
+
 class function GitCli.Push(const RepoDir, RemoteName, Branch: string; TimeoutMs: Integer): TCliResult;
 var
-  R: TCliResult;
+  Env: TStringList;
 begin
   if (Trim(RepoDir) = '') or (not DirectoryExists(RepoDir)) then
     raise Exception.CreateFmt('Folder not exists: %s', [RepoDir]);
@@ -187,16 +225,146 @@ begin
   if not IsGitRepo(RepoDir) then
     raise Exception.CreateFmt('Folder is not a git repo: %s', [RepoDir]);
 
-  R := Git('remote', RepoDir, TimeoutMs);
+  Env := CreateGitEnv;
+  try
+    Env.Values['GIT_TERMINAL_PROMPT'] := '0';
+
+    Result := Git(Format('push %s %s', [RemoteName, Branch]), RepoDir, TimeoutMs, Env);
+
+    if not Result.Succeeded then
+      raise Exception.CreateFmt('Failed to push: %s', [Result.ToText]);
+  finally
+    Env.Free;
+  end;
+end;
+
+class function GitCli.HasGlobalCredentialHelper: Boolean;
+begin
+  Result := Trim(GetGlobalCredentialHelper) <> '';
+end;
+
+class function GitCli.GetGlobalCredentialHelper: string;
+var
+  R: TCliResult;
+begin
+  R := CLI.RunExe('git', 'config --global credential.helper');
+
+  // Αν δεν υπάρχει setting, συνήθως το git γυρίζει non-zero και άδειο output.
+  if R.Succeeded then
+    Result := Trim(R.StdOut)
+  else
+    Result := '';
+end;
+
+class function GitCli.EnsureGithubCredentials(const UserName, Token: string): Boolean;
+var
+  HelperName: string;
+  InputText: string;
+  R: TCliResult;
+begin
+  if Trim(UserName) = '' then
+    raise Exception.Create('GitHub user name is empty.');
+
+  if Trim(Token) = '' then
+    raise Exception.Create('GitHub token is empty.');
+
+  HelperName := GetGlobalCredentialHelper;
+
+  if HelperName = '' then
+  begin
+    R := CLI.RunExe('git', 'config --global credential.helper store');
+    if not R.Succeeded then
+      raise Exception.CreateFmt(
+        'Failed to configure git credential.helper.' + LineEnding + '%s',
+        [R.ToText]
+      );
+  end;
+
+  InputText :=
+    'protocol=https' + LineEnding +
+    'host=github.com' + LineEnding +
+    'username=' + UserName + LineEnding +
+    'password=' + Token + LineEnding +
+    LineEnding;
+
+  R := CLI.RunExeWithInput('git', 'credential approve', InputText);
   if not R.Succeeded then
-    raise Exception.CreateFmt('Failed to check git remotes:'#10'%s', [R.StdErr]);
+    raise Exception.CreateFmt(
+      'Failed to store GitHub credentials.' + LineEnding + '%s',
+      [R.ToText]
+    );
 
-  if not HasRemote(R.StdOut, RemoteName) then
-    raise Exception.CreateFmt('Remote ''%s'' not found in repo: %s', [RemoteName, RepoDir]);
+  Result := True;
+end;
 
-  Result := Git(Format('push %s %s', [RemoteName, Branch]), RepoDir, TimeoutMs);
-  if not Result.Succeeded then
-    raise Exception.CreateFmt('Failed to push branch ''%s'' to ''%s'':'#10'%s', [Branch, RemoteName, Result.StdErr]);
+class function GitCli.CreateGitEnv: TStringList;
+var
+  UserDir: string;
+begin
+  Result := TStringList.Create;
+  UserDir := ExcludeTrailingPathDelimiter(GetUserDir);
+
+  {$IFDEF UNIX}
+  Result.Values['HOME'] := UserDir;
+  Result.Values['GIT_CONFIG_GLOBAL'] := UserDir + PathDelim + '.gitconfig';
+  {$ENDIF}
+
+  {$IFDEF Windows}
+  Result.Values['USERPROFILE'] := UserDir;
+  Result.Values['GIT_CONFIG_GLOBAL'] := UserDir + PathDelim + '.gitconfig';
+  {$ENDIF}
+end;
+
+class function GitCli.TryGetGithubStoredCredentials(
+  const UserName: string;
+  out StoredUser, StoredToken: string): Boolean;
+var
+  InputText: string;
+  R: TCliResult;
+  HelperName: string;
+begin
+  Result := False;
+  StoredUser := '';
+  StoredToken := '';
+
+  HelperName := GetGlobalCredentialHelper;
+  if Trim(HelperName) = '' then
+    Exit(False);
+
+  InputText :=
+    'protocol=https' + LineEnding +
+    'host=github.com' + LineEnding;
+
+  if Trim(UserName) <> '' then
+    InputText := InputText + 'username=' + UserName + LineEnding;
+
+  InputText := InputText + LineEnding;
+
+  R := CLI.RunExeWithInput('git', 'credential fill', InputText);
+
+  if R.TimedOut then
+    raise Exception.CreateFmt(
+      'Timed out while checking stored GitHub credentials.' + LineEnding + '%s',
+      [R.ToText]
+    );
+
+  if not R.Succeeded then
+  begin
+    // Εδώ δεν κάνουμε raise. Το "δεν βρέθηκαν credentials" είναι φυσιολογική κατάσταση.
+    Exit(False);
+  end;
+
+  StoredUser := GetCredentialValue(R.StdOut, 'username');
+  StoredToken := GetCredentialValue(R.StdOut, 'password');
+
+  Result := Trim(StoredToken) <> '';
+end;
+
+class function GitCli.HasGithubStoredCredentials(const UserName: string): Boolean;
+var
+  U, T: string;
+begin
+  Result := TryGetGithubStoredCredentials(UserName, U, T);
 end;
 
 end.

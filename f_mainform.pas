@@ -12,6 +12,8 @@ uses
   , Controls
   , Graphics
   //, StdCtrls
+  , ExtCtrls
+  , StdCtrls
   , Dialogs
   , Menus
   , DBGrids
@@ -21,10 +23,10 @@ uses
 
   ,LazFileUtils
   ,LResources
-  , ExtCtrls
-  , StdCtrls
   ,Tripous
   ,Tripous.Broadcaster
+  ,Tripous.Cli
+  ,Tripous.GitCli
   ,o_PageHandler
 
   ;
@@ -67,6 +69,9 @@ type
     SideBarPagerHandler: TPagerHandler;
     ContentPagerHandler: TPagerHandler;
 
+    Cli: TCli;
+    GitCli: TGitCli;
+
     procedure FormInitialize();
     procedure FormFinalize();
 
@@ -84,6 +89,7 @@ type
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
+    procedure AppException(Sender: TObject; E: Exception);
   protected
     procedure DoCreate; override;
     procedure DoDestroy; override;
@@ -108,16 +114,16 @@ implementation
 uses
    Tripous.IconList
   ,Tripous.Logs
+
   ,o_Consts
   ,o_App
   ,o_Entities
-  ,o_Cli
-  ,o_GitCli
   ,o_WikiInfo
   ,o_Wiki
    ,o_Highlighters
    ,Zipper
   ,f_GitCommitMessageDialog
+   ,f_GithubCredentialsDialog
   ;
 
 { TMainForm }
@@ -125,13 +131,20 @@ uses
 constructor TMainForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  LogBox.Initialize(edtLog);
+  Application.OnException := AppException;
   fBroadcasterToken := Broadcaster.Register(OnBroadcasterEvent);
   IconList.SetResourceNames(IconResourceNames);
   InitializeHighlighters();
+
+  Cli := TCli.Create();
+  GitCli := TGitCli.Create(Cli);
 end;
 
 destructor TMainForm.Destroy;
 begin
+  GitCli.Free();
+  Cli.Free();
   Broadcaster.Unregister(fBroadcasterToken);
   inherited Destroy;
 end;
@@ -180,7 +193,7 @@ begin
   pnlContent.Constraints.MinWidth:= 40;
   pagerContent.Constraints.MinHeight:= 100;
 
-  LogBox.Initialize(edtLog);
+
 
   pnlContent.Caption := '';
 
@@ -310,21 +323,23 @@ var
   DT: string;
   CommitMessage: string;
   GitIgnoreText: string;
+  GitIgnoreFilePath: string;
 begin
-  if (App.CurrentProject = nil) then
+  if App.CurrentProject = nil then
     Exit;
 
   Screen.Cursor := crHourGlass;
   Application.ProcessMessages;
   try
     ProjectFolderPath := App.CurrentProject.FolderPath;
+    GitCli.RepoDir := ProjectFolderPath;
 
-    if not GitCli.IsGitRepo(ProjectFolderPath) then
+    if not GitCli.IsGitRepo then
     begin
-      LogBox.AppendLine('Initializing git repo.');
+      LogBox.AppendLine('Initializing git repository...');
       Application.ProcessMessages;
 
-      GitCli.EnsureIsRepo(ProjectFolderPath);
+      GitCli.InitRepo;
 
       GitIgnoreText :=
         '**/bin' + LineEnding +
@@ -333,38 +348,38 @@ begin
         '**/Wiki' + LineEnding +
         '**/Export';
 
+      GitIgnoreFilePath := IncludeTrailingPathDelimiter(ProjectFolderPath) + '.gitignore';
+
       with TStringList.Create do
       try
         Text := GitIgnoreText;
-        SaveToFile(IncludeTrailingPathDelimiter(ProjectFolderPath) + '.gitignore');
+        SaveToFile(GitIgnoreFilePath);
       finally
         Free;
       end;
 
-      LogBox.AppendLine('Initialized git repo, added files and done the initial commit.');
-    end
-    else
-    begin
-      if not GitCli.HasUncommittedChanges(ProjectFolderPath) then
-      begin
-        LogBox.AppendLine('There are no uncommitted changes.');
-        App.InfoBox('There are no uncommitted changes.');
-        Exit;
-      end;
-
-      DT := FormatDateTime('yyyy"-"mm"-"dd hh":"nn":"ss', Now);
-      CommitMessage := 'Auto-commit ' + DT;
-
-      if not TGitCommitMessageDialog.ShowDialog(CommitMessage) then
-        Exit;
-
-      LogBox.AppendLine(Format('Commiting to git with message: "%s"... Please wait...', [CommitMessage]));
-
-      if not GitCli.CommitIfNeeded(ProjectFolderPath, CommitMessage) then
-        LogBox.AppendLine('Nothing to commit.')
-      else
-        LogBox.AppendLine('COMMITTED.');
+      LogBox.AppendLine('Git repository initialized.');
     end;
+
+    if not GitCli.HasUncommittedChanges then
+    begin
+      LogBox.AppendLine('There are no uncommitted changes.');
+      App.InfoBox('There are no uncommitted changes.');
+      Exit;
+    end;
+
+    DT := FormatDateTime('yyyy"-"mm"-"dd hh":"nn":"ss', Now);
+    CommitMessage := 'Auto-commit ' + DT;
+
+    if not TGitCommitMessageDialog.ShowDialog(CommitMessage) then
+      Exit;
+
+    LogBox.AppendLine(Format('Committing to git with message: "%s"... Please wait...', [CommitMessage]));
+
+    if not GitCli.CommitIfNeeded(CommitMessage) then
+      LogBox.AppendLine('Nothing to commit.')
+    else
+      LogBox.AppendLine('COMMITTED.');
   finally
     Screen.Cursor := crDefault;
     Application.ProcessMessages;
@@ -373,41 +388,57 @@ end;
 
 procedure TMainForm.Push;
 var
-  Message: string;
+  Msg: string;
   ProjectFolderPath: string;
   GitResult: TCliResult;
+  UserName: string;
+  Token: string;
 begin
-  if (App.CurrentProject = nil) then
+  if App.CurrentProject = nil then
     Exit;
 
-  Screen.Cursor := crHourGlass;
   Application.ProcessMessages;
   try
     ProjectFolderPath := App.CurrentProject.FolderPath;
+    GitCli.RepoDir := ProjectFolderPath;
 
-    if not GitCli.IsGitRepo(ProjectFolderPath) then
+    if not GitCli.IsGitRepo then
     begin
-      Message := Format('There is no git repo in folder: %s.', [ProjectFolderPath]);
-      LogBox.AppendLine(Message);
-      App.WarningBox(Message);
+      Msg := Format('There is no git repo in folder: %s.', [ProjectFolderPath]);
+      LogBox.AppendLine(Msg);
+      App.WarningBox(Msg);
       Exit;
     end;
 
     LogBox.AppendLine('Checking for uncommitted changes...');
-    if GitCli.HasUncommittedChanges(ProjectFolderPath) then
+    if GitCli.HasUncommittedChanges then
     begin
-      Message := 'There are uncommitted changes.' + LineEnding + 'Please commit them first.';
-      LogBox.AppendLine(Message);
-      App.WarningBox(Message);
+      Msg := 'There are uncommitted changes.' + LineEnding + 'Please commit them first.';
+      LogBox.AppendLine(Msg);
+      App.WarningBox(Msg);
       Exit;
     end;
 
+    if not GitCli.HasGlobalCredentialHelper then
+    begin
+      UserName := '';
+      Token := '';
+
+      if not TGithubCredentialsDialog.ShowDialog(UserName, Token) then
+        Exit;
+
+      if not GitCli.EnsureGitHubCredentials(UserName, Token) then
+      begin
+        LogBox.AppendLine('Failed to store GitHub credentials.');
+        Exit;
+      end;
+    end;
+
     LogBox.AppendLine('Pushing to remote git repository... Please wait...');
-    LogBox.AppendLine('Starting push operation...');
 
-    GitResult := GitCli.Push(ProjectFolderPath);
+    GitResult := GitCli.Push;
 
-    if GitResult.Succeeded then
+    if GitResult.Success then
       LogBox.AppendLine('Pushing to remote git repository SUCCEEDED.')
     else
       LogBox.AppendLine('Pushing to remote git repository FAILED.');
@@ -415,7 +446,6 @@ begin
     LogBox.AppendLine('Git output follows:');
     LogBox.AppendLine(GitResult.ToText);
   finally
-    Screen.Cursor := crDefault;
     Application.ProcessMessages;
   end;
 end;
@@ -488,6 +518,14 @@ begin
     THighlighters.Initialize(FolderPath);
     THighlighters.RegisterDefaults;
   end;
+end;
+
+procedure TMainForm.AppException(Sender: TObject; E: Exception);
+//var
+//  ErrorMessage: string;
+begin
+  //ErrorMessage := 'Unhandled exception:' + LineEnding + E.ClassName + ': ' + E.Message;
+  LogBox.AppendLine(E);
 end;
 
 

@@ -64,8 +64,6 @@ type
     procedure SetWordWrap(AValue: Boolean);
     function GetEditorText: string;
     procedure SetEditorText(const AValue: string);
-  protected
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   private
     fFindAndReplace: TFindAndReplace;
 
@@ -74,6 +72,8 @@ type
     class function Utf8CharCount(const S: string): Integer; static;
     class function Utf8CharIndex0ToByteIndex0(const S: string; CharIndex0: Integer): Integer; static;
     class function Utf8CopyChars(const S: string; StartChar0, LenChars: Integer): string; static;
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
@@ -95,7 +95,6 @@ type
     procedure ClearHighlights();
 
     procedure AppSettingsChanged();
-
 
     property FindAndReplace: TFindAndReplace read fFindAndReplace;
 
@@ -484,7 +483,6 @@ begin
   Update();
 end;
 
-
 procedure TTextEditor.SetCaretPos(AX, AY: Integer);
 begin
   Carets[0].PosX := AX;
@@ -492,8 +490,6 @@ begin
   DoGotoCaret(TATCaretEdge.Top);  // caret index 0, ensure visible (scroll)
   Update;
 end;
-
-
 
 function TTextEditor.GetGutterVisible: Boolean;
 begin
@@ -567,8 +563,6 @@ begin
   else
     OptWrapMode := TATEditorWrapMode.ModeOff;
 end;
-
-
 
 function TTextEditor.GetBorderVisible: Boolean;
 begin

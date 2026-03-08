@@ -43,6 +43,7 @@ type
     { editor handler }
     procedure SaveEditorText(TextEditor: TTextEditor); override;
     procedure ShowEditorFile(TextEditor: TTextEditor); override;
+    function  GetEditorFilePath(TextEditor: TTextEditor): string; override;
   end;
 
 
@@ -164,6 +165,11 @@ procedure TStoryForm.ShowEditorFile(TextEditor: TTextEditor);
 begin
   if FileExists(Story.SynopsisFilePath) then
     App.DisplayFileExplorer(Story.SynopsisFilePath);
+end;
+
+function TStoryForm.GetEditorFilePath(TextEditor: TTextEditor): string;
+begin
+  Result:=Story.SynopsisFilePath
 end;
 
 end.

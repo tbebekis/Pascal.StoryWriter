@@ -10,33 +10,42 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
+  Dialogs,
+  SysUtils,
   Forms, f_MainForm, f_CategoryListForm, f_TagListForm, f_ComponentListForm,
   f_SearchForm, f_QuickViewForm, f_NoteListForm, f_TempTextForm,
   f_StoryListForm, f_ComponentForm, f_NoteForm, f_StoryForm, f_ChapterForm,
-  f_SceneForm, o_MarkDownPreview, f_TextEditorForm
+  f_SceneForm, o_MarkDownPreview, f_TextEditorForm, f_GithubCredentialsDialog
   { you can add units after this };
 
 {$R *.res}
 
 begin
-  {$IFDEF CHECK_MEMORY_LEAKS}
-  // Assuming your build mode sets -dDEBUG in Project Options/Other when defining -gh
-  // This avoids interference when running a production/default build without -gh
 
-  // Set up -gh output for the Leakview package:
-  if FileExists('heap.trc') then
-    DeleteFile('heap.trc');
+  try
+    {$IFDEF CHECK_MEMORY_LEAKS}
+    // Assuming your build mode sets -dDEBUG in Project Options/Other when defining -gh
+    // This avoids interference when running a production/default build without -gh
 
-  SetHeapTraceOutput('heap.trc');
-  {$ENDIF CHECK_MEMORY_LEAKS}
+    // Set up -gh output for the Leakview package:
+    if FileExists('heap.trc') then
+      DeleteFile('heap.trc');
 
-  RequireDerivedFormResource:=True;
-  Application.Scaled:=True;
-  {$PUSH}{$WARN 5044 OFF}
-  Application.MainFormOnTaskbar:=True;
-  {$POP}
-  Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
-  Application.Run;
+    SetHeapTraceOutput('heap.trc');
+    {$ENDIF CHECK_MEMORY_LEAKS}
+
+    RequireDerivedFormResource:=True;
+    Application.Scaled:=True;
+    {$PUSH}{$WARN 5044 OFF}
+    Application.MainFormOnTaskbar:=True;
+    {$POP}
+    Application.Initialize;
+    Application.CreateForm(TMainForm, MainForm);
+    Application.Run;
+  except
+    on E: Exception do
+      MessageDlg('Fatal Error', E.ClassName + ': ' + E.Message,  mtError, [mbOK], 0);
+  end;
+
 end.
 
